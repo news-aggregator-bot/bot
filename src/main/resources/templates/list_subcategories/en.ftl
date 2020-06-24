@@ -1,0 +1,1 @@
+Listed subcategories of ${category} category. Page ${page} :

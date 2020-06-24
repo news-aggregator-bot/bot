@@ -1,0 +1,7 @@
+camel:
+  springboot:
+    main-run-controller: true
+bot:
+  telegram:
+    name: news-aggregation-bot
+    token: 1198510773:AAF8vSTx0YPY_lIN7-a7Dod-6LU4BAMlCdA
