@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>vlad110kg</groupId>
-    <artifactId>bot</artifactId>
+    <artifactId>na-bot</artifactId>
     <version>0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Bot</name>
+    <name>na-bot</name>
 
     <properties>
         <camel.version>2.25.1</camel.version>
@@ -67,7 +67,6 @@
             <artifactId>feign-core</artifactId>
             <version>11.0</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -82,10 +81,10 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
                 <executions>
                     <execution>
                         <goals>

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import vlad110kg.news.aggregator.bot.telegram.client.CategoryClient;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
@@ -13,6 +12,7 @@ import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.template.MessageTemplateContext;
 import vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils;
+import vlad110kg.news.aggregator.bot.telegram.service.ICategoryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +31,13 @@ public class CategoryPickMessageHandler implements PickMessageHandler {
     private MessageTemplateContext templateContext;
 
     @Autowired
-    private CategoryClient categoryClient;
+    private ICategoryService categoryService;
 
     @Override
     public BotApiMethod<Message> handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         long categoryId = Long.parseLong(split[2]);
-        Category category = categoryClient.subscribe(message.getChatId(), categoryId);
+        Category category = categoryService.subscribe(message.getChatId(), categoryId);
 
         MarkupBuilder markup = new MarkupBuilder();
 

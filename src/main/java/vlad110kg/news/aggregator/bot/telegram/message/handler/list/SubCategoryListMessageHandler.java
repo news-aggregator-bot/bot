@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import vlad110kg.news.aggregator.bot.telegram.client.CategoryClient;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
 import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
@@ -15,6 +14,7 @@ import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.template.MessageTemplateContext;
 import vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils;
+import vlad110kg.news.aggregator.bot.telegram.service.ICategoryService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,14 +37,14 @@ public class SubCategoryListMessageHandler implements ListMessageHandler {
     private MessageTemplateContext templateContext;
 
     @Autowired
-    private CategoryClient categoryClient;
+    private ICategoryService categoryService;
 
     @Override
     public BotApiMethod<Message> handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         long parentId = Long.parseLong(split[2]);
         int page = Integer.parseInt(split[3]);
-        ListCategoryResponse response = categoryClient.list(parentId, page, PAGE_SIZE);
+        ListCategoryResponse response = categoryService.list(parentId, page, PAGE_SIZE);
         List<Category> categories = response.getCategories();
         Category parent = categories.get(0);
 
