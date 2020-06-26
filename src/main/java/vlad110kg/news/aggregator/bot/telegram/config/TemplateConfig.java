@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 @Configuration
 public class TemplateConfig {
 
-    @Bean
+    @Bean("localTemplateConfig")
     public freemarker.template.Configuration templateConfiguration() throws IOException, URISyntaxException {
 
         freemarker.template.Configuration cfg = new freemarker.template.Configuration(new Version(2, 3, 20));
