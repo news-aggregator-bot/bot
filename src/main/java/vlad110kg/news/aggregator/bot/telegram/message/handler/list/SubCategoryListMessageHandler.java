@@ -86,7 +86,10 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
     }
 
     private String buildCommand(Category c) {
-        return commandBuilder.pick(CATEGORY, c.getId());
+        if (c.getChildren() == null || c.getChildren().isEmpty()) {
+            return commandBuilder.pick(CATEGORY, c.getId());
+        }
+        return commandBuilder.list(SUBCATEGORY, c.getId(), 1);
     }
 
     @Override

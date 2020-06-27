@@ -19,7 +19,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public ListCategoryResponse list(long chatId, long parentId, int page, int pageSize) {
-        return null;
+        return categoryClient.list(chatId, parentId, page, pageSize);
     }
 
     @Override
