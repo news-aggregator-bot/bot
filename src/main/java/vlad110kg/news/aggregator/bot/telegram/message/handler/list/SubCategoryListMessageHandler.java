@@ -10,9 +10,7 @@ import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
 import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
-import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
-import vlad110kg.news.aggregator.bot.telegram.message.template.MessageTemplateContext;
 import vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils;
 import vlad110kg.news.aggregator.bot.telegram.service.ICategoryService;
 
@@ -27,14 +25,9 @@ import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUt
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_PREV;
 
 @Component
-public class SubCategoryListMessageHandler implements ListMessageHandler {
+public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
+
     public static final String SUBCATEGORY = "subcategory";
-
-    @Autowired
-    private CommandBuilder commandBuilder;
-
-    @Autowired
-    private MessageTemplateContext templateContext;
 
     @Autowired
     private ICategoryService categoryService;
@@ -46,6 +39,10 @@ public class SubCategoryListMessageHandler implements ListMessageHandler {
         int page = Integer.parseInt(split[3]);
 
         ListCategoryResponse response = categoryService.list(message.getChatId(), parentId, page, PAGE_SIZE);
+        if (response.isError()) {
+            return error(message.getChatId(), LangUtils.DEFAULT, response.getError());
+        }
+
         List<Category> categories = response.getCategories();
         Category parent = categories.get(0);
 
@@ -54,29 +51,32 @@ public class SubCategoryListMessageHandler implements ListMessageHandler {
             .map(c -> MarkupBuilder.Button.builder().text(c.getLocalised()).command(buildCommand(c)).build())
             .collect(Collectors.toList());
 
-        String lang = LangUtils.getLang(message.getFrom().getLanguageCode());
         String allSubcategoriesText = templateContext.processTemplate(
             ALL_SUBCATEGORIES,
-            lang,
+            response.getLanguage(),
             TemplateUtils.params("category", parent.getName())
         );
+
         markup.addButtons(Arrays.asList(markup.button(allSubcategoriesText, commandBuilder.pick(CATEGORY, parentId))));
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if(page > 1) {
-            navigation.add(markup.button(templateContext.processTemplate(DIR_PREV, lang), commandBuilder.list(SUBCATEGORY, parentId, page - 1)));
+            String prevText = templateContext.processTemplate(DIR_PREV, response.getLanguage());
+            navigation.add(markup.button(prevText, commandBuilder.list(SUBCATEGORY, parentId, page - 1)));
         }
 
         if (categories.size() == PAGE_SIZE) {
-            navigation.add(markup.button(templateContext.processTemplate(DIR_NEXT, lang), commandBuilder.list(SUBCATEGORY, parentId, page + 1)));
+            String nextText = templateContext.processTemplate(DIR_NEXT, response.getLanguage());
+            navigation.add(markup.button(nextText, commandBuilder.list(SUBCATEGORY, parentId, page + 1)));
         }
+
         List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
         String listSubcategoryText = templateContext.processTemplate(
             TemplateUtils.LIST_SUBCATEGORY,
-            lang,
+            response.getLanguage(),
             TemplateUtils.params("category", parent.getName(), "page", page)
         );
         return new SendMessage()

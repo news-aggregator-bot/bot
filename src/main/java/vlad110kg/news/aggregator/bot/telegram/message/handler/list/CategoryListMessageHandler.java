@@ -8,10 +8,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
-import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
-import vlad110kg.news.aggregator.bot.telegram.message.template.MessageTemplateContext;
 import vlad110kg.news.aggregator.bot.telegram.service.ICategoryService;
 
 import java.util.ArrayList;
@@ -25,14 +24,9 @@ import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUt
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.params;
 
 @Component
-public class CategoryListMessageHandler implements ListMessageHandler {
+public class CategoryListMessageHandler extends AbstractListMessageHandler {
+
     public static final String CATEGORY = "category";
-
-    @Autowired
-    private CommandBuilder commandBuilder;
-
-    @Autowired
-    private MessageTemplateContext templateContext;
 
     @Autowired
     private ICategoryService categoryService;
@@ -42,6 +36,11 @@ public class CategoryListMessageHandler implements ListMessageHandler {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
         ListCategoryResponse response = categoryService.list(message.getChatId(), page, PAGE_SIZE);
+
+        if (response.isError()) {
+            return error(message.getChatId(), LangUtils.DEFAULT, response.getError());
+        }
+
         List<Category> categories = response.getCategories();
 
         MarkupBuilder markup = new MarkupBuilder();
@@ -51,17 +50,13 @@ public class CategoryListMessageHandler implements ListMessageHandler {
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (page > 1) {
-            navigation.add(markup.button(
-                templateContext.processTemplate(DIR_PREV, response.getLanguage()),
-                commandBuilder.list(CATEGORY, page - 1)
-            ));
+            String prevText = templateContext.processTemplate(DIR_PREV, response.getLanguage());
+            navigation.add(markup.button(prevText, commandBuilder.list(CATEGORY, page - 1)));
         }
 
         if (categories.size() == PAGE_SIZE) {
-            navigation.add(markup.button(
-                templateContext.processTemplate(DIR_NEXT, response.getLanguage()),
-                commandBuilder.list(CATEGORY, page + 1)
-            ));
+            String nextText = templateContext.processTemplate(DIR_NEXT, response.getLanguage());
+            navigation.add(markup.button(nextText, commandBuilder.list(CATEGORY, page + 1)));
         }
 
         List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);

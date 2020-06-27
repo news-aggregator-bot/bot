@@ -11,7 +11,15 @@ public interface CategoryClient {
 
     @GetMapping("/list")
     ListCategoryResponse list(
-        @PathParam("chatId") long chatId,
+        @PathParam("chat_id") long chatId,
+        @PathParam("page") int page,
+        @PathParam("size") int size
+    );
+
+    @GetMapping("/list")
+    ListCategoryResponse list(
+        @PathParam("chat+id") long chatId,
+        @PathParam("parent_id") long parentId,
         @PathParam("page") int page,
         @PathParam("size") int size
     );

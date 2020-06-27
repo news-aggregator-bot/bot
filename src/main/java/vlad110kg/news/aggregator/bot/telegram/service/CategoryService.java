@@ -12,10 +12,9 @@ public class CategoryService implements ICategoryService {
     @Autowired
     private CategoryClient categoryClient;
 
-
     @Override
     public ListCategoryResponse list(long chatId, int page, int pageSize) {
-        return categoryClient.;
+        return categoryClient.list(chatId, page, pageSize);
     }
 
     @Override
