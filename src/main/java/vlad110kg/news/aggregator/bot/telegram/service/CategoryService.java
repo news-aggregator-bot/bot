@@ -1,19 +1,25 @@
 package vlad110kg.news.aggregator.bot.telegram.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vlad110kg.news.aggregator.bot.telegram.client.CategoryClient;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
 
 @Service
 public class CategoryService implements ICategoryService {
 
+    @Autowired
+    private CategoryClient categoryClient;
+
+
     @Override
-    public ListCategoryResponse list(int page, int pageSize) {
-        return null;
+    public ListCategoryResponse list(long chatId, int page, int pageSize) {
+        return categoryClient.;
     }
 
     @Override
-    public ListCategoryResponse list(long parentId, int page, int pageSize) {
+    public ListCategoryResponse list(long chatId, long parentId, int page, int pageSize) {
         return null;
     }
 

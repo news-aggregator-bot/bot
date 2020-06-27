@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
-import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
@@ -42,29 +41,38 @@ public class CategoryListMessageHandler implements ListMessageHandler {
     public BotApiMethod<Message> handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
-        ListCategoryResponse list = categoryService.list(page, PAGE_SIZE);
-        List<Category> categories = list.getCategories();
+        ListCategoryResponse response = categoryService.list(message.getChatId(), page, PAGE_SIZE);
+        List<Category> categories = response.getCategories();
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()
             .map(c -> MarkupBuilder.Button.builder().text(c.getLocalised()).command(buildCommand(c)).build())
             .collect(Collectors.toList());
 
-        String lang = LangUtils.getLang(message.getFrom().getLanguageCode());
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
-        if(page > 1) {
-            navigation.add(markup.button(templateContext.processTemplate(DIR_PREV, lang), commandBuilder.list(CATEGORY, page - 1)));
+        if (page > 1) {
+            navigation.add(markup.button(
+                templateContext.processTemplate(DIR_PREV, response.getLanguage()),
+                commandBuilder.list(CATEGORY, page - 1)
+            ));
         }
 
         if (categories.size() == PAGE_SIZE) {
-            navigation.add(markup.button(templateContext.processTemplate(DIR_NEXT, lang), commandBuilder.list(CATEGORY, page + 1)));
+            navigation.add(markup.button(
+                templateContext.processTemplate(DIR_NEXT, response.getLanguage()),
+                commandBuilder.list(CATEGORY, page + 1)
+            ));
         }
 
         List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
-        String listCategoryText = templateContext.processTemplate(LIST_CATEGORY, lang, params("page", page));
+        String listCategoryText = templateContext.processTemplate(
+            LIST_CATEGORY,
+            response.getLanguage(),
+            params("page", page)
+        );
         return new SendMessage()
             .setChatId(message.getChatId())
             .setText(listCategoryText)

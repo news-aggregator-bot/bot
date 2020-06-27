@@ -44,7 +44,8 @@ public class SubCategoryListMessageHandler implements ListMessageHandler {
         String[] split = MessageUtils.parse(data);
         long parentId = Long.parseLong(split[2]);
         int page = Integer.parseInt(split[3]);
-        ListCategoryResponse response = categoryService.list(parentId, page, PAGE_SIZE);
+
+        ListCategoryResponse response = categoryService.list(message.getChatId(), parentId, page, PAGE_SIZE);
         List<Category> categories = response.getCategories();
         Category parent = categories.get(0);
 

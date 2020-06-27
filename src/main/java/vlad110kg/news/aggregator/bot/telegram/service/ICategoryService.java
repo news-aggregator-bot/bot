@@ -4,9 +4,9 @@ import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
 
 public interface ICategoryService {
-    ListCategoryResponse list(int page, int pageSize);
+    ListCategoryResponse list(long chatId, int page, int pageSize);
 
-    ListCategoryResponse list(long parentId, int page, int pageSize);
+    ListCategoryResponse list(long chatId, long parentId, int page, int pageSize);
 
     Category find(long categoryId);
 
