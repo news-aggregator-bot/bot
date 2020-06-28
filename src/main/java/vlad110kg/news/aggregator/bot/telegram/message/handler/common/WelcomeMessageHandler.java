@@ -8,9 +8,16 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 import vlad110kg.news.aggregator.bot.telegram.domain.Reader;
 import vlad110kg.news.aggregator.bot.telegram.domain.request.ReaderRequest;
+import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
+import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
+import vlad110kg.news.aggregator.bot.telegram.message.handler.list.CategoryListMessageHandler;
 import vlad110kg.news.aggregator.bot.telegram.message.template.MessageTemplateContext;
 import vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils;
 import vlad110kg.news.aggregator.bot.telegram.service.IReaderService;
+
+import java.util.Arrays;
+
+import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.WELCOME_LIST_CATEGORY;
 
 @Component
 public class WelcomeMessageHandler implements CommonMessageHandler {
@@ -19,6 +26,9 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
 
     @Autowired
     private MessageTemplateContext templateContext;
+
+    @Autowired
+    protected CommandBuilder commandBuilder;
 
     @Autowired
     private IReaderService readerService;
@@ -32,8 +42,16 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
             reader.getPrimaryLanguage().getLang(),
             TemplateUtils.params("reader_name", reader.getFirstName())
         );
+        MarkupBuilder markup = new MarkupBuilder();
+        MarkupBuilder.Button categoriesButton = MarkupBuilder.Button.builder()
+            .text(templateContext.processTemplate(WELCOME_LIST_CATEGORY, reader.getPrimaryLanguage().getLang()))
+            .command(commandBuilder.list(CategoryListMessageHandler.CATEGORY))
+            .build();
+        markup.addButtons(Arrays.asList(categoriesButton));
+
         return new SendMessage()
             .setChatId(message.getChatId())
+            .setReplyMarkup(markup.build())
             .setText(text);
     }
 

@@ -12,6 +12,7 @@ public class TemplateUtils {
     public static final String PICK_CATEGORY = "pick_category";
 
     public static final String LIST_CATEGORY = "list_categories";
+    public static final String WELCOME_LIST_CATEGORY = "welcome_list_categories";
     public static final String LIST_SUBCATEGORY = "list_subcategories";
 
     public static final String ALL_SUBCATEGORIES = "all_subcategories";
