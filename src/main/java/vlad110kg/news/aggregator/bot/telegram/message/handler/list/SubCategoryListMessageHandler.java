@@ -48,7 +48,10 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()
-            .map(c -> MarkupBuilder.Button.builder().text(c.getLocalised()).command(buildCommand(c)).build())
+            .map(c -> MarkupBuilder.Button.builder()
+                .text(buildText(c, response.getLanguage()))
+                .command(buildCommand(c))
+                .build())
             .collect(Collectors.toList());
 
         String allSubcategoriesText = templateContext.processTemplate(
@@ -75,7 +78,7 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
         markup.addButtons(navigation);
 
         String listSubcategoryText = templateContext.processTemplate(
-            TemplateUtils.LIST_SUBCATEGORY,
+            TemplateUtils.LIST_SUBCATEGORIES,
             response.getLanguage(),
             TemplateUtils.params("category", parent.getName(), "page", page)
         );

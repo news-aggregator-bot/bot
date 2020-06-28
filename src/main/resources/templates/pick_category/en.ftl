@@ -1,1 +1,1 @@
-You are subscribed for ${category} category.
+{name} :white_check_mark:

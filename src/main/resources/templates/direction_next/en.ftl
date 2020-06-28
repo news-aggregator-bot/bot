@@ -1,1 +1,1 @@
-Next >>
+:arrow_right:

@@ -21,7 +21,7 @@ import static vlad110kg.news.aggregator.bot.telegram.message.handler.list.SubCat
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_NEXT;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_PREV;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.LIST_CATEGORY;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.params;
+import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.page;
 
 @Component
 public class CategoryListMessageHandler extends AbstractListMessageHandler {
@@ -45,7 +45,10 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()
-            .map(c -> MarkupBuilder.Button.builder().text(c.getLocalised()).command(buildCommand(c)).build())
+            .map(c -> MarkupBuilder.Button.builder()
+                .text(buildText(c, response.getLanguage()))
+                .command(buildCommand(c))
+                .build())
             .collect(Collectors.toList());
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
@@ -63,16 +66,13 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
-        String listCategoryText = templateContext.processTemplate(
-            LIST_CATEGORY,
-            response.getLanguage(),
-            params("page", page)
-        );
+        String listCategoryText = templateContext.processTemplate(LIST_CATEGORY, response.getLanguage(), page(page));
         return new SendMessage()
             .setChatId(message.getChatId())
             .setText(listCategoryText)
             .setReplyMarkup(markup.build());
     }
+
 
     private String buildCommand(Category c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
