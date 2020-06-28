@@ -20,7 +20,7 @@ public interface NaServiceClient {
 
     @GetMapping("/category/list")
     ListCategoryResponse list(
-        @RequestParam("chat+id") long chatId,
+        @RequestParam("chat_id") long chatId,
         @RequestParam("parent_id") long parentId,
         @RequestParam("page") int page,
         @RequestParam("size") int size
