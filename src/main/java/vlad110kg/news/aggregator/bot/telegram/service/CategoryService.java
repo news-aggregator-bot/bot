@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vlad110kg.news.aggregator.bot.telegram.client.NaServiceClient;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
-import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.domain.request.PickCategoryRequest;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.PickCategoryResponse;
 
 @Service
 public class CategoryService implements ICategoryService {
@@ -33,7 +35,10 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Category subscribe(long chatId, long id) {
-        return null;
+    public PickCategoryResponse pick(long chatId, long id) {
+        return categoryClient.pick(PickCategoryRequest.builder()
+            .chatId(chatId)
+            .categoryId(id)
+            .build());
     }
 }

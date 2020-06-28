@@ -1,1 +1,1 @@
-{name} :white_check_mark:
+${name} :white_check_mark:

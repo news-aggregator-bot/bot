@@ -1,1 +1,1 @@
-{name} :arrow_down:
+${name} :arrow_down:

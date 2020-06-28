@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
-import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.ListCategoryResponse;
 import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static vlad110kg.news.aggregator.bot.telegram.message.handler.list.SubCategoryListMessageHandler.SUBCATEGORY;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_NEXT;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_PREV;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.LIST_CATEGORY;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.page;
 
@@ -38,7 +36,7 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
         ListCategoryResponse response = categoryService.list(message.getChatId(), page, PAGE_SIZE);
 
         if (response.isError()) {
-            return error(message.getChatId(), LangUtils.DEFAULT, response.getError());
+            return error(message.getChatId(), LangUtils.DEFAULT, response.getError().getEntity());
         }
 
         List<Category> categories = response.getCategories();
@@ -53,12 +51,12 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (page > 1) {
-            String prevText = templateContext.processTemplate(DIR_PREV, response.getLanguage());
+            String prevText = prevButtonText(response.getLanguage());
             navigation.add(markup.button(prevText, commandBuilder.list(CATEGORY, page - 1)));
         }
 
         if (categories.size() == PAGE_SIZE) {
-            String nextText = templateContext.processTemplate(DIR_NEXT, response.getLanguage());
+            String nextText = nextButtonText(response.getLanguage());
             navigation.add(markup.button(nextText, commandBuilder.list(CATEGORY, page + 1)));
         }
 

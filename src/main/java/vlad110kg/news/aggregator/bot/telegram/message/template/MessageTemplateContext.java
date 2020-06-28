@@ -41,4 +41,8 @@ public class MessageTemplateContext {
     public String errorTemplate(String lang, Map<String, Object> params) {
         return processTemplate(ERROR, lang, params);
     }
+
+    public String errorTemplate(String lang) {
+        return processTemplate(ERROR, lang, Collections.emptyMap());
+    }
 }

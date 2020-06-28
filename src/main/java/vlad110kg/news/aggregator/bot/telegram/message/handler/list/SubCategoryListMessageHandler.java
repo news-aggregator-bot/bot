@@ -1,13 +1,14 @@
 package vlad110kg.news.aggregator.bot.telegram.message.handler.list;
 
 import com.google.common.collect.Lists;
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
-import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.ListCategoryResponse;
 import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
@@ -19,10 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 import static vlad110kg.news.aggregator.bot.telegram.message.handler.pick.CategoryPickMessageHandler.CATEGORY;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.ALL_SUBCATEGORIES;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_NEXT;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_PREV;
+import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_BACK;
 
 @Component
 public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
@@ -40,11 +41,11 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
 
         ListCategoryResponse response = categoryService.list(message.getChatId(), parentId, page, PAGE_SIZE);
         if (response.isError()) {
-            return error(message.getChatId(), LangUtils.DEFAULT, response.getError());
+            return error(message.getChatId(), LangUtils.DEFAULT, response.getError().getEntity());
         }
 
         List<Category> categories = response.getCategories();
-        Category parent = categories.get(0);
+        Category parent = categories.get(0).getParent();
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()
@@ -54,22 +55,24 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
                 .build())
             .collect(Collectors.toList());
 
-        String allSubcategoriesText = templateContext.processTemplate(
+        String allSubcategoriesText = EmojiParser.parseToUnicode(templateContext.processTemplate(
             ALL_SUBCATEGORIES,
             response.getLanguage(),
             TemplateUtils.params("category", parent.getName())
-        );
+        ));
 
         markup.addButtons(Arrays.asList(markup.button(allSubcategoriesText, commandBuilder.pick(CATEGORY, parentId))));
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
-        if(page > 1) {
-            String prevText = templateContext.processTemplate(DIR_PREV, response.getLanguage());
+        if (page > 1) {
+            String prevText = prevButtonText(response.getLanguage());
             navigation.add(markup.button(prevText, commandBuilder.list(SUBCATEGORY, parentId, page - 1)));
         }
 
+        navigation.add(markup.button(backButtonText(response.getLanguage()), buildBackCommand(parent)));
+
         if (categories.size() == PAGE_SIZE) {
-            String nextText = templateContext.processTemplate(DIR_NEXT, response.getLanguage());
+            String nextText = nextButtonText(response.getLanguage());
             navigation.add(markup.button(nextText, commandBuilder.list(SUBCATEGORY, parentId, page + 1)));
         }
 
@@ -88,11 +91,20 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
             .setReplyMarkup(markup.build());
     }
 
+    private String buildBackCommand(Category parent) {
+        return parent.getParent() == null ? commandBuilder.list(CATEGORY, parent.getId(), 1)
+            : commandBuilder.list(SUBCATEGORY, parent.getParent().getId(), 1);
+    }
+
     private String buildCommand(Category c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
             return commandBuilder.pick(CATEGORY, c.getId());
         }
         return commandBuilder.list(SUBCATEGORY, c.getId(), 1);
+    }
+
+    protected String backButtonText(String language) {
+        return parseToUnicode(templateContext.processTemplate(DIR_BACK, language));
     }
 
     @Override

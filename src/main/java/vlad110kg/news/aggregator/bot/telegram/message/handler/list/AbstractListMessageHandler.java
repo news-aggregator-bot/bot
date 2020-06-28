@@ -10,6 +10,9 @@ import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
 import vlad110kg.news.aggregator.bot.telegram.message.template.MessageTemplateContext;
 import vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils;
 
+import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
+import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_NEXT;
+import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_PREV;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.LIST_SUBCATEGORY;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.PICK_CATEGORY;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.name;
@@ -33,11 +36,19 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
             .setText(errorMessage);
     }
 
+    protected String prevButtonText(String language) {
+        return parseToUnicode(templateContext.processTemplate(DIR_PREV, language));
+    }
+
+    protected String nextButtonText(String language) {
+        return parseToUnicode(templateContext.processTemplate(DIR_NEXT, language));
+    }
+
     protected String buildText(Category c, String language) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return templateContext.processTemplate(LIST_SUBCATEGORY, language, name(c.getLocalised()));
+            return parseToUnicode(templateContext.processTemplate(PICK_CATEGORY, language, name(c.getLocalised())));
         }
-        return templateContext.processTemplate(PICK_CATEGORY, language, name(c.getLocalised()));
+        return parseToUnicode(templateContext.processTemplate(LIST_SUBCATEGORY, language, name(c.getLocalised())));
     }
 
 }

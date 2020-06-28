@@ -1,7 +1,8 @@
-package vlad110kg.news.aggregator.bot.telegram.domain;
+package vlad110kg.news.aggregator.bot.telegram.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import vlad110kg.news.aggregator.bot.telegram.domain.Category;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class ListCategoryResponse {
     @JsonProperty("total_amount")
     private int totalAmount;
     private String language;
-    private String error;
+    private ErrorResponse error;
 
     public boolean isError() {
         return error != null;

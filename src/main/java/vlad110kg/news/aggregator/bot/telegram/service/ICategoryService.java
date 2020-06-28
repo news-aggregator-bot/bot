@@ -1,7 +1,8 @@
 package vlad110kg.news.aggregator.bot.telegram.service;
 
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
-import vlad110kg.news.aggregator.bot.telegram.domain.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.PickCategoryResponse;
 
 public interface ICategoryService {
     ListCategoryResponse list(long chatId, int page, int pageSize);
@@ -12,5 +13,5 @@ public interface ICategoryService {
 
     Category find(long chatID, long categoryId);
 
-    Category subscribe(long chatId, long id);
+    PickCategoryResponse pick(long chatId, long id);
 }

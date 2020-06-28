@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import vlad110kg.news.aggregator.bot.telegram.domain.Category;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.PickCategoryResponse;
 import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.button.CommandBuilder;
@@ -37,18 +38,23 @@ public class CategoryPickMessageHandler implements PickMessageHandler {
     public BotApiMethod<Message> handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         long categoryId = Long.parseLong(split[2]);
-        Category category = categoryService.subscribe(message.getChatId(), categoryId);
+        PickCategoryResponse response = categoryService.pick(message.getChatId(), categoryId);
+        if (response.isError()) {
+            String errorText = templateContext.errorTemplate(LangUtils.DEFAULT);// TODO: 28.06.2020 add normal error
+            // handling
+            return new SendMessage().setChatId(message.getChatId()).setText(errorText);
+        }
 
+        Category category = response.getCategory();
         MarkupBuilder markup = new MarkupBuilder();
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
-        navigation.add(buildContinueButton(category, message, markup));
+        navigation.add(buildContinueButton(category, response.getLanguage(), markup));
         markup.addButtons(navigation);
 
-        String lang = LangUtils.getLang(message.getFrom().getLanguageCode());
         String categoryPickText = templateContext.processTemplate(
-            TemplateUtils.PICK_CATEGORY,
-            lang,
+            TemplateUtils.PICK_CATEGORY_SUCCESS,
+            response.getLanguage(),
             TemplateUtils.params("category", category.getName())
         );
         return new SendMessage()
@@ -57,8 +63,7 @@ public class CategoryPickMessageHandler implements PickMessageHandler {
             .setReplyMarkup(markup.build());
     }
 
-    private MarkupBuilder.Button buildContinueButton(Category category, Message message, MarkupBuilder markup) {
-        String lang = LangUtils.getLang(message.getFrom().getLanguageCode());
+    private MarkupBuilder.Button buildContinueButton(Category category, String lang, MarkupBuilder markup) {
         String buttonText = templateContext.processTemplate(DIR_CONTINUE, lang);
         if (category.getParent() == null) {
             return markup.button(buttonText, commandBuilder.list(CATEGORY));
