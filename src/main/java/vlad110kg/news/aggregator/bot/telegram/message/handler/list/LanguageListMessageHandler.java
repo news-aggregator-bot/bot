@@ -6,47 +6,43 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import vlad110kg.news.aggregator.bot.telegram.domain.Category;
-import vlad110kg.news.aggregator.bot.telegram.domain.response.ListCategoryResponse;
+import vlad110kg.news.aggregator.bot.telegram.domain.Language;
+import vlad110kg.news.aggregator.bot.telegram.domain.response.ListLanguageResponse;
 import vlad110kg.news.aggregator.bot.telegram.message.LangUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.MessageUtils;
 import vlad110kg.news.aggregator.bot.telegram.message.button.MarkupBuilder;
-import vlad110kg.news.aggregator.bot.telegram.service.ICategoryService;
+import vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils;
+import vlad110kg.news.aggregator.bot.telegram.service.ILanguageService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
-import static vlad110kg.news.aggregator.bot.telegram.message.handler.list.SubCategoryListMessageHandler.SUBCATEGORY;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.LIST_CATEGORY;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.page;
 
 @Component
-public class CategoryListMessageHandler extends AbstractListMessageHandler {
+public class LanguageListMessageHandler extends AbstractListMessageHandler {
 
-    public static final String CATEGORY = "category";
+    public static final String LANGUAGE = "language";
 
     @Autowired
-    private ICategoryService categoryService;
+    private ILanguageService languageService;
 
     @Override
     public BotApiMethod<Message> handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
-        ListCategoryResponse response = categoryService.list(message.getChatId(), page, PAGE_SIZE);
-
+        ListLanguageResponse response = languageService.list(message.getChatId(), page, PAGE_SIZE);
         if (response.isError()) {
             return error(message.getChatId(), LangUtils.DEFAULT, response.getError().getEntity());
         }
-
-        List<Category> categories = response.getCategories();
+        List<Language> languages = response.getLanguages();
 
         MarkupBuilder markup = new MarkupBuilder();
-        List<MarkupBuilder.Button> buttons = categories.stream()
-            .map(c -> MarkupBuilder.Button.builder()
-                .text(buildText(c, response.getLanguage()))
-                .command(buildCommand(c))
+        List<MarkupBuilder.Button> buttons = languages.stream()
+            .map(l -> MarkupBuilder.Button.builder()
+                .text(buildText(l))
+                .command(commandBuilder.pick(LANGUAGE, l.getLang()))
                 .build())
             .collect(Collectors.toList());
 
@@ -54,42 +50,42 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
         if (needsNavigation(response.getTotalAmount())) {
             if (page > 1) {
                 String prevText = prevButtonText(LangUtils.DEFAULT);
-                navigation.add(markup.button(prevText, commandBuilder.list(CATEGORY, page - 1)));
+                navigation.add(markup.button(prevText, commandBuilder.list(LANGUAGE, page - 1)));
             }
         }
+        navigation.add(markup.button(backButtonText(response.getLanguage()), "command"));
 
         if (needsNavigation(response.getTotalAmount())) {
-            if (categories.size() == PAGE_SIZE) {
+            if (languages.size() == PAGE_SIZE) {
                 String nextText = nextButtonText(LangUtils.DEFAULT);
-                navigation.add(markup.button(nextText, commandBuilder.list(CATEGORY, page + 1)));
+                navigation.add(markup.button(nextText, commandBuilder.list(LANGUAGE, page + 1)));
             }
         }
-
         List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
-        String listCategoryText = parseToUnicode(templateContext.processTemplate(
-            LIST_CATEGORY,
+        String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
+            TemplateUtils.LIST_LANGUAGES,
             response.getLanguage(),
-            page(page)
+            TemplateUtils.page(page)
         ));
         return new SendMessage()
             .setChatId(message.getChatId())
-            .setText(listCategoryText)
+            .setText(listSubcategoryText)
             .setReplyMarkup(markup.build());
-    }
-
-
-    private String buildCommand(Category c) {
-        if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return commandBuilder.pick(CATEGORY, c.getId());
-        }
-        return commandBuilder.list(SUBCATEGORY, c.getId(), 1);
     }
 
     @Override
     public String trigger() {
-        return CATEGORY;
+        return LANGUAGE;
+    }
+
+    private String buildText(Language l) {
+        return parseToUnicode(templateContext.processTemplate(
+            TemplateUtils.PICK,
+            LangUtils.DEFAULT,
+            TemplateUtils.name(l.getLocalized())
+        ));
     }
 }

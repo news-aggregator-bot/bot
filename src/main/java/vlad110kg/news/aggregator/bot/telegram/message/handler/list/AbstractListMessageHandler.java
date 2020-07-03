@@ -11,10 +11,11 @@ import vlad110kg.news.aggregator.bot.telegram.message.template.MessageTemplateCo
 import vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils;
 
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
+import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_BACK;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_NEXT;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_PREV;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.LIST_SUBCATEGORY;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.PICK_CATEGORY;
+import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.PICK;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.name;
 
 @Component
@@ -46,9 +47,18 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
 
     protected String buildText(Category c, String language) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return parseToUnicode(templateContext.processTemplate(PICK_CATEGORY, language, name(c.getLocalised())));
+            return parseToUnicode(templateContext.processTemplate(PICK, language, name(c.getLocalised())));
         }
         return parseToUnicode(templateContext.processTemplate(LIST_SUBCATEGORY, language, name(c.getLocalised())));
     }
+
+    protected boolean needsNavigation(int totalAmount) {
+        return totalAmount > PAGE_SIZE;
+    }
+
+    protected String backButtonText(String language) {
+        return parseToUnicode(templateContext.processTemplate(DIR_BACK, language));
+    }
+
 
 }

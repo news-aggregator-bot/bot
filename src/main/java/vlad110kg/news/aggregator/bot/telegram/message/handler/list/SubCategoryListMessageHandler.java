@@ -1,7 +1,6 @@
 package vlad110kg.news.aggregator.bot.telegram.message.handler.list;
 
 import com.google.common.collect.Lists;
-import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 import static vlad110kg.news.aggregator.bot.telegram.message.handler.pick.CategoryPickMessageHandler.CATEGORY;
 import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.ALL_SUBCATEGORIES;
-import static vlad110kg.news.aggregator.bot.telegram.message.template.TemplateUtils.DIR_BACK;
 
 @Component
 public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
@@ -55,7 +53,7 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
                 .build())
             .collect(Collectors.toList());
 
-        String allSubcategoriesText = EmojiParser.parseToUnicode(templateContext.processTemplate(
+        String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
             ALL_SUBCATEGORIES,
             response.getLanguage(),
             TemplateUtils.params("category", parent.getName())
@@ -80,11 +78,11 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
-        String listSubcategoryText = templateContext.processTemplate(
+        String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
             TemplateUtils.LIST_SUBCATEGORIES,
             response.getLanguage(),
             TemplateUtils.params("category", parent.getName(), "page", page)
-        );
+        ));
         return new SendMessage()
             .setChatId(message.getChatId())
             .setText(listSubcategoryText)
@@ -101,10 +99,6 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
             return commandBuilder.pick(CATEGORY, c.getId());
         }
         return commandBuilder.list(SUBCATEGORY, c.getId(), 1);
-    }
-
-    protected String backButtonText(String language) {
-        return parseToUnicode(templateContext.processTemplate(DIR_BACK, language));
     }
 
     @Override

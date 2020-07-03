@@ -10,12 +10,14 @@ public class TemplateUtils {
     public static final String DIR_NEXT = "direction_next";
     public static final String DIR_PREV = "direction_previous";
 
-    public static final String PICK_CATEGORY = "pick_category";
+    public static final String PICK = "pick";
     public static final String PICK_CATEGORY_SUCCESS = "pick_category_success";
+    public static final String PICK_LANGUAGE_SUCCESS = "pick_language_success";
 
     public static final String LIST_CATEGORY = "list_categories";
     public static final String WELCOME_LIST_CATEGORY = "welcome_list_categories";
     public static final String LIST_SUBCATEGORIES = "list_subcategories";
+    public static final String LIST_LANGUAGES = "list_languages";
     public static final String LIST_SUBCATEGORY = "list_subcategory";
 
     public static final String ALL_SUBCATEGORIES = "all_subcategories";

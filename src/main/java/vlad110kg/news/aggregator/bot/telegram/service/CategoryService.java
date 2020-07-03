@@ -16,12 +16,12 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public ListCategoryResponse list(long chatId, int page, int pageSize) {
-        return categoryClient.list(chatId, page, pageSize);
+        return categoryClient.listCategories(chatId, page, pageSize);
     }
 
     @Override
     public ListCategoryResponse list(long chatId, long parentId, int page, int pageSize) {
-        return categoryClient.list(chatId, parentId, page, pageSize);
+        return categoryClient.listSubcategories(chatId, parentId, page, pageSize);
     }
 
     @Override
