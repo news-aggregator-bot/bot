@@ -4,16 +4,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import vlad110kg.news.aggregator.bot.telegram.router.NewsAggregationBot;
+import vlad110kg.news.aggregator.bot.telegram.router.PickyNewsBot;
 
 import javax.annotation.PostConstruct;
 
 @Configuration
-public class TelegramBotConfig {
+public class PickyBotConfig {
 
     @Bean
-    public NewsAggregationBot aggregationBot() {
-        return new NewsAggregationBot();
+    public PickyNewsBot aggregationBot() {
+        return new PickyNewsBot();
     }
 
     @PostConstruct
@@ -23,7 +23,7 @@ public class TelegramBotConfig {
         try {
             botsApi.registerBot(aggregationBot());
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e.getMessage(), e);
         }
     }
 }

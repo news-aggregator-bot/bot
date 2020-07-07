@@ -20,6 +20,8 @@ public class TemplateUtils {
     public static final String LIST_LANGUAGES = "list_languages";
     public static final String LIST_SUBCATEGORY = "list_subcategory";
 
+    public static final String NEWS_NOTE = "news_note";
+
     public static final String ALL_SUBCATEGORIES = "all_subcategories";
 
     public static ImmutableMap<String, Object> name(String name) {
