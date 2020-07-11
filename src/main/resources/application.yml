@@ -1,9 +1,0 @@
-camel:
-  main:
-    banner-mode: "off"
-  springboot:
-    main-run-controller: true
-bot:
-  admin:
-    name: picky-news-admin-bot
-    token: 1358112964:AAEm9HPYxxD0BTGj3s2rtaxHA4TSK1ecegI

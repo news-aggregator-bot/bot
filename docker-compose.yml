@@ -1,0 +1,16 @@
+version: '3'
+services:
+  na-client:
+    build: na-client
+    ports:
+      - 8070:8070
+  na-admin:
+    build: na-admin
+    ports:
+      - 8075:8075
+volumes:
+  na-mysql-data:
+networks:
+  default:
+    external:
+      name: "na-network"
