@@ -4,6 +4,6 @@ camel:
   springboot:
     main-run-controller: true
 bot:
-  telegram:
-    name: news-aggregation-bot
-    token: 1198510773:AAF8vSTx0YPY_lIN7-a7Dod-6LU4BAMlCdA
+  admin:
+    name: picky-news-admin-bot
+    token: 1358112964:AAEm9HPYxxD0BTGj3s2rtaxHA4TSK1ecegI

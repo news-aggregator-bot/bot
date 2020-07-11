@@ -1,0 +1,6 @@
+spring:
+  profiles: dev
+bot:
+  telegram:
+    name: test-na-bot
+    token: 1198510773:AAF8vSTx0YPY_lIN7-a7Dod-6LU4BAMlCdA
