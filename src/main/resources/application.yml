@@ -1,4 +1,6 @@
 camel:
+  main:
+    banner-mode: "off"
   springboot:
     main-run-controller: true
 bot:
