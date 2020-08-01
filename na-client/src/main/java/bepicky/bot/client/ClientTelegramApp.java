@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.telegram.telegrambots.ApiContextInitializer;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = {"bepicky.news.aggregator.bot.client.feign"})
+@EnableFeignClients(basePackages = {"bepicky.bot.client.feign"})
 @EnableDiscoveryClient
 public class ClientTelegramApp {
 
