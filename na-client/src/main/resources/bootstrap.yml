@@ -1,7 +1,9 @@
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
 spring:
   application:
-    name: na-bot
+    name: bepicky-client-bot
+  cloud:
+    config:
+      uri: http://na-config-server:8888
+      fail-fast: true
+      password: password
+      username: user

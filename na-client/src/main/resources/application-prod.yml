@@ -1,6 +1,0 @@
-spring:
-  profiles: prod
-bot:
-  telegram:
-    name: picky-news-bot
-    token: 1318545511:AAH0aJsyjpdoQvgGQrPnIzdcOby4lBJ7cI8
