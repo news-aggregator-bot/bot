@@ -3,3 +3,7 @@ camel:
     banner-mode: "off"
   springboot:
     main-run-controller: true
+bot:
+  telegram:
+    name: ${TG_NAME}
+    token: ${TG_TOKEN}

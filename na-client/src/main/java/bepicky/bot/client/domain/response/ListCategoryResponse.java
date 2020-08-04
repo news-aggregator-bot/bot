@@ -1,8 +1,7 @@
 package bepicky.bot.client.domain.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import bepicky.bot.client.domain.Category;
+import lombok.Data;
 
 import java.util.List;
 
@@ -10,8 +9,7 @@ import java.util.List;
 public class ListCategoryResponse {
 
     private List<Category> categories;
-    @JsonProperty("total_amount")
-    private int totalAmount;
+    private boolean last;
     private String language;
     private ErrorResponse error;
 
