@@ -1,18 +1,18 @@
 package bepicky.bot.client.feign;
 
-import bepicky.bot.client.domain.Reader;
-import bepicky.bot.client.domain.request.PickLanguageRequest;
-import bepicky.bot.client.domain.request.ReaderRequest;
-import bepicky.bot.client.domain.response.ListCategoryResponse;
-import bepicky.bot.client.domain.response.PickLanguageResponse;
+import bepicky.common.domain.dto.ReaderDto;
+import bepicky.common.domain.request.PickCategoryRequest;
+import bepicky.common.domain.request.PickLanguageRequest;
+import bepicky.common.domain.request.ReaderRequest;
+import bepicky.common.domain.response.ListCategoryResponse;
+import bepicky.common.domain.response.ListLanguageResponse;
+import bepicky.common.domain.response.PickCategoryResponse;
+import bepicky.common.domain.response.PickLanguageResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import bepicky.bot.client.domain.request.PickCategoryRequest;
-import bepicky.bot.client.domain.response.ListLanguageResponse;
-import bepicky.bot.client.domain.response.PickCategoryResponse;
 
 @FeignClient(name = "na-service", configuration = FeignClientConfiguration.class)
 public interface NaServiceClient {
@@ -46,5 +46,5 @@ public interface NaServiceClient {
     PickLanguageResponse pick(@RequestBody PickLanguageRequest request);
 
     @PostMapping("/reader/register")
-    Reader register(ReaderRequest reader);
+    ReaderDto register(ReaderRequest reader);
 }

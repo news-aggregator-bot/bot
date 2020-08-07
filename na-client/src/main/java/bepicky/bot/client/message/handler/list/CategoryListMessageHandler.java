@@ -1,26 +1,26 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.domain.response.ListCategoryResponse;
+import bepicky.bot.client.message.LangUtils;
+import bepicky.bot.client.message.MessageUtils;
+import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.service.ICategoryService;
+import bepicky.common.domain.response.CategoryResponse;
+import bepicky.common.domain.response.ListCategoryResponse;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import bepicky.bot.client.domain.Category;
-import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.MessageUtils;
-import bepicky.bot.client.message.button.MarkupBuilder;
-import bepicky.bot.client.service.ICategoryService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 import static bepicky.bot.client.message.handler.list.SubCategoryListMessageHandler.SUBCATEGORY;
 import static bepicky.bot.client.message.template.TemplateUtils.LIST_CATEGORY;
 import static bepicky.bot.client.message.template.TemplateUtils.page;
+import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
 @Component
 public class CategoryListMessageHandler extends AbstractListMessageHandler {
@@ -40,25 +40,25 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
             return error(message.getChatId(), LangUtils.DEFAULT, response.getError().getEntity());
         }
 
-        List<Category> categories = response.getCategories();
+        List<CategoryResponse> categories = response.getList();
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()
             .map(c -> MarkupBuilder.Button.builder()
-                .text(buildText(c, response.getLanguage()))
+                .text(buildText(c, response.getLang()))
                 .command(buildCommand(c))
                 .build())
             .collect(Collectors.toList());
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
-        if (needsNavigation(response.getTotalAmount())) {
+        if (!response.isFirst()) {
             if (page > 1) {
                 String prevText = prevButtonText(LangUtils.DEFAULT);
                 navigation.add(markup.button(prevText, commandBuilder.list(CATEGORY, page - 1)));
             }
         }
 
-        if (needsNavigation(response.getTotalAmount())) {
+        if (!response.isLast()) {
             if (categories.size() == PAGE_SIZE) {
                 String nextText = nextButtonText(LangUtils.DEFAULT);
                 navigation.add(markup.button(nextText, commandBuilder.list(CATEGORY, page + 1)));
@@ -71,7 +71,7 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
 
         String listCategoryText = parseToUnicode(templateContext.processTemplate(
             LIST_CATEGORY,
-            response.getLanguage(),
+            response.getLang(),
             page(page)
         ));
         return new SendMessage()
@@ -81,7 +81,7 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
     }
 
 
-    private String buildCommand(Category c) {
+    private String buildCommand(CategoryResponse c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
             return commandBuilder.pick(CATEGORY, c.getId());
         }

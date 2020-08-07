@@ -1,5 +1,11 @@
 package bepicky.bot.client.controller;
 
+import bepicky.bot.client.message.button.CommandBuilder;
+import bepicky.bot.client.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.client.router.PickyNewsBot;
+import bepicky.common.domain.request.NewsNoteRequest;
+import bepicky.common.domain.request.NotifyReaderRequest;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -9,12 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import bepicky.bot.client.domain.request.NewsNoteRequest;
-import bepicky.bot.client.domain.request.NotifyReaderRequest;
-import bepicky.bot.client.message.button.CommandBuilder;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
-import bepicky.bot.client.router.PickyNewsBot;
 
 import java.util.ArrayList;
 import java.util.List;

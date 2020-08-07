@@ -1,19 +1,19 @@
 package bepicky.bot.client.message.handler.pick;
 
-import bepicky.bot.client.domain.Category;
-import bepicky.bot.client.message.template.TemplateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import bepicky.bot.client.domain.response.PickCategoryResponse;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ICategoryService;
+import bepicky.common.domain.response.CategoryResponse;
+import bepicky.common.domain.response.PickCategoryResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,17 +44,17 @@ public class CategoryPickMessageHandler implements PickMessageHandler {
             return new SendMessage().setChatId(message.getChatId()).setText(errorText);
         }
 
-        Category category = response.getCategory();
+        CategoryResponse category = response.getCategory();
         MarkupBuilder markup = new MarkupBuilder();
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
-        navigation.add(buildContinueButton(category, response.getLanguage(), markup));
+        navigation.add(buildContinueButton(category, response.getLang(), markup));
         markup.addButtons(navigation);
 
         String categoryPickText = templateContext.processTemplate(
             TemplateUtils.PICK_CATEGORY_SUCCESS,
-            response.getLanguage(),
-            TemplateUtils.params("category", category.getName())
+            response.getLang(),
+            TemplateUtils.params(CATEGORY, category.getName())
         );
         return new SendMessage()
             .setChatId(message.getChatId())
@@ -62,7 +62,7 @@ public class CategoryPickMessageHandler implements PickMessageHandler {
             .setReplyMarkup(markup.build());
     }
 
-    private MarkupBuilder.Button buildContinueButton(Category category, String lang, MarkupBuilder markup) {
+    private MarkupBuilder.Button buildContinueButton(CategoryResponse category, String lang, MarkupBuilder markup) {
         String buttonText = templateContext.processTemplate(TemplateUtils.DIR_CONTINUE, lang);
         if (category.getParent() == null) {
             return markup.button(buttonText, commandBuilder.list(CATEGORY));

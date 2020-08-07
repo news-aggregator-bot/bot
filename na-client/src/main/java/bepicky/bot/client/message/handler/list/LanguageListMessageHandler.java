@@ -1,18 +1,18 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.domain.Language;
+import bepicky.bot.client.message.LangUtils;
+import bepicky.bot.client.message.MessageUtils;
+import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ILanguageService;
+import bepicky.common.domain.response.LanguageResponse;
+import bepicky.common.domain.response.ListLanguageResponse;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import bepicky.bot.client.domain.response.ListLanguageResponse;
-import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.MessageUtils;
-import bepicky.bot.client.message.button.MarkupBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
         if (response.isError()) {
             return error(message.getChatId(), LangUtils.DEFAULT, response.getError().getEntity());
         }
-        List<Language> languages = response.getLanguages();
+        List<LanguageResponse> languages = response.getList();
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = languages.stream()
@@ -47,15 +47,15 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
             .collect(Collectors.toList());
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
-        if (needsNavigation(response.getTotalAmount())) {
+        if (!response.isFirst()) {
             if (page > 1) {
                 String prevText = prevButtonText(LangUtils.DEFAULT);
                 navigation.add(markup.button(prevText, commandBuilder.list(LANGUAGE, page - 1)));
             }
         }
-        navigation.add(markup.button(backButtonText(response.getLanguage()), "command"));
+        navigation.add(markup.button(backButtonText(response.getLang()), "command"));
 
-        if (needsNavigation(response.getTotalAmount())) {
+        if (!response.isLast()) {
             if (languages.size() == PAGE_SIZE) {
                 String nextText = nextButtonText(LangUtils.DEFAULT);
                 navigation.add(markup.button(nextText, commandBuilder.list(LANGUAGE, page + 1)));
@@ -67,7 +67,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
 
         String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
             TemplateUtils.LIST_LANGUAGES,
-            response.getLanguage(),
+            response.getLang(),
             TemplateUtils.page(page)
         ));
         return new SendMessage()
@@ -81,7 +81,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
         return LANGUAGE;
     }
 
-    private String buildText(Language l) {
+    private String buildText(LanguageResponse l) {
         return parseToUnicode(templateContext.processTemplate(
             TemplateUtils.PICK,
             LangUtils.DEFAULT,

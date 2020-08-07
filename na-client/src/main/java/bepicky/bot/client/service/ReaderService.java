@@ -1,10 +1,10 @@
 package bepicky.bot.client.service;
 
-import bepicky.bot.client.domain.Reader;
+import bepicky.bot.client.feign.NaServiceClient;
+import bepicky.common.domain.dto.ReaderDto;
+import bepicky.common.domain.request.ReaderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import bepicky.bot.client.feign.NaServiceClient;
-import bepicky.bot.client.domain.request.ReaderRequest;
 
 @Service
 public class ReaderService implements IReaderService {
@@ -13,7 +13,7 @@ public class ReaderService implements IReaderService {
     private NaServiceClient naServiceClient;
 
     @Override
-    public Reader register(ReaderRequest readerRequest) {
+    public ReaderDto register(ReaderRequest readerRequest) {
         return naServiceClient.register(readerRequest);
     }
 }

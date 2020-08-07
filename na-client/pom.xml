@@ -59,6 +59,10 @@
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>bepicky</groupId>
+            <artifactId>common-communication</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

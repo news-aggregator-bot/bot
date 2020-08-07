@@ -1,19 +1,19 @@
 package bepicky.bot.client.message.handler.pick;
 
-import bepicky.bot.client.domain.response.PickLanguageResponse;
-import bepicky.bot.client.service.ILanguageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import bepicky.bot.client.domain.Language;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.client.service.ILanguageService;
+import bepicky.common.domain.response.LanguageResponse;
+import bepicky.common.domain.response.PickLanguageResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class LanguagePickMessageHandler implements PickMessageHandler {
             return new SendMessage().setChatId(message.getChatId()).setText(errorText);
         }
 
-        Language language = response.getLanguage();
+        LanguageResponse language = response.getLanguage();
         MarkupBuilder markup = new MarkupBuilder();
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();

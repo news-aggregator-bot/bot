@@ -1,7 +1,7 @@
 package bepicky.bot.client.service;
 
-import bepicky.bot.client.domain.response.PickLanguageResponse;
-import bepicky.bot.client.domain.response.ListLanguageResponse;
+import bepicky.common.domain.response.ListLanguageResponse;
+import bepicky.common.domain.response.PickLanguageResponse;
 
 public interface ILanguageService {
 

@@ -1,12 +1,12 @@
 package bepicky.bot.client.service;
 
+import bepicky.bot.client.feign.NaServiceClient;
+import bepicky.common.domain.dto.CategoryDto;
+import bepicky.common.domain.request.PickCategoryRequest;
+import bepicky.common.domain.response.ListCategoryResponse;
+import bepicky.common.domain.response.PickCategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import bepicky.bot.client.feign.NaServiceClient;
-import bepicky.bot.client.domain.Category;
-import bepicky.bot.client.domain.request.PickCategoryRequest;
-import bepicky.bot.client.domain.response.ListCategoryResponse;
-import bepicky.bot.client.domain.response.PickCategoryResponse;
 
 @Service
 public class CategoryService implements ICategoryService {
@@ -25,12 +25,12 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Category find(long categoryId) {
+    public CategoryDto find(long categoryId) {
         return null;
     }
 
     @Override
-    public Category find(long chatID, long categoryId) {
+    public CategoryDto find(long chatID, long categoryId) {
         return null;
     }
 

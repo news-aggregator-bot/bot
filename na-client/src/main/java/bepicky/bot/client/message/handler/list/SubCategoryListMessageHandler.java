@@ -1,19 +1,19 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.domain.Category;
-import bepicky.bot.client.domain.response.ListCategoryResponse;
+import bepicky.bot.client.message.LangUtils;
+import bepicky.bot.client.message.MessageUtils;
+import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.handler.pick.CategoryPickMessageHandler;
 import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.client.service.ICategoryService;
+import bepicky.common.domain.response.CategoryResponse;
+import bepicky.common.domain.response.ListCategoryResponse;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.MessageUtils;
-import bepicky.bot.client.message.button.MarkupBuilder;
-import bepicky.bot.client.service.ICategoryService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,20 +41,20 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
             return error(message.getChatId(), LangUtils.DEFAULT, response.getError().getEntity());
         }
 
-        List<Category> categories = response.getCategories();
-        Category parent = categories.get(0).getParent();
+        List<CategoryResponse> categories = response.getList();
+        CategoryResponse parent = categories.get(0).getParent();
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()
             .map(c -> MarkupBuilder.Button.builder()
-                .text(buildText(c, response.getLanguage()))
+                .text(buildText(c, response.getLang()))
                 .command(buildCommand(c))
                 .build())
             .collect(Collectors.toList());
 
         String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
             TemplateUtils.ALL_SUBCATEGORIES,
-            response.getLanguage(),
+            response.getLang(),
             TemplateUtils.params("category", parent.getName())
         ));
 
@@ -63,14 +63,14 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (page > 1) {
-            String prevText = prevButtonText(response.getLanguage());
+            String prevText = prevButtonText(response.getLang());
             navigation.add(markup.button(prevText, commandBuilder.list(SUBCATEGORY, parentId, page - 1)));
         }
 
-        navigation.add(markup.button(backButtonText(response.getLanguage()), buildBackCommand(parent)));
+        navigation.add(markup.button(backButtonText(response.getLang()), buildBackCommand(parent)));
 
         if (categories.size() == PAGE_SIZE) {
-            String nextText = nextButtonText(response.getLanguage());
+            String nextText = nextButtonText(response.getLang());
             navigation.add(markup.button(nextText, commandBuilder.list(SUBCATEGORY, parentId, page + 1)));
         }
 
@@ -80,7 +80,7 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
 
         String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
             TemplateUtils.LIST_SUBCATEGORIES,
-            response.getLanguage(),
+            response.getLang(),
             TemplateUtils.params("category", parent.getName(), "page", page)
         ));
         return new SendMessage()
@@ -89,12 +89,12 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
             .setReplyMarkup(markup.build());
     }
 
-    private String buildBackCommand(Category parent) {
+    private String buildBackCommand(CategoryResponse parent) {
         return parent.getParent() == null ? commandBuilder.list(CategoryPickMessageHandler.CATEGORY, parent.getId(), 1)
             : commandBuilder.list(SUBCATEGORY, parent.getParent().getId(), 1);
     }
 
-    private String buildCommand(Category c) {
+    private String buildCommand(CategoryResponse c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
             return commandBuilder.pick(CategoryPickMessageHandler.CATEGORY, c.getId());
         }

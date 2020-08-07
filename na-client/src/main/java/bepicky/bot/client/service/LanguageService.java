@@ -1,10 +1,10 @@
 package bepicky.bot.client.service;
 
-import bepicky.bot.client.domain.response.PickLanguageResponse;
 import bepicky.bot.client.feign.NaServiceClient;
+import bepicky.common.domain.response.ListLanguageResponse;
+import bepicky.common.domain.response.PickLanguageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import bepicky.bot.client.domain.response.ListLanguageResponse;
 
 @Service
 public class LanguageService implements ILanguageService {
