@@ -1,6 +1,7 @@
 package bepicky.bot.client.message.button;
 
 
+import bepicky.bot.client.message.handler.TransitionMessageHandler;
 import lombok.Builder;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -23,6 +24,10 @@ public class MarkupBuilder {
 
     public Button button(String text, String command) {
         return Button.builder().text(text).command(command).build();
+    }
+
+    public Button done(String text) {
+        return Button.builder().text(text).command(TransitionMessageHandler.TRANSITION).build();
     }
 
     public InlineKeyboardMarkup build() {

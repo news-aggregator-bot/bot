@@ -1,0 +1,1 @@
+You've just unsubscribed from ${category} category news.

@@ -44,7 +44,7 @@ public class PickyNewsBot extends TelegramLongPollingBot {
                 CallbackQuery callbackQuery = update.getCallbackQuery();
                 execute(handlerManager.manageCallback(callbackQuery.getMessage(), callbackQuery.getData()));
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
     }

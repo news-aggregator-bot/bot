@@ -6,8 +6,10 @@ import org.springframework.stereotype.Component;
 public class CommandBuilder {
     public static final String LIST = "list";
     public static final String PICK = "pick";
+    public static final String REMOVE = "rm";
 
     private static final String PICK_PATTERN = PICK + ":%s:%s";
+    private static final String REMOVE_PATTERN = REMOVE + ":%s:%s";
     private static final String LIST_PATTERN = LIST + ":%s:%d";
     private static final String LIST_ENTITY_PATTERN = LIST + ":%s:%s:%d";
 
@@ -18,6 +20,10 @@ public class CommandBuilder {
 
     public String pick(String entity, long id) {
         return String.format(PICK_PATTERN, entity, id);
+    }
+
+    public String remove(String entity, String name) {
+        return String.format(REMOVE_PATTERN, entity, name);
     }
 
     public String list(String entity) {

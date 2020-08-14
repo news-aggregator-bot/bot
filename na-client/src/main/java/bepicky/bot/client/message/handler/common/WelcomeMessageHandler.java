@@ -2,12 +2,14 @@ package bepicky.bot.client.message.handler.common;
 
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.MarkupBuilder;
-import bepicky.bot.client.message.handler.list.CategoryListMessageHandler;
+import bepicky.bot.client.message.handler.context.ChatFlow;
+import bepicky.bot.client.message.handler.context.ChatFlowContext;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.request.ReaderRequest;
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -16,8 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.Arrays;
-
-import static bepicky.bot.client.message.template.TemplateUtils.WELCOME_LIST_CATEGORY;
 
 @Component
 public class WelcomeMessageHandler implements CommonMessageHandler {
@@ -33,6 +33,9 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
     @Autowired
     private IReaderService readerService;
 
+    @Autowired
+    private ChatFlowContext flowContext;
+
     @Override
     public BotApiMethod<Message> handle(Message message) {
         User from = message.getFrom();
@@ -42,10 +45,12 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
             reader.getPrimaryLanguage().getLang(),
             TemplateUtils.params("reader_name", reader.getFirstName())
         );
+        ChatFlow welcome = flowContext.welcome(reader.getChatId());
         MarkupBuilder markup = new MarkupBuilder();
+        String msgText = templateContext.processTemplate(welcome.getButtonKey(), reader.getPrimaryLanguage().getLang());
         MarkupBuilder.Button categoriesButton = MarkupBuilder.Button.builder()
-            .text(templateContext.processTemplate(WELCOME_LIST_CATEGORY, reader.getPrimaryLanguage().getLang()))
-            .command(commandBuilder.list(CategoryListMessageHandler.CATEGORY))
+            .text(EmojiParser.parseToUnicode(msgText))
+            .command(welcome.getCommand())
             .build();
         markup.addButtons(Arrays.asList(categoriesButton));
 

@@ -1,5 +1,6 @@
 package bepicky.bot.client.message.template;
 
+import bepicky.bot.client.message.LangUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -28,13 +30,14 @@ public class MessageTemplateContext {
 
     public String processTemplate(String dir, String lang, Map<String, Object> params) {
         StringWriter stringWriter = new StringWriter();
+        String language = Optional.ofNullable(lang).orElse(LangUtils.DEFAULT);
         try {
-            Template template = configuration.getTemplate(dir + "/" + lang + ".ftl");
+            Template template = configuration.getTemplate(dir + "/" + language + ".ftl");
             template.process(params, stringWriter);
             return stringWriter.toString();
         } catch (IOException | TemplateException e) {
             log.error("Template processing failed {}", e.getMessage());
-            return processTemplate(ERROR, lang, Collections.emptyMap());
+            return processTemplate(ERROR, language, Collections.emptyMap());
         }
     }
 

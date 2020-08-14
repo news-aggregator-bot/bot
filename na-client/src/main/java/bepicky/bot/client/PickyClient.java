@@ -9,10 +9,10 @@ import org.telegram.telegrambots.ApiContextInitializer;
 @SpringBootApplication
 @EnableFeignClients(basePackages = {"bepicky.bot.client.feign"})
 @EnableDiscoveryClient
-public class ClientTelegramApp {
+public class PickyClient {
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
-        SpringApplication.run(ClientTelegramApp.class, args);
+        SpringApplication.run(PickyClient.class, args);
     }
 }

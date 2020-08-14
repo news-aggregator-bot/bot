@@ -1,1 +1,1 @@
-Your news are extended with ${name} language.
+You've just subscribed for news on ${name} language.

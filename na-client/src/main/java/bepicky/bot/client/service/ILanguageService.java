@@ -1,11 +1,14 @@
 package bepicky.bot.client.service;
 
-import bepicky.common.domain.response.ListLanguageResponse;
-import bepicky.common.domain.response.PickLanguageResponse;
+import bepicky.common.domain.response.LanguageListResponse;
+import bepicky.common.domain.response.LanguageResponse;
 
 public interface ILanguageService {
 
-    ListLanguageResponse list(long chatId, int page, int size);
+    LanguageListResponse list(long chatId, int page, int size);
 
-    PickLanguageResponse pick(long chatId, String lang);
+    LanguageResponse pick(long chatId, String lang);
+
+    LanguageResponse remove(long chatId, String lang);
+
 }
