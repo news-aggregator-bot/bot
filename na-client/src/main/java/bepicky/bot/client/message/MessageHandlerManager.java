@@ -2,12 +2,12 @@ package bepicky.bot.client.message;
 
 import bepicky.bot.client.message.handler.CallbackMessageHandler;
 import bepicky.bot.client.message.handler.MessageHandler;
-import bepicky.bot.client.message.handler.TransitionMessageHandler;
 import bepicky.bot.client.message.handler.common.CommonMessageHandler;
 import bepicky.bot.client.message.handler.common.HelpMessageHandler;
 import bepicky.bot.client.message.handler.list.ListMessageHandler;
 import bepicky.bot.client.message.handler.pick.PickMessageHandler;
 import bepicky.bot.client.message.handler.rm.RemoveMessageHandler;
+import bepicky.bot.client.message.handler.util.UtilMessageHandler;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static bepicky.bot.client.message.button.CommandBuilder.LIST;
 import static bepicky.bot.client.message.button.CommandBuilder.PICK;
 import static bepicky.bot.client.message.button.CommandBuilder.REMOVE;
-import static bepicky.bot.client.message.handler.TransitionMessageHandler.TRANSITION;
 
 @Slf4j
 @Component
@@ -40,7 +40,7 @@ public class MessageHandlerManager {
 
     private final Map<String, Function<String, CallbackMessageHandler>> functionContainer;
 
-    private final Map<String, CallbackMessageHandler> utilHandlers;
+    private final Map<String, UtilMessageHandler> utilHandlers;
 
     @Autowired
     public MessageHandlerManager(
@@ -48,7 +48,7 @@ public class MessageHandlerManager {
         List<ListMessageHandler> listMessageHandlers,
         List<PickMessageHandler> pickMessageHandlers,
         List<RemoveMessageHandler> removeMessageHandlers,
-        TransitionMessageHandler transitionMessageHandler
+        List<UtilMessageHandler> utilMessageHandler
     ) {
         this.commonMessageHandlers = convert(commonMessageHandlers);
         this.listMessageHandlers = convert(listMessageHandlers);
@@ -59,9 +59,8 @@ public class MessageHandlerManager {
             .put(PICK, this.pickMessageHandlers::get)
             .put(REMOVE, this.removeMessageHandlers::get)
             .build();
-        this.utilHandlers = ImmutableMap.<String, CallbackMessageHandler>builder()
-            .put(TRANSITION, transitionMessageHandler)
-            .build();
+        this.utilHandlers = utilMessageHandler.stream()
+            .collect(Collectors.toMap(UtilMessageHandler::trigger, Function.identity()));
     }
 
     public BotApiMethod<Message> manage(Message message) {

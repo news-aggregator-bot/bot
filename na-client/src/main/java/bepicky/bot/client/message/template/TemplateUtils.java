@@ -30,6 +30,8 @@ public class TemplateUtils {
     public static final String NEWS_NOTE = "news_note";
 
     public static final String DONE = "done";
+    public static final String ENABLE = "enable";
+    public static final String ENABLE_READER = "enable_reader";
     public static final String ALL_SUBCATEGORIES = "all_subcategories";
 
     public static ImmutableMap<String, Object> name(String name) {

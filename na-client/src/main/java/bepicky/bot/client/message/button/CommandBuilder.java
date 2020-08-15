@@ -7,6 +7,7 @@ public class CommandBuilder {
     public static final String LIST = "list";
     public static final String PICK = "pick";
     public static final String REMOVE = "rm";
+    public static final String ENABLE_READER = "enable_reader";
 
     private static final String PICK_PATTERN = PICK + ":%s:%s";
     private static final String REMOVE_PATTERN = REMOVE + ":%s:%s";

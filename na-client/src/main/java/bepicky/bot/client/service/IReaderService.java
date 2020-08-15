@@ -8,4 +8,8 @@ public interface IReaderService {
     ReaderDto register(ReaderRequest readerRequest);
 
     ReaderDto find(Long chatId);
+
+    ReaderDto enable(Long chatId);
+
+    ReaderDto disable(Long chatId);
 }

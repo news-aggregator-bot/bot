@@ -1,4 +1,4 @@
-package bepicky.bot.client.message.handler;
+package bepicky.bot.client.message.handler.util;
 
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlow;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
 @Component
-public class TransitionMessageHandler implements CallbackMessageHandler {
+public class TransitionMessageHandler implements UtilMessageHandler {
 
     public static final String TRANSITION = "transition";
 

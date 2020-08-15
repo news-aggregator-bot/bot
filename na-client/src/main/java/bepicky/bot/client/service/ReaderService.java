@@ -22,7 +22,21 @@ public class ReaderService implements IReaderService {
 
     @Override
     public ReaderDto find(Long chatId) {
-        return Optional.ofNullable(naServiceClient.find(chatId))
+        return checkReader(chatId, naServiceClient.find(chatId));
+    }
+
+    @Override
+    public ReaderDto enable(Long chatId) {
+        return checkReader(chatId, naServiceClient.enableReader(chatId));
+    }
+
+    @Override
+    public ReaderDto disable(Long chatId) {
+        return checkReader(chatId, naServiceClient.disableReader(chatId));
+    }
+
+    private ReaderDto checkReader(Long chatId, ReaderDto readerDto) {
+        return Optional.ofNullable(readerDto)
             .orElseThrow(() -> new ResourceNotFoundException("404:reader:" + chatId));
     }
 }

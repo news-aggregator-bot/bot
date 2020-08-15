@@ -1,7 +1,7 @@
 package bepicky.bot.client.message.button;
 
 
-import bepicky.bot.client.message.handler.TransitionMessageHandler;
+import bepicky.bot.client.message.handler.util.TransitionMessageHandler;
 import lombok.Builder;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
