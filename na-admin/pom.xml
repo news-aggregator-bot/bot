@@ -59,7 +59,7 @@
     </dependencies>
 
     <build>
-        <finalName>na-client</finalName>
+        <finalName>na-admin-bot</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

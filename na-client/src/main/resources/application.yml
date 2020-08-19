@@ -5,5 +5,5 @@ camel:
     main-run-controller: true
 bot:
   telegram:
-    name: ${TG_NAME}
-    token: ${TG_TOKEN}
+    name: bepicky
+    token: ${TG_CLIENT_TOKEN}

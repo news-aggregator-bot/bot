@@ -1,17 +1,21 @@
-version: '3'
+version: '3.5'
 services:
-  na-client:
-    build: na-client
+  na-client-bot:
+    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-bot-client
+    environment:
+      - TG_CLIENT_TOKEN=${TG_CLIENT_TOKEN}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
     ports:
-      - 8070:8070
-  na-admin:
-    build: na-admin
-    ports:
-      - 8075:8075
-volumes:
-  na-mysql-data:
+      - 8070:8080
+#  na-admin-bot:
+#    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-bot-admin
+#    environment:
+#      - TG_CLIENT_TOKEN=${TG_CLIENT_TOKEN}
+#      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+#    ports:
+#      - 8075:8080
 networks:
   default:
     external:
-      name: "na"
+      name: picky
 

@@ -1,0 +1,6 @@
+version: '3.5'
+services:
+  na-client-bot:
+    build: na-client
+#  na-admin-bot:
+#    build: na-admin

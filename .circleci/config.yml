@@ -1,0 +1,56 @@
+version: 2.1
+workflows:
+  build:
+    jobs:
+      - build-deploy:
+          context: DEPLOY
+jobs:
+  build-deploy:
+
+    working_directory: ~/na-bot
+
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+
+    steps: # a collection of executable commands
+
+      - checkout # check out source code to working directory
+      - add_ssh_keys
+      - setup_remote_docker
+
+      - restore_cache:
+          keys:
+            - na-bot-{{ checksum "pom.xml" }}
+
+      - run: mvn -s .circleci/settings.xml dependency:go-offline # gets the project dependencies
+
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: na-bot-{{ checksum "pom.xml" }}
+
+      - run: mvn clean package
+
+      - run:
+          name: docker login
+          command:
+            echo "$GITHUB_TOKEN" | docker login https://docker.pkg.github.com --username $GITHUB_USER --password-stdin
+
+      - run:
+          name: docker-compose
+          command: |
+            set -x
+            docker network create picky
+            docker-compose --project-name na -f docker-compose.yml -f docker-compose.dev.yml up --build --no-start na-bot
+
+      - run:
+          name: docker push
+          command: docker push docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-bot:latest
+
+      - run:
+          name: create ssh config
+          command: ./scripts/send-env-config.sh
+
+      - deploy:
+          name: deploy image to remote
+          command: ./scripts/deploy.sh

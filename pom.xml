@@ -16,6 +16,14 @@
 
     <name>na-bot</name>
 
+    <distributionManagement>
+        <repository>
+            <id>na</id>
+            <name>news-aggregator-bot</name>
+            <url>https://maven.pkg.github.com/news-aggregator-bot/artifactory</url>
+        </repository>
+    </distributionManagement>
+
     <modules>
         <module>na-client</module>
         <module>na-admin</module>
@@ -27,12 +35,6 @@
                 <groupId>org.telegram</groupId>
                 <artifactId>telegrambots</artifactId>
                 <version>4.9</version>
-            </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>1.18.12</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.freemarker</groupId>
