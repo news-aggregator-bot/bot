@@ -16,13 +16,20 @@
 
     <name>na-bot</name>
 
-    <distributionManagement>
+    <repositories>
         <repository>
             <id>na</id>
-            <name>news-aggregator-bot</name>
+            <name>bepicky-repo</name>
             <url>https://maven.pkg.github.com/news-aggregator-bot/artifactory</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
-    </distributionManagement>
+    </repositories>
 
     <modules>
         <module>na-client</module>
