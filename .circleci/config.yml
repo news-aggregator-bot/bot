@@ -45,7 +45,7 @@ jobs:
 
       - run:
           name: docker push
-          command: docker push docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-bot:latest
+          command: docker push docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-client-bot:latest
 
       - run:
           name: create ssh config
