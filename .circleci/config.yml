@@ -29,7 +29,7 @@ jobs:
             - ~/.m2
           key: na-bot-{{ checksum "pom.xml" }}
 
-      - run: mvn clean package
+      - run: mvn package
 
       - run:
           name: docker login
