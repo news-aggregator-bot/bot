@@ -6,7 +6,7 @@ services:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
       - TG_CLIENT_TOKEN=${TG_CLIENT_TOKEN}
     ports:
-      - 8070:8080
+      - 8085:8080
 #  na-admin-bot:
 #    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-bot-admin
 #    environment:
