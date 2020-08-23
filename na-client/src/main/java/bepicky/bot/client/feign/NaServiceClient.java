@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "bepicky-service", url = "bepicky-service", configuration = FeignClientConfiguration.class)
+@FeignClient(name = "bepicky-service", url = "bepicky-service:8080", configuration = FeignClientConfiguration.class)
 public interface NaServiceClient {
 
     @GetMapping("/category/list")
