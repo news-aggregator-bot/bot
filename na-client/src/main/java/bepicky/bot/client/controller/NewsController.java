@@ -7,8 +7,8 @@ import bepicky.bot.client.router.PickyNewsBot;
 import bepicky.common.domain.request.NewsNoteRequest;
 import bepicky.common.domain.request.NotifyReaderRequest;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,20 +40,21 @@ public class NewsController {
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", note.getTitle())
                 .put("url", note.getUrl())
-                .put("description", note.getDescription())
-                .put("author", note.getAuthor())
+                .put("description", normaliseValue(note.getDescription()))
+                .put("author", normaliseValue(note.getAuthor()))
                 .build();
-            newsNotes.add(templateContext.processTemplate(TemplateUtils.NEWS_NOTE, request.getLang(), params));
+            newsNotes.add(templateContext.processTemplate(TemplateUtils.NEWS_NOTE, request.getLang(), params).trim());
         }
-        Lists.partition(newsNotes, 6)
-            .forEach(newsNoteParts -> {
-                try {
-                    bot.execute(new SendMessage()
-                        .setChatId(request.getChatId())
-                        .setText(String.join("\n", newsNoteParts)));
-                } catch (TelegramApiException e) {
-                    throw new IllegalArgumentException(e.getMessage());
-                }
-            });
+        try {
+            bot.execute(new SendMessage()
+                .setChatId(request.getChatId())
+                .setText(String.join("\n", newsNotes)));
+        } catch (TelegramApiException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    private String normaliseValue(String value) {
+        return StringUtils.isBlank(value) ? "" : value;
     }
 }
