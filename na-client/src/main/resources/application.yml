@@ -9,3 +9,8 @@ bot:
   telegram:
     name: bepicky
     token: ${TG_CLIENT_TOKEN}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
