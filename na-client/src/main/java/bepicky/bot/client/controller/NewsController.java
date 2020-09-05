@@ -50,7 +50,7 @@ public class NewsController {
                 .setChatId(request.getChatId())
                 .setText(String.join("\n", newsNotes)));
         } catch (TelegramApiException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
