@@ -1,3 +1,7 @@
-${title} – ${url}
+${title}
+
+${url}
+
 ${description}
-${author}
+
+Author: ${author}
