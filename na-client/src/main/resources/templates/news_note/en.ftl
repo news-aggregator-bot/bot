@@ -2,6 +2,6 @@ ${title}
 
 ${url}
 
-${description}
-
+<#if author?has_content>
 Author: ${author}
+</#if>

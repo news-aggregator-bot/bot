@@ -5,7 +5,7 @@ import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.router.PickyNewsBot;
 import bepicky.common.domain.request.NewsNoteRequest;
-import bepicky.common.domain.request.NotifyReaderRequest;
+import bepicky.common.domain.request.NotifyNewsRequest;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -33,14 +33,13 @@ public class NewsController {
     @Autowired
     protected MessageTemplateContext templateContext;
 
-    @PutMapping("/notify-reader")
-    public void notifyReader(@RequestBody NotifyReaderRequest request) {
+    @PutMapping("/notify/news")
+    public void notifyNews(@RequestBody NotifyNewsRequest request) {
         List<String> newsNotes = new ArrayList<>(request.getNotes().size());
         for (NewsNoteRequest note : request.getNotes()) {
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", note.getTitle())
                 .put("url", note.getUrl())
-                .put("description", normaliseValue(note.getDescription()))
                 .put("author", normaliseValue(note.getAuthor()))
                 .build();
             newsNotes.add(templateContext.processTemplate(TemplateUtils.NEWS_NOTE, request.getLang(), params).trim());
