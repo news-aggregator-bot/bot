@@ -3,7 +3,8 @@ package bepicky.bot.client.message.template;
 import com.google.common.collect.ImmutableMap;
 
 public class TemplateUtils {
-    private TemplateUtils(){}
+
+    private TemplateUtils() {}
 
     public static final String DIR_DONE = "direction_done";
     public static final String DIR_BACK = "direction_back";
@@ -11,6 +12,9 @@ public class TemplateUtils {
     public static final String DIR_NEXT = "direction_next";
     public static final String DIR_PREV = "direction_previous";
     public static final String DIR_OPTS = "direction_opts";
+
+    public static final String HELP = "help";
+    public static final String SETTINGS = "settings";
 
     public static final String PICK = "pick";
     public static final String PICK_CATEGORY_SUCCESS = "pick_category_success";
@@ -33,6 +37,9 @@ public class TemplateUtils {
     public static final String ENABLE = "enable";
     public static final String ENABLE_READER = "enable_reader";
     public static final String ALL_SUBCATEGORIES = "all_subcategories";
+
+    public static final String BUTTON_CATEGORY = "button_category";
+    public static final String BUTTON_LANGUAGE = "button_language";
 
     public static ImmutableMap<String, Object> name(String name) {
         return params("name", name);

@@ -2,6 +2,7 @@ package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.handler.context.ChatFlowContext;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
@@ -25,6 +26,9 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
     @Autowired
     private ICategoryService categoryService;
 
+    @Autowired
+    private ChatFlowContext flowContext;
+
     @Override
     public HandleResult handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
@@ -37,6 +41,7 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
 
         String readerLang = response.getReader().getLang();
         List<CategoryDto> categories = response.getList();
+        flowContext.updateCategory(response.getReader().getChatId());
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()

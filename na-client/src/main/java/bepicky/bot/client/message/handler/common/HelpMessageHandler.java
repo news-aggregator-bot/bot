@@ -1,5 +1,10 @@
 package bepicky.bot.client.message.handler.common;
 
+import bepicky.bot.client.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.client.service.IReaderService;
+import bepicky.common.domain.dto.ReaderDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,9 +15,17 @@ public class HelpMessageHandler implements CommonMessageHandler {
 
     public static final String HELP = "/help";
 
+    @Autowired
+    private MessageTemplateContext templateContext;
+
+    @Autowired
+    private IReaderService readerService;
+
     @Override
     public BotApiMethod<Message> handle(Message message) {
-        return new SendMessage().setChatId(message.getChatId()).setText("help");
+        ReaderDto reader = readerService.find(message.getChatId());
+        String text = templateContext.processTemplate(TemplateUtils.HELP, reader.getLang());
+        return new SendMessage().setChatId(message.getChatId()).setText(text);
     }
 
     @Override

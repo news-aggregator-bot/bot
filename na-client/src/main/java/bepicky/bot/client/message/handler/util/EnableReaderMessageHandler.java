@@ -32,7 +32,7 @@ public class EnableReaderMessageHandler implements UtilMessageHandler {
         ReaderDto enabled = readerService.enable(message.getChatId());
         log.info("reader:{}:enable:success", message.getChatId());
         String currentText = templateContext.processTemplate(current.getMsgKey(), enabled.getLang());
-
+        flowContext.clean(message.getChatId());
         return new HandleResult(currentText, new MarkupBuilder().build());
     }
 

@@ -38,6 +38,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
             return error(response.getError().getEntity());
         }
         List<LanguageDto> languages = response.getList();
+        flowContext.updateLanguage(response.getReader().getChatId());
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = languages.stream()
