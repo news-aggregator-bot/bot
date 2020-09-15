@@ -40,6 +40,7 @@ public class TemplateUtils {
     public static final String CLOSE = "close";
     public static final String ENABLE = "enable";
     public static final String ENABLE_READER = "enable_reader";
+    public static final String DISABLE_READER = "disable_reader";
     public static final String ALL_SUBCATEGORIES = "all_subcategories";
 
     public static final String BUTTON_CATEGORY = "button_category";
