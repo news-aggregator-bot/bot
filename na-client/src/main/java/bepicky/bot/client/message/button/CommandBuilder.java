@@ -27,6 +27,10 @@ public class CommandBuilder {
         return String.format(REMOVE_PATTERN, entity, name);
     }
 
+    public String remove(String entity, long id) {
+        return String.format(REMOVE_PATTERN, entity, id);
+    }
+
     public String list(String entity) {
         return String.format(LIST_PATTERN, entity, 1);
     }

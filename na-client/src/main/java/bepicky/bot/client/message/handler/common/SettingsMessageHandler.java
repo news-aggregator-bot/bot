@@ -13,11 +13,16 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static bepicky.bot.client.message.EntityUtils.CATEGORY;
 import static bepicky.bot.client.message.EntityUtils.LANGUAGE;
+import static bepicky.bot.client.message.EntityUtils.SOURCE;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_CATEGORY;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_LANGUAGE;
+import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_SOURCE;
+import static bepicky.bot.client.message.template.TemplateUtils.CLOSE;
+import static bepicky.bot.client.message.template.TemplateUtils.ENABLE_READER;
 
 @Component
 public class SettingsMessageHandler implements CommonMessageHandler {
@@ -39,23 +44,24 @@ public class SettingsMessageHandler implements CommonMessageHandler {
 
         MarkupBuilder markup = new MarkupBuilder();
 
-        MarkupBuilder.Button categoryButton = buildButton(
-            commandBuilder.list(CATEGORY),
-            templateContext.processTemplate(BUTTON_CATEGORY, reader.getLang())
-        );
-        MarkupBuilder.Button languageButton = buildButton(
-            commandBuilder.list(LANGUAGE),
-            templateContext.processTemplate(BUTTON_LANGUAGE, reader.getLang())
-        );
-        String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, reader.getLang());
+        String lang = reader.getLang();
+        MarkupBuilder.Button categoryButton = buildButton(commandBuilder.list(CATEGORY), BUTTON_CATEGORY, lang);
+        MarkupBuilder.Button languageButton = buildButton(commandBuilder.list(LANGUAGE), BUTTON_LANGUAGE, lang);
+        MarkupBuilder.Button sourceButton = buildButton(commandBuilder.list(SOURCE), BUTTON_SOURCE, lang);
+        MarkupBuilder.Button closeButton = buildButton(ENABLE_READER, CLOSE, lang);
 
-        markup.addButtons(Arrays.asList(languageButton, categoryButton));
+        String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, lang);
+
+        Stream.of(languageButton, categoryButton, sourceButton, closeButton)
+            .map(Arrays::asList)
+            .forEach(markup::addButtons);
         return new SendMessage().setChatId(message.getChatId()).setReplyMarkup(markup.build()).setText(settingsText);
     }
 
-    private MarkupBuilder.Button buildButton(String languageCommand, String buttonLang) {
+    private MarkupBuilder.Button buildButton(String languageCommand, String textKey, String lang) {
+        String text = templateContext.processTemplate(textKey, lang);
         return MarkupBuilder.Button.builder()
-            .text(buttonLang)
+            .text(text)
             .command(languageCommand)
             .build();
     }

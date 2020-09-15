@@ -4,6 +4,7 @@ import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.request.CategoryRequest;
 import bepicky.common.domain.request.LanguageRequest;
 import bepicky.common.domain.request.ReaderRequest;
+import bepicky.common.domain.request.SourceRequest;
 import bepicky.common.domain.response.CategoryListResponse;
 import bepicky.common.domain.response.CategoryResponse;
 import bepicky.common.domain.response.LanguageListResponse;
@@ -68,11 +69,11 @@ public interface NaServiceClient {
         @RequestParam("size") int size
     );
 
-    @PostMapping("/source/pick/{id}")
-    SourceResponse pick(@PathVariable("id") long id);
+    @PostMapping("/source/pick")
+    SourceResponse pick(@RequestBody SourceRequest request);
 
-    @PostMapping("/source/remove/{id}")
-    SourceResponse remove(@PathVariable("id") long id);
+    @PostMapping("/source/remove")
+    SourceResponse remove(@RequestBody SourceRequest request);
 
     @PutMapping("/reader/enable/{chatId}")
     ReaderDto enableReader(@PathVariable("chatId") long id);

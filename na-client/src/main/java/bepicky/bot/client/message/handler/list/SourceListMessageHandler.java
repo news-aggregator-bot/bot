@@ -6,10 +6,10 @@ import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlowContext;
 import bepicky.bot.client.message.template.TemplateUtils;
-import bepicky.bot.client.service.ILanguageService;
-import bepicky.common.domain.dto.LanguageDto;
+import bepicky.bot.client.service.ISourceService;
 import bepicky.common.domain.dto.ReaderDto;
-import bepicky.common.domain.response.LanguageListResponse;
+import bepicky.common.domain.dto.SourceDto;
+import bepicky.common.domain.response.SourceListResponse;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 public class SourceListMessageHandler extends AbstractListMessageHandler {
 
     @Autowired
-    private ILanguageService languageService;
+    private ISourceService sourceService;
 
     @Autowired
     private ChatFlowContext flowContext;
@@ -33,14 +33,14 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
     public HandleResult handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
-        LanguageListResponse response = languageService.list(message.getChatId(), page, PAGE_SIZE);
+        SourceListResponse response = sourceService.list(message.getChatId(), page, PAGE_SIZE);
         if (response.isError()) {
             return error(response.getError().getEntity());
         }
-        List<LanguageDto> languages = response.getList();
+        List<SourceDto> sources = response.getList();
 
         MarkupBuilder markup = new MarkupBuilder();
-        List<MarkupBuilder.Button> buttons = languages.stream()
+        List<MarkupBuilder.Button> buttons = sources.stream()
             .map(l -> buildButton(response.getReader(), l))
             .collect(Collectors.toList());
 
@@ -49,22 +49,21 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
-        String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
-            TemplateUtils.LIST_LANGUAGES,
+        String listSourcesText = parseToUnicode(templateContext.processTemplate(
+            TemplateUtils.LIST_SOURCES,
             response.getReader().getLang(),
             TemplateUtils.page(page)
         ));
-        return new HandleResult(listSubcategoryText, markup.build());
+        return new HandleResult(listSourcesText, markup.build());
     }
 
-    private MarkupBuilder.Button buildButton(ReaderDto r, LanguageDto l) {
-        boolean langPicked = r.getLanguages().contains(l);
-        String textKey = langPicked ? TemplateUtils.REMOVE : TemplateUtils.PICK;
-        String command = langPicked ?
-            commandBuilder.remove(trigger(), l.getLang()) :
-            commandBuilder.pick(trigger(), l.getLang());
+    private MarkupBuilder.Button buildButton(ReaderDto r, SourceDto s) {
+        String textKey = s.isPicked() ? TemplateUtils.REMOVE : TemplateUtils.PICK;
+        String command = s.isPicked() ?
+            commandBuilder.remove(trigger(), s.getId()) :
+            commandBuilder.pick(trigger(), s.getId());
         return MarkupBuilder.Button.builder()
-            .text(buildText(l, textKey))
+            .text(buildText(s, textKey))
             .command(command)
             .build();
     }
@@ -74,11 +73,11 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
         return EntityUtils.SOURCE;
     }
 
-    private String buildText(LanguageDto l, String textKey) {
+    private String buildText(SourceDto s, String textKey) {
         return parseToUnicode(templateContext.processTemplate(
             textKey,
             LangUtils.DEFAULT,
-            TemplateUtils.name(l.getLocalized())
+            TemplateUtils.name(s.getName())
         ));
     }
 }
