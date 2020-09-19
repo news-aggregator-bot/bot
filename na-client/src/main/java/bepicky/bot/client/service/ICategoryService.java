@@ -6,7 +6,7 @@ import bepicky.common.domain.response.CategoryResponse;
 
 public interface ICategoryService {
 
-    CategoryListResponse list(long chatId, int page, int pageSize);
+    CategoryListResponse list(long chatId, String type, int page, int pageSize);
 
     CategoryListResponse list(long chatId, long parentId, int page, int pageSize);
 

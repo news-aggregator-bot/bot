@@ -1,5 +1,6 @@
 package bepicky.bot.client.message.handler.list;
 
+import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.template.TemplateUtils;
@@ -16,8 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static bepicky.bot.client.message.EntityUtils.CATEGORY;
-import static bepicky.bot.client.message.EntityUtils.SUBCATEGORY;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
 @Component
@@ -36,7 +35,6 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
         if (response.isError()) {
             return error(response.getError().getEntity());
         }
-
         List<CategoryDto> categories = response.getList();
         CategoryDto parent = categories.get(0).getParent();
 
@@ -55,18 +53,21 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
             TemplateUtils.params("category", parent.getName())
         ));
 
-        markup.addButtons(Arrays.asList(markup.button(allSubcategoriesText, commandBuilder.pick(CATEGORY, parentId))));
+        markup.addButtons(Arrays.asList(markup.button(
+            allSubcategoriesText,
+            commandBuilder.pick(EntityType.CATEGORY.lower(), parentId)
+        )));
 
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (!response.isFirst()) {
             String prevText = prevButtonText(readerLang);
-            navigation.add(markup.button(prevText, commandBuilder.list(SUBCATEGORY, parentId, page - 1)));
+            navigation.add(markup.button(prevText, commandBuilder.list(trigger(), parentId, page - 1)));
         }
         navigation.add(markup.button(backButtonText(readerLang), buildBackCommand(parent)));
         if (!response.isLast()) {
             String nextText = nextButtonText(readerLang);
-            navigation.add(markup.button(nextText, commandBuilder.list(SUBCATEGORY, parentId, page + 1)));
+            navigation.add(markup.button(nextText, commandBuilder.list(trigger(), parentId, page + 1)));
         }
 
         List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
@@ -82,19 +83,19 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
     }
 
     private String buildBackCommand(CategoryDto parent) {
-        return parent.getParent() == null ? commandBuilder.list(CATEGORY, parent.getId(), 1)
-            : commandBuilder.list(SUBCATEGORY, parent.getParent().getId(), 1);
+        return parent.getParent() == null ? commandBuilder.list(EntityType.CATEGORY.lower(), parent.getId(), 1)
+            : commandBuilder.list(trigger(), parent.getParent().getId(), 1);
     }
 
     private String buildCommand(CategoryDto c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return commandBuilder.pick(CATEGORY, c.getId());
+            return commandBuilder.pick(EntityType.CATEGORY.lower(), c.getId());
         }
-        return commandBuilder.list(SUBCATEGORY, c.getId(), 1);
+        return commandBuilder.list(trigger(), c.getId(), 1);
     }
 
     @Override
     public String trigger() {
-        return SUBCATEGORY;
+        return EntityType.SUBCATEGORY.lower();
     }
 }

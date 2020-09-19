@@ -26,7 +26,8 @@ public interface NaServiceClient {
     CategoryListResponse listCategories(
         @RequestParam("chat_id") long chatId,
         @RequestParam("page") int page,
-        @RequestParam("size") int size
+        @RequestParam("size") int size,
+        @RequestParam("type") String type
     );
 
     @GetMapping("/category/list")

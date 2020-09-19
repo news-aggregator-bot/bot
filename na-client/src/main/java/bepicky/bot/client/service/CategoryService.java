@@ -15,8 +15,8 @@ public class CategoryService implements ICategoryService {
     private NaServiceClient categoryClient;
 
     @Override
-    public CategoryListResponse list(long chatId, int page, int pageSize) {
-        return categoryClient.listCategories(chatId, page, pageSize);
+    public CategoryListResponse list(long chatId, String type, int page, int pageSize) {
+        return categoryClient.listCategories(chatId, page, pageSize, type);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package bepicky.bot.client.message.handler;
 
+import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
@@ -15,7 +16,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bepicky.bot.client.message.EntityUtils.LANGUAGE;
 import static bepicky.bot.client.message.template.TemplateUtils.DIR_CONTINUE;
 
 public abstract class AbstractLanguageMessageHandler implements CallbackMessageHandler {
@@ -63,7 +63,7 @@ public abstract class AbstractLanguageMessageHandler implements CallbackMessageH
 
     @Override
     public String trigger() {
-        return LANGUAGE;
+        return EntityType.LANGUAGE.lower();
     }
 
     protected abstract String textKey();

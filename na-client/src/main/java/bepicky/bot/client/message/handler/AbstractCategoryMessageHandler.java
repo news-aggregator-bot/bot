@@ -1,5 +1,6 @@
 package bepicky.bot.client.message.handler;
 
+import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
@@ -14,9 +15,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static bepicky.bot.client.message.EntityUtils.CATEGORY;
-import static bepicky.bot.client.message.EntityUtils.SUBCATEGORY;
 
 public abstract class AbstractCategoryMessageHandler implements CallbackMessageHandler {
 
@@ -61,12 +59,10 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
         if (category.getParent() == null) {
             return markup.button(buttonText, commandBuilder.list(trigger()));
         }
-        return markup.button(buttonText, commandBuilder.list(SUBCATEGORY, category.getParent().getId(), 1));
-    }
-
-    @Override
-    public String trigger() {
-        return CATEGORY;
+        return markup.button(
+            buttonText,
+            commandBuilder.list(EntityType.SUBCATEGORY.lower(), category.getParent().getId(), 1)
+        );
     }
 
     protected abstract String textKey();

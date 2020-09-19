@@ -1,6 +1,6 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.EntityUtils;
+import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.MarkupBuilder;
@@ -70,7 +70,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
 
     @Override
     public String trigger() {
-        return EntityUtils.SOURCE;
+        return EntityType.SOURCE.lower();
     }
 
     private String buildText(SourceDto s, String textKey) {

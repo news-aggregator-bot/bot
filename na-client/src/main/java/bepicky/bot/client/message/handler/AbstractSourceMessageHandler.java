@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bepicky.bot.client.message.EntityUtils.SOURCE;
+import static bepicky.bot.client.message.EntityType.SOURCE;
 import static bepicky.bot.client.message.template.TemplateUtils.DIR_CONTINUE;
 
 public abstract class AbstractSourceMessageHandler implements CallbackMessageHandler {
@@ -63,7 +63,7 @@ public abstract class AbstractSourceMessageHandler implements CallbackMessageHan
 
     @Override
     public String trigger() {
-        return SOURCE;
+        return SOURCE.lower();
     }
 
     protected abstract String textKey();

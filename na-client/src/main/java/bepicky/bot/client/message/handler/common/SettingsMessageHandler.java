@@ -15,9 +15,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import static bepicky.bot.client.message.EntityUtils.CATEGORY;
-import static bepicky.bot.client.message.EntityUtils.LANGUAGE;
-import static bepicky.bot.client.message.EntityUtils.SOURCE;
+import static bepicky.bot.client.message.EntityType.CATEGORY;
+import static bepicky.bot.client.message.EntityType.LANGUAGE;
+import static bepicky.bot.client.message.EntityType.SOURCE;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_CATEGORY;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_LANGUAGE;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_SOURCE;
@@ -45,9 +45,9 @@ public class SettingsMessageHandler implements CommonMessageHandler {
         MarkupBuilder markup = new MarkupBuilder();
 
         String lang = reader.getLang();
-        MarkupBuilder.Button categoryButton = buildButton(commandBuilder.list(CATEGORY), BUTTON_CATEGORY, lang);
-        MarkupBuilder.Button languageButton = buildButton(commandBuilder.list(LANGUAGE), BUTTON_LANGUAGE, lang);
-        MarkupBuilder.Button sourceButton = buildButton(commandBuilder.list(SOURCE), BUTTON_SOURCE, lang);
+        MarkupBuilder.Button categoryButton = buildButton(commandBuilder.list(CATEGORY.lower()), BUTTON_CATEGORY, lang);
+        MarkupBuilder.Button languageButton = buildButton(commandBuilder.list(LANGUAGE.lower()), BUTTON_LANGUAGE, lang);
+        MarkupBuilder.Button sourceButton = buildButton(commandBuilder.list(SOURCE.lower()), BUTTON_SOURCE, lang);
         MarkupBuilder.Button closeButton = buildButton(ENABLE_READER, CLOSE, lang);
 
         String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, lang);
