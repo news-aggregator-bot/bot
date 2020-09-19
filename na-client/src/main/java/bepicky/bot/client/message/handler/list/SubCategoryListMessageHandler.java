@@ -83,7 +83,7 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
     }
 
     private String buildBackCommand(CategoryDto parent) {
-        return parent.getParent() == null ? commandBuilder.list(EntityType.CATEGORY.lower(), parent.getId(), 1)
+        return parent.getParent() == null ? commandBuilder.list(EntityType.CATEGORY.lower(), 1)
             : commandBuilder.list(trigger(), parent.getParent().getId(), 1);
     }
 
