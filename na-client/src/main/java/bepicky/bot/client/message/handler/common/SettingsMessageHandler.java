@@ -17,9 +17,11 @@ import java.util.stream.Stream;
 
 import static bepicky.bot.client.message.EntityType.CATEGORY;
 import static bepicky.bot.client.message.EntityType.LANGUAGE;
+import static bepicky.bot.client.message.EntityType.REGION;
 import static bepicky.bot.client.message.EntityType.SOURCE;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_CATEGORY;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_LANGUAGE;
+import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_REGION;
 import static bepicky.bot.client.message.template.TemplateUtils.BUTTON_SOURCE;
 import static bepicky.bot.client.message.template.TemplateUtils.CLOSE;
 import static bepicky.bot.client.message.template.TemplateUtils.ENABLE_READER;
@@ -45,6 +47,7 @@ public class SettingsMessageHandler implements CommonMessageHandler {
         MarkupBuilder markup = new MarkupBuilder();
 
         String lang = reader.getLang();
+        MarkupBuilder.Button regionButton = buildButton(commandBuilder.list(REGION.lower()), BUTTON_REGION, lang);
         MarkupBuilder.Button categoryButton = buildButton(commandBuilder.list(CATEGORY.lower()), BUTTON_CATEGORY, lang);
         MarkupBuilder.Button languageButton = buildButton(commandBuilder.list(LANGUAGE.lower()), BUTTON_LANGUAGE, lang);
         MarkupBuilder.Button sourceButton = buildButton(commandBuilder.list(SOURCE.lower()), BUTTON_SOURCE, lang);
@@ -52,7 +55,7 @@ public class SettingsMessageHandler implements CommonMessageHandler {
 
         String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, lang);
 
-        Stream.of(languageButton, categoryButton, sourceButton, closeButton)
+        Stream.of(languageButton, regionButton, categoryButton, sourceButton, closeButton)
             .map(Arrays::asList)
             .forEach(markup::addButtons);
         return new SendMessage().setChatId(message.getChatId()).setReplyMarkup(markup.build()).setText(settingsText);

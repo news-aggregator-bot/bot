@@ -46,6 +46,7 @@ public class TemplateUtils {
     public static final String DISABLE_READER = "disable_reader";
     public static final String ALL_SUBCATEGORIES = "all_subcategories";
 
+    public static final String BUTTON_REGION = "button_region";
     public static final String BUTTON_CATEGORY = "button_category";
     public static final String BUTTON_LANGUAGE = "button_language";
     public static final String BUTTON_SOURCE = "button_src";
