@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandBuilder {
     public static final String LIST = "list";
+    public static final String UPDATE = "update";
     public static final String PICK = "pick";
     public static final String REMOVE = "rm";
     public static final String ENABLE_READER = "enable_reader";
@@ -12,6 +13,7 @@ public class CommandBuilder {
     private static final String PICK_PATTERN = PICK + ":%s:%s";
     private static final String REMOVE_PATTERN = REMOVE + ":%s:%s";
     private static final String LIST_PATTERN = LIST + ":%s:%d";
+    private static final String UPDATE_PATTERN = UPDATE + ":%s";
     private static final String LIST_ENTITY_PATTERN = LIST + ":%s:%s:%d";
 
 
@@ -45,5 +47,9 @@ public class CommandBuilder {
 
     public String list(String entity, long id, int page) {
         return String.format(LIST_ENTITY_PATTERN, entity, id, page);
+    }
+
+    public String update(String entity) {
+        return String.format(UPDATE_PATTERN, entity);
     }
 }

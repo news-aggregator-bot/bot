@@ -21,10 +21,12 @@ public class TemplateUtils {
     public static final String PICK_CATEGORY_SUCCESS = "pick_category_success";
     public static final String PICK_LANGUAGE_SUCCESS = "pick_language_success";
     public static final String PICK_SOURCE_SUCCESS = "pick_source_success";
+    public static final String PICK_ALL_SUBCATEGORIES = "pick_all_subcategories";
     public static final String REMOVE = "remove";
     public static final String REMOVE_CATEGORY_SUCCESS = "rm_category_success";
     public static final String REMOVE_LANGUAGE_SUCCESS = "rm_language_success";
     public static final String REMOVE_SOURCE_SUCCESS = "rm_source_success";
+    public static final String REMOVE_ALL_SUBCATEGORIES = "rm_all_subcategories";
 
     public static final String WELCOME_LIST_REGION = "welcome_list_regions";
     public static final String WELCOME_LIST_CATEGORY = "welcome_list_categories";
@@ -44,7 +46,6 @@ public class TemplateUtils {
     public static final String ENABLE = "enable";
     public static final String ENABLE_READER = "enable_reader";
     public static final String DISABLE_READER = "disable_reader";
-    public static final String ALL_SUBCATEGORIES = "all_subcategories";
 
     public static final String BUTTON_REGION = "button_region";
     public static final String BUTTON_CATEGORY = "button_category";

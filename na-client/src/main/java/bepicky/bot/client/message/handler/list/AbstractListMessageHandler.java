@@ -19,6 +19,7 @@ import static bepicky.bot.client.message.template.TemplateUtils.DIR_NEXT;
 import static bepicky.bot.client.message.template.TemplateUtils.DIR_PREV;
 import static bepicky.bot.client.message.template.TemplateUtils.LIST_SUBCATEGORY;
 import static bepicky.bot.client.message.template.TemplateUtils.PICK;
+import static bepicky.bot.client.message.template.TemplateUtils.REMOVE;
 import static bepicky.bot.client.message.template.TemplateUtils.name;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
@@ -69,7 +70,8 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
 
     protected String buildText(CategoryDto c, String language) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return parseToUnicode(templateContext.processTemplate(PICK, language, name(c.getLocalised())));
+            String buttonKey = c.isPicked() ? REMOVE : PICK;
+            return parseToUnicode(templateContext.processTemplate(buttonKey, language, name(c.getLocalised())));
         }
         return parseToUnicode(templateContext.processTemplate(LIST_SUBCATEGORY, language, name(c.getLocalised())));
     }

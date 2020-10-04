@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static bepicky.bot.client.message.template.TemplateUtils.PICK_ALL_SUBCATEGORIES;
+import static bepicky.bot.client.message.template.TemplateUtils.REMOVE_ALL_SUBCATEGORIES;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
 @Component
@@ -48,16 +50,15 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
             .collect(Collectors.toList());
 
         String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
-            TemplateUtils.ALL_SUBCATEGORIES,
+            parent.isPicked() ? REMOVE_ALL_SUBCATEGORIES : PICK_ALL_SUBCATEGORIES,
             readerLang,
             TemplateUtils.params("category", parent.getName())
         ));
 
-        markup.addButtons(Arrays.asList(markup.button(
-            allSubcategoriesText,
-            commandBuilder.pick(EntityType.CATEGORY.lower(), parentId)
-        )));
-
+        String parentCommand = parent.isPicked() ?
+            commandBuilder.remove(EntityType.CATEGORY.lower(), parentId) :
+            commandBuilder.pick(EntityType.CATEGORY.lower(), parentId);
+        markup.addButtons(Arrays.asList(markup.button(allSubcategoriesText, parentCommand)));
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (!response.isFirst()) {
@@ -89,7 +90,9 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
 
     private String buildCommand(CategoryDto c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return commandBuilder.pick(EntityType.CATEGORY.lower(), c.getId());
+            return c.isPicked() ?
+                commandBuilder.remove(EntityType.CATEGORY.lower(), c.getId()) :
+                commandBuilder.pick(EntityType.CATEGORY.lower(), c.getId());
         }
         return commandBuilder.list(trigger(), c.getId(), 1);
     }

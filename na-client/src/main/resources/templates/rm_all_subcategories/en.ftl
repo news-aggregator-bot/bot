@@ -1,0 +1,1 @@
+All of ${category} :x:

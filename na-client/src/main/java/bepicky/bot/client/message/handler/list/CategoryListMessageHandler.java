@@ -88,7 +88,9 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
 
     private String buildCommand(CategoryDto c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return commandBuilder.pick(trigger(), c.getId());
+            return c.isPicked() ?
+                commandBuilder.remove(trigger(), c.getId()) :
+                commandBuilder.pick(trigger(), c.getId());
         }
         return commandBuilder.list(EntityType.SUBCATEGORY.lower(), c.getId(), 1);
     }
