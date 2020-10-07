@@ -132,13 +132,13 @@ public class NewsControllerTest {
     }
 
     @Test
-    public void notifyNews_NoteContainsOnlyTitleAndUrl_ShouldNotifyWithCorrectMessage() throws TelegramApiException {
+    public void notifyNews_NoteContainsTitleUrlCommon_ShouldNotifyWithCorrectMessage() throws TelegramApiException {
         ArgumentCaptor<SendMessage> sendMsgAc = ArgumentCaptor.forClass(SendMessage.class);
 
         NewsNoteRequest noteRequest = newNoteReq("title", "url", null);
         SourcePageRequest pageRequest = new SourcePageRequest();
 
-        pageRequest.setCategories(Collections.emptyList());
+        pageRequest.setCategories(Arrays.asList(common("Finance")));
         noteRequest.setSourcePage(pageRequest);
 
         NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
@@ -151,7 +151,9 @@ public class NewsControllerTest {
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("title\n" +
             "\n" +
-            "url", value.getText());
+            "url\n" +
+            "\n" +
+            "Category: Finance", value.getText());
     }
 
     @Test(expected = NullPointerException.class)
