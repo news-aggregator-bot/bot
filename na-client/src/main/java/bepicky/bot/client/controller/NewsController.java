@@ -1,9 +1,9 @@
 package bepicky.bot.client.controller;
 
-import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.router.PickyNewsBot;
+import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.request.NewsNoteRequest;
 import bepicky.common.domain.request.NotifyNewsRequest;
 import com.google.common.collect.ImmutableMap;
@@ -19,6 +19,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -28,18 +29,21 @@ public class NewsController {
     private PickyNewsBot bot;
 
     @Autowired
-    protected CommandBuilder commandBuilder;
-
-    @Autowired
-    protected MessageTemplateContext templateContext;
+    private MessageTemplateContext templateContext;
 
     @PutMapping("/notify/news")
     public void notifyNews(@RequestBody NotifyNewsRequest request) {
         List<String> newsNotes = new ArrayList<>(request.getNotes().size());
         for (NewsNoteRequest note : request.getNotes()) {
+            String regions = note.getSourcePage().getRegions().stream()
+                .map(CategoryDto::getLocalised).collect(Collectors.joining(", "));
+            String categories = note.getSourcePage().getCommons().stream()
+                .map(CategoryDto::getLocalised).collect(Collectors.joining(", "));
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", note.getTitle())
                 .put("url", note.getUrl())
+                .put("region", normaliseValue(regions))
+                .put("category", normaliseValue(categories))
                 .put("author", normaliseValue(note.getAuthor()))
                 .build();
             newsNotes.add(templateContext.processTemplate(TemplateUtils.NEWS_NOTE, request.getLang(), params).trim());
