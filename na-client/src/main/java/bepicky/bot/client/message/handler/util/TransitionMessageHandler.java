@@ -1,8 +1,9 @@
 package bepicky.bot.client.message.handler.util;
 
+import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlow;
-import bepicky.bot.client.message.handler.context.ChatFlowContext;
+import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
@@ -17,13 +18,11 @@ import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 @Component
 public class TransitionMessageHandler implements UtilMessageHandler {
 
-    public static final String TRANSITION = "transition";
-
     @Autowired
     private MessageTemplateContext templateContext;
 
     @Autowired
-    private ChatFlowContext flowContext;
+    private ChatFlowManager flowContext;
 
     @Autowired
     private IReaderService readerService;
@@ -43,6 +42,6 @@ public class TransitionMessageHandler implements UtilMessageHandler {
 
     @Override
     public String trigger() {
-        return TRANSITION;
+        return CommandType.TRANSITION.name();
     }
 }

@@ -1,5 +1,6 @@
 package bepicky.bot.client.message;
 
+import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.handler.CallbackMessageHandler;
 import bepicky.bot.client.message.handler.MessageHandler;
 import bepicky.bot.client.message.handler.common.CommonMessageHandler;
@@ -7,6 +8,7 @@ import bepicky.bot.client.message.handler.common.HelpMessageHandler;
 import bepicky.bot.client.message.handler.list.ListMessageHandler;
 import bepicky.bot.client.message.handler.pick.PickMessageHandler;
 import bepicky.bot.client.message.handler.rm.RemoveMessageHandler;
+import bepicky.bot.client.message.handler.update.UpdateMessageHandler;
 import bepicky.bot.client.message.handler.util.UtilMessageHandler;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +24,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static bepicky.bot.client.message.button.CommandBuilder.LIST;
-import static bepicky.bot.client.message.button.CommandBuilder.PICK;
-import static bepicky.bot.client.message.button.CommandBuilder.REMOVE;
+import static bepicky.bot.client.message.button.CommandType.PICK;
+import static bepicky.bot.client.message.button.CommandType.REMOVE;
+import static bepicky.bot.client.message.button.CommandType.UPDATE;
+
 
 @Slf4j
 @Component
@@ -32,11 +35,13 @@ public class MessageHandlerManager {
 
     private final Map<String, CommonMessageHandler> commonMessageHandlers;
 
-    private final Map<String, ListMessageHandler> listMessageHandlers;
+    private final Map<CommandType, Map<String, ListMessageHandler>> listMessageHandlers;
 
     private final Map<String, PickMessageHandler> pickMessageHandlers;
 
     private final Map<String, RemoveMessageHandler> removeMessageHandlers;
+
+    private final Map<String, UpdateMessageHandler> updateMessageHandlers;
 
     private final Map<String, Function<String, CallbackMessageHandler>> functionContainer;
 
@@ -48,17 +53,27 @@ public class MessageHandlerManager {
         List<ListMessageHandler> listMessageHandlers,
         List<PickMessageHandler> pickMessageHandlers,
         List<RemoveMessageHandler> removeMessageHandlers,
-        List<UtilMessageHandler> utilMessageHandler
+        List<UtilMessageHandler> utilMessageHandler,
+        List<UpdateMessageHandler> updateMessageHandlers
     ) {
         this.commonMessageHandlers = convert(commonMessageHandlers);
-        this.listMessageHandlers = convert(listMessageHandlers);
         this.pickMessageHandlers = convert(pickMessageHandlers);
         this.removeMessageHandlers = convert(removeMessageHandlers);
-        this.functionContainer = ImmutableMap.<String, Function<String, CallbackMessageHandler>>builder()
-            .put(LIST, this.listMessageHandlers::get)
-            .put(PICK, this.pickMessageHandlers::get)
-            .put(REMOVE, this.removeMessageHandlers::get)
+        this.updateMessageHandlers = convert(updateMessageHandlers);
+        this.listMessageHandlers = listMessageHandlers.stream()
+            .collect(Collectors.groupingBy(
+                ListMessageHandler::commandType,
+                Collectors.toMap(MessageHandler::trigger, Function.identity())
+            ));
+        ImmutableMap.Builder<String, Function<String, CallbackMessageHandler>> functionBuilder =
+            ImmutableMap.builder();
+        this.listMessageHandlers.forEach((type, handler) -> functionBuilder.put(type.name(), handler::get));
+        this.functionContainer = functionBuilder
+            .put(PICK.name(), this.pickMessageHandlers::get)
+            .put(REMOVE.name(), this.removeMessageHandlers::get)
+            .put(UPDATE.name(), this.updateMessageHandlers::get)
             .build();
+
         this.utilHandlers = utilMessageHandler.stream()
             .collect(Collectors.toMap(UtilMessageHandler::trigger, Function.identity()));
     }

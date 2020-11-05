@@ -21,6 +21,6 @@ public class CategoryRemoveMessageHandler extends AbstractCategoryMessageHandler
 
     @Override
     public String trigger() {
-        return EntityType.CATEGORY.lower();
+        return EntityType.CATEGORY.low();
     }
 }

@@ -1,6 +1,5 @@
 package bepicky.bot.client.service;
 
-import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
 import bepicky.common.domain.response.CategoryResponse;
 
@@ -10,9 +9,13 @@ public interface ICategoryService {
 
     CategoryListResponse list(long chatId, long parentId, int page, int pageSize);
 
-    CategoryDto find(long categoryId);
+    CategoryListResponse listPicked(long chatId, String type, int page, int pageSize);
 
-    CategoryDto find(long chatID, long categoryId);
+    CategoryListResponse sublistPicked(long chatId, long parentId, int page, int pageSize);
+
+    CategoryListResponse listNotPicked(long chatId, String type, int page, int pageSize);
+
+    CategoryListResponse sublistNotPicked(long chatId, long parentId, int page, int pageSize);
 
     CategoryResponse pick(long chatId, long id);
 

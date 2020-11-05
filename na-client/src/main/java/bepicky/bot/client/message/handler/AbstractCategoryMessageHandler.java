@@ -1,10 +1,12 @@
 package bepicky.bot.client.message.handler;
 
-import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.handler.context.ChatFlow;
+import bepicky.bot.client.message.handler.context.ChatFlowManager;
+import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ICategoryService;
@@ -27,6 +29,9 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
     @Autowired
     protected ICategoryService categoryService;
 
+    @Autowired
+    protected ChatFlowManager flowContext;
+
     @Override
     public HandleResult handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
@@ -41,27 +46,33 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
         CategoryDto category = response.getCategory();
         MarkupBuilder markup = new MarkupBuilder();
         String readerLang = response.getReader().getLang();
+        ChatFlow current = flowContext.current(message.getChatId());
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
-        navigation.add(buildContinueButton(category, readerLang, markup));
+        navigation.add(buildContinueButton(category, current, readerLang, markup));
         markup.addButtons(navigation);
 
         String text = templateContext.processTemplate(
             textKey(),
             readerLang,
-            TemplateUtils.params(trigger(), category.getName())
+            TemplateUtils.params("name", category.getName())
         );
         return new HandleResult(text, markup.build());
     }
 
-    protected MarkupBuilder.Button buildContinueButton(CategoryDto category, String lang, MarkupBuilder markup) {
-        String buttonText = templateContext.processTemplate(TemplateUtils.DIR_CONTINUE, lang);
+    protected MarkupBuilder.Button buildContinueButton(
+        CategoryDto category,
+        ChatFlow flow,
+        String lang,
+        MarkupBuilder markup
+    ) {
+        String buttonText = templateContext.processTemplate(ButtonNames.DIR_CONTINUE, lang);
         if (category.getParent() == null) {
-            return markup.button(buttonText, commandBuilder.list(trigger()));
+            return markup.button(buttonText, commandBuilder.list(flow.getCommandType(), trigger()));
         }
         return markup.button(
             buttonText,
-            commandBuilder.list(EntityType.SUBCATEGORY.lower(), category.getParent().getId(), 1)
+            commandBuilder.sublist(flow.getCommandType(), trigger(), category.getParent().getId())
         );
     }
 

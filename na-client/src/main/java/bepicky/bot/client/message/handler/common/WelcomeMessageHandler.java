@@ -3,7 +3,7 @@ package bepicky.bot.client.message.handler.common;
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlow;
-import bepicky.bot.client.message.handler.context.ChatFlowContext;
+import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.IReaderService;
@@ -34,7 +34,7 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
     private IReaderService readerService;
 
     @Autowired
-    private ChatFlowContext flowContext;
+    private ChatFlowManager flowContext;
 
     @Override
     public BotApiMethod<Message> handle(Message message) {
@@ -45,7 +45,7 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
             reader.getPrimaryLanguage().getLang(),
             TemplateUtils.params("reader_name", reader.getFirstName())
         );
-        ChatFlow welcome = flowContext.welcome(reader.getChatId());
+        ChatFlow welcome = flowContext.welcomeFlow(reader.getChatId());
         MarkupBuilder markup = new MarkupBuilder();
         String msgText = templateContext.processTemplate(welcome.getButtonKey(), reader.getPrimaryLanguage().getLang());
         MarkupBuilder.Button categoriesButton = MarkupBuilder.Button.builder()

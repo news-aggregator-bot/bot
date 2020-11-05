@@ -3,11 +3,12 @@ package bepicky.bot.client.message.handler.list;
 import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
+import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.MarkupBuilder;
-import bepicky.bot.client.message.handler.context.ChatFlowContext;
+import bepicky.bot.client.message.handler.context.ChatFlowManager;
+import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ISourceService;
-import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.dto.SourceDto;
 import bepicky.common.domain.response.SourceListResponse;
 import com.google.common.collect.Lists;
@@ -27,7 +28,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
     private ISourceService sourceService;
 
     @Autowired
-    private ChatFlowContext flowContext;
+    private ChatFlowManager flowContext;
 
     @Override
     public HandleResult handle(Message message, String data) {
@@ -41,7 +42,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = sources.stream()
-            .map(l -> buildButton(response.getReader(), l))
+            .map(this::buildButton)
             .collect(Collectors.toList());
 
         List<MarkupBuilder.Button> navigation = navigation(page, trigger(), response, markup);
@@ -57,8 +58,8 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
         return new HandleResult(listSourcesText, markup.build());
     }
 
-    private MarkupBuilder.Button buildButton(ReaderDto r, SourceDto s) {
-        String textKey = s.isPicked() ? TemplateUtils.REMOVE : TemplateUtils.PICK;
+    private MarkupBuilder.Button buildButton(SourceDto s) {
+        String textKey = s.isPicked() ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = s.isPicked() ?
             commandBuilder.remove(trigger(), s.getId()) :
             commandBuilder.pick(trigger(), s.getId());
@@ -70,7 +71,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
 
     @Override
     public String trigger() {
-        return EntityType.SOURCE.lower();
+        return entityType().low();
     }
 
     private String buildText(SourceDto s, String textKey) {
@@ -79,5 +80,15 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
             LangUtils.DEFAULT,
             TemplateUtils.name(s.getName())
         ));
+    }
+
+    @Override
+    public CommandType commandType() {
+        return CommandType.LIST;
+    }
+
+    @Override
+    public EntityType entityType() {
+        return EntityType.SOURCE;
     }
 }

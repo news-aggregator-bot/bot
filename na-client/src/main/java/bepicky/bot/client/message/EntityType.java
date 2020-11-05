@@ -1,9 +1,9 @@
 package bepicky.bot.client.message;
 
 public enum EntityType {
-    CATEGORY, SUBCATEGORY, LANGUAGE, REGION, SOURCE, TRANSITION;
+    CATEGORY, LANGUAGE, REGION, SOURCE, TRANSITION;
 
-    public String lower() {
+    public String low() {
         return this.name().toLowerCase();
     }
 }

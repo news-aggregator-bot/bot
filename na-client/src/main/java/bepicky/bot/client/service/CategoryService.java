@@ -1,7 +1,6 @@
 package bepicky.bot.client.service;
 
 import bepicky.bot.client.feign.NaServiceClient;
-import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.request.CategoryRequest;
 import bepicky.common.domain.response.CategoryListResponse;
 import bepicky.common.domain.response.CategoryResponse;
@@ -25,13 +24,23 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryDto find(long categoryId) {
-        return null;
+    public CategoryListResponse listPicked(long chatId, String type, int page, int pageSize) {
+        return categoryClient.listPickedCategories(chatId, page, pageSize, type);
     }
 
     @Override
-    public CategoryDto find(long chatID, long categoryId) {
-        return null;
+    public CategoryListResponse sublistPicked(long chatId, long parentId, int page, int pageSize) {
+        return categoryClient.sublistPickedCategories(chatId, parentId, page, pageSize);
+    }
+
+    @Override
+    public CategoryListResponse listNotPicked(long chatId, String type, int page, int pageSize) {
+        return categoryClient.listNotPickedCategories(chatId, page, pageSize, type);
+    }
+
+    @Override
+    public CategoryListResponse sublistNotPicked(long chatId, long parentId, int page, int pageSize) {
+        return categoryClient.sublistNotPickedCategories(chatId, parentId, page, pageSize);
     }
 
     @Override

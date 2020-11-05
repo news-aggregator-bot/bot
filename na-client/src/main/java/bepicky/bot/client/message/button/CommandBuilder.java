@@ -1,20 +1,22 @@
 package bepicky.bot.client.message.button;
 
+import bepicky.bot.client.message.EntityType;
 import org.springframework.stereotype.Component;
+
+import static bepicky.bot.client.message.button.CommandType.LIST;
+import static bepicky.bot.client.message.button.CommandType.PICK;
+import static bepicky.bot.client.message.button.CommandType.REMOVE;
 
 @Component
 public class CommandBuilder {
-    public static final String LIST = "list";
-    public static final String UPDATE = "update";
-    public static final String PICK = "pick";
-    public static final String REMOVE = "rm";
-    public static final String ENABLE_READER = "enable_reader";
 
-    private static final String PICK_PATTERN = PICK + ":%s:%s";
-    private static final String REMOVE_PATTERN = REMOVE + ":%s:%s";
-    private static final String LIST_PATTERN = LIST + ":%s:%d";
-    private static final String UPDATE_PATTERN = UPDATE + ":%s";
-    private static final String LIST_ENTITY_PATTERN = LIST + ":%s:%s:%d";
+    private static final String UPDATE_PATTERN = "%s:%s";
+    private static final String COMMON_PATTERN = "%s:%s:%d";
+    private static final String SUBLIST_PATTERN = "%s:%s:%d:%d";
+    private static final String PICK_PATTERN = PICK.name() + ":%s:%s";
+    private static final String REMOVE_PATTERN = REMOVE.name() + ":%s:%s";
+    private static final String LIST_PATTERN = LIST.name() + ":%s:%d";
+    private static final String LIST_ENTITY_PATTERN = LIST.name() + ":%s:%s:%d";
 
 
     public String pick(String entity, String name) {
@@ -33,8 +35,12 @@ public class CommandBuilder {
         return String.format(REMOVE_PATTERN, entity, id);
     }
 
+    public String update(EntityType entityType) {
+        return String.format(UPDATE_PATTERN, CommandType.UPDATE, entityType.low());
+    }
+
     public String list(String entity) {
-        return String.format(LIST_PATTERN, entity, 1);
+        return list(LIST, entity);
     }
 
     public String list(String entity, int page) {
@@ -49,7 +55,24 @@ public class CommandBuilder {
         return String.format(LIST_ENTITY_PATTERN, entity, id, page);
     }
 
-    public String update(String entity) {
-        return String.format(UPDATE_PATTERN, entity);
+    public String list(CommandType type, EntityType entity) {
+        return list(type, entity.low());
     }
+
+    public String list(CommandType type, String entity) {
+        return list(type, entity, 1);
+    }
+
+    public String list(CommandType type, String entity, int page) {
+        return String.format(COMMON_PATTERN, type.name(), entity, page);
+    }
+
+    public String sublist(CommandType command, String entity, long parent) {
+        return String.format(SUBLIST_PATTERN, command.name(), entity, parent, 1);
+    }
+
+    public String sublist(CommandType command, String entity, long parent, int page) {
+        return String.format(SUBLIST_PATTERN, command.name(), entity, parent, page);
+    }
+
 }

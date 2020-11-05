@@ -1,13 +1,13 @@
 package bepicky.bot.client.message.button;
 
 
-import bepicky.bot.client.message.handler.util.TransitionMessageHandler;
 import lombok.Builder;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,12 +22,17 @@ public class MarkupBuilder {
         return this;
     }
 
+    public MarkupBuilder addButton(Button button) {
+        addButtons(Arrays.asList(button));
+        return this;
+    }
+
     public Button button(String text, String command) {
         return Button.builder().text(text).command(command).build();
     }
 
     public Button done(String text) {
-        return Button.builder().text(text).command(TransitionMessageHandler.TRANSITION).build();
+        return Button.builder().text(text).command(CommandType.TRANSITION.name()).build();
     }
 
     public InlineKeyboardMarkup build() {

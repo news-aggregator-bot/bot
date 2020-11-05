@@ -1,31 +1,39 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.MessageUtils;
+import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import reactor.util.function.Tuple2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static bepicky.bot.client.message.template.TemplateUtils.PICK_ALL_SUBCATEGORIES;
 import static bepicky.bot.client.message.template.TemplateUtils.REMOVE_ALL_SUBCATEGORIES;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
-@Component
-public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
+public abstract class AbstractSubCategoryListMessageHandler extends AbstractListMessageHandler {
 
     @Autowired
-    private ICategoryService categoryService;
+    protected ICategoryService categoryService;
+
+    private final Map<CommandType, CommandType> parentCommandMapping =
+        ImmutableMap.<CommandType, CommandType>builder()
+            .put(CommandType.SUBLIST, CommandType.LIST)
+            .put(CommandType.SUBLIST_PICKED, CommandType.LIST_PICKED)
+            .put(CommandType.SUBLIST_NOT_PICKED, CommandType.LIST_NOT_PICKED)
+            .build();
 
     @Override
     public HandleResult handle(Message message, String data) {
@@ -33,7 +41,7 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
         long parentId = Long.parseLong(split[2]);
         int page = Integer.parseInt(split[3]);
 
-        CategoryListResponse response = categoryService.list(message.getChatId(), parentId, page, PAGE_SIZE);
+        CategoryListResponse response = getSubCategories(message.getChatId(), parentId, page);
         if (response.isError()) {
             return error(response.getError().getEntity());
         }
@@ -42,23 +50,20 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
 
         MarkupBuilder markup = new MarkupBuilder();
         String readerLang = response.getReader().getLang();
-        List<MarkupBuilder.Button> buttons = categories.stream()
+        List<MarkupBuilder.Button> subcategoryButtons = categories.stream()
             .map(c -> MarkupBuilder.Button.builder()
                 .text(buildText(c, readerLang))
                 .command(buildCommand(c))
                 .build())
             .collect(Collectors.toList());
 
-        String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
-            parent.isPicked() ? REMOVE_ALL_SUBCATEGORIES : PICK_ALL_SUBCATEGORIES,
-            readerLang,
-            TemplateUtils.params("category", parent.getName())
-        ));
-
-        String parentCommand = parent.isPicked() ?
-            commandBuilder.remove(EntityType.CATEGORY.lower(), parentId) :
-            commandBuilder.pick(EntityType.CATEGORY.lower(), parentId);
-        markup.addButtons(Arrays.asList(markup.button(allSubcategoriesText, parentCommand)));
+        MarkupBuilder.Button allSubCategoriesBtn = buildAllSubCategoryButton(
+            parentId,
+            parent,
+            markup,
+            readerLang
+        );
+        markup.addButtons(Arrays.asList(allSubCategoriesBtn));
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (!response.isFirst()) {
@@ -71,34 +76,56 @@ public class SubCategoryListMessageHandler extends AbstractListMessageHandler {
             navigation.add(markup.button(nextText, commandBuilder.list(trigger(), parentId, page + 1)));
         }
 
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
+        List<List<MarkupBuilder.Button>> partition = Lists.partition(subcategoryButtons, 3);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
+        Tuple2<String, Map<String, Object>> textData = msgTextData(parent, page);
         String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
-            TemplateUtils.LIST_SUBCATEGORIES,
+            textData.getT1(),
             readerLang,
-            TemplateUtils.params("category", parent.getName(), "page", page)
+            textData.getT2()
         ));
+        flowContext.updateFlow(
+            response.getReader().getChatId(),
+            textData.getT1(), entityType(), commandType()
+        );
         return new HandleResult(listSubcategoryText, markup.build());
     }
 
+    private MarkupBuilder.Button buildAllSubCategoryButton(
+        long parentId,
+        CategoryDto parent,
+        MarkupBuilder markup,
+        String readerLang
+    ) {
+        String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
+            parent.isPicked() ? REMOVE_ALL_SUBCATEGORIES : PICK_ALL_SUBCATEGORIES,
+            readerLang,
+            TemplateUtils.params("category", parent.getName())
+        ));
+
+        String parentCommand = parent.isPicked() ?
+            commandBuilder.remove(trigger(), parentId) :
+            commandBuilder.pick(trigger(), parentId);
+        return markup.button(allSubcategoriesText, parentCommand);
+    }
+
+    protected abstract CategoryListResponse getSubCategories(long chatId, long parentId, int page);
+
+    protected abstract Tuple2<String, Map<String, Object>> msgTextData(CategoryDto parent, int page);
+
     private String buildBackCommand(CategoryDto parent) {
-        return parent.getParent() == null ? commandBuilder.list(EntityType.CATEGORY.lower(), 1)
-            : commandBuilder.list(trigger(), parent.getParent().getId(), 1);
+        return parent.getParent() == null ? commandBuilder.list(parentCommandMapping.get(commandType()), trigger())
+            : commandBuilder.sublist(commandType(), trigger(), parent.getParent().getId());
     }
 
     private String buildCommand(CategoryDto c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
             return c.isPicked() ?
-                commandBuilder.remove(EntityType.CATEGORY.lower(), c.getId()) :
-                commandBuilder.pick(EntityType.CATEGORY.lower(), c.getId());
+                commandBuilder.remove(trigger(), c.getId()) :
+                commandBuilder.pick(trigger(), c.getId());
         }
-        return commandBuilder.list(trigger(), c.getId(), 1);
-    }
-
-    @Override
-    public String trigger() {
-        return EntityType.SUBCATEGORY.lower();
+        return commandBuilder.sublist(commandType(), trigger(), c.getId(), 1);
     }
 }

@@ -5,6 +5,7 @@ import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ILanguageService;
@@ -15,8 +16,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static bepicky.bot.client.message.template.TemplateUtils.DIR_CONTINUE;
 
 public abstract class AbstractLanguageMessageHandler implements CallbackMessageHandler {
 
@@ -57,13 +56,13 @@ public abstract class AbstractLanguageMessageHandler implements CallbackMessageH
     }
 
     private MarkupBuilder.Button buildContinueButton(String lang, MarkupBuilder markup) {
-        String buttonText = templateContext.processTemplate(DIR_CONTINUE, lang);
+        String buttonText = templateContext.processTemplate(ButtonNames.DIR_CONTINUE, lang);
         return markup.button(buttonText, commandBuilder.list(trigger(), 1));
     }
 
     @Override
     public String trigger() {
-        return EntityType.LANGUAGE.lower();
+        return EntityType.LANGUAGE.low();
     }
 
     protected abstract String textKey();

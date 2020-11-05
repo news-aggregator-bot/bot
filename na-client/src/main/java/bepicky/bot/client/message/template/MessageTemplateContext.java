@@ -1,6 +1,7 @@
 package bepicky.bot.client.message.template;
 
 import bepicky.bot.client.message.LangUtils;
+import com.vdurmont.emoji.EmojiParser;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -18,11 +19,16 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class MessageTemplateContext {
+
     public static final String ERROR = "error";
 
     @Autowired
     @Qualifier("localTemplateConfig")
     private Configuration configuration;
+
+    public String processEmojiTemplate(String dir, String lang) {
+        return EmojiParser.parseToUnicode(processTemplate(dir, lang));
+    }
 
     public String processTemplate(String dir, String lang) {
         return processTemplate(dir, lang, Collections.emptyMap());

@@ -1,10 +1,8 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.MessageUtils;
+import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.MarkupBuilder;
-import bepicky.bot.client.message.handler.context.ChatFlow;
-import bepicky.bot.client.message.handler.context.ChatFlowContext;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
@@ -18,43 +16,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static bepicky.bot.client.message.template.TemplateUtils.LIST_CATEGORY;
-import static bepicky.bot.client.message.template.TemplateUtils.LIST_REGIONS;
 import static bepicky.bot.client.message.template.TemplateUtils.page;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
 @Component
-public class CategoryListMessageHandler extends AbstractListMessageHandler {
+public abstract class AbstractCategoryListMessageHandler extends AbstractListMessageHandler {
 
     @Autowired
-    private ICategoryService categoryService;
+    protected ICategoryService categoryService;
 
-    @Autowired
-    private ChatFlowContext flowContext;
-
-    private final Map<EntityType, String> typeContainer =
-        ImmutableMap.<EntityType, String>builder()
-            .put(EntityType.CATEGORY, "COMMON")
-            .put(EntityType.REGION, "REGION")
-            .build();
-
-    private final Map<EntityType, String> listKeysContainer =
-        ImmutableMap.<EntityType, String>builder()
-            .put(EntityType.CATEGORY, LIST_CATEGORY)
-            .put(EntityType.REGION, LIST_REGIONS)
-            .build();
+    private final Map<CommandType, CommandType> sublistMapping = ImmutableMap.<CommandType, CommandType>builder()
+        .put(CommandType.LIST, CommandType.SUBLIST)
+        .build();
 
     @Override
     public HandleResult handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
-        ChatFlow current = flowContext.updateCategory(message.getChatId());
-        CategoryListResponse response = categoryService.list(
-            message.getChatId(),
-            typeContainer.getOrDefault(current.getType(), typeContainer.get(EntityType.CATEGORY)),
-            page,
-            PAGE_SIZE
-        );
+        CategoryListResponse response = getCategories(message.getChatId(), page);
 
         if (response.isError()) {
             return error(response.getError().getEntity());
@@ -62,7 +41,6 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
 
         String readerLang = response.getReader().getLang();
         List<CategoryDto> categories = response.getList();
-        flowContext.updateCategory(response.getReader().getChatId());
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = categories.stream()
@@ -78,13 +56,16 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
         markup.addButtons(navigation);
 
         String listCategoryText = parseToUnicode(templateContext.processTemplate(
-            listKeysContainer.getOrDefault(current.getType(), listKeysContainer.get(EntityType.CATEGORY)),
+            msgTextKey(),
             readerLang,
             page(page)
         ));
+        flowContext.updateFlow(
+            response.getReader().getChatId(),
+            msgTextKey(), entityType(), commandType()
+        );
         return new HandleResult(listCategoryText, markup.build());
     }
-
 
     private String buildCommand(CategoryDto c) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
@@ -92,11 +73,13 @@ public class CategoryListMessageHandler extends AbstractListMessageHandler {
                 commandBuilder.remove(trigger(), c.getId()) :
                 commandBuilder.pick(trigger(), c.getId());
         }
-        return commandBuilder.list(EntityType.SUBCATEGORY.lower(), c.getId(), 1);
+
+        CommandType sublistCommand = sublistMapping.getOrDefault(commandType(), commandType());
+        return commandBuilder.sublist(sublistCommand, trigger(), c.getId(), 1);
     }
 
-    @Override
-    public String trigger() {
-        return EntityType.CATEGORY.lower();
-    }
+    protected abstract CategoryListResponse getCategories(long chatId, int page);
+
+    protected abstract String msgTextKey();
+
 }

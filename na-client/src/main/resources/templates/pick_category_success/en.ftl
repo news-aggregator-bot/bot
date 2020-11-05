@@ -1,1 +1,1 @@
-You are subscribed for ${category} category.
+You are subscribed for ${name} category.

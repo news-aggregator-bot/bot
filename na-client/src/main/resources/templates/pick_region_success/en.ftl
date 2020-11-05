@@ -1,0 +1,1 @@
+You are subscribed for ${name} region.

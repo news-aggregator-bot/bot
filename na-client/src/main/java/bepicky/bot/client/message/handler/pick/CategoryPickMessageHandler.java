@@ -21,6 +21,6 @@ public class CategoryPickMessageHandler extends AbstractCategoryMessageHandler i
 
     @Override
     public String trigger() {
-        return EntityType.CATEGORY.lower();
+        return EntityType.CATEGORY.low();
     }
 }

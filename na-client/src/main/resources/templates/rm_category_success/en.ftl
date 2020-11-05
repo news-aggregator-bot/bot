@@ -1,1 +1,1 @@
-You've just unsubscribed from ${category} category news.
+You've just unsubscribed from ${name} category news.

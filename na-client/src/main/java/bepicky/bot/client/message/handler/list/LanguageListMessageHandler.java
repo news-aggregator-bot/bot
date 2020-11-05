@@ -3,8 +3,10 @@ package bepicky.bot.client.message.handler.list;
 import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
+import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.MarkupBuilder;
-import bepicky.bot.client.message.handler.context.ChatFlowContext;
+import bepicky.bot.client.message.handler.context.ChatFlowManager;
+import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ILanguageService;
 import bepicky.common.domain.dto.LanguageDto;
@@ -27,7 +29,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
     private ILanguageService languageService;
 
     @Autowired
-    private ChatFlowContext flowContext;
+    private ChatFlowManager flowContext;
 
     @Override
     public HandleResult handle(Message message, String data) {
@@ -38,7 +40,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
             return error(response.getError().getEntity());
         }
         List<LanguageDto> languages = response.getList();
-        flowContext.updateLanguage(response.getReader().getChatId());
+        flowContext.languageUpdateFlow(response.getReader().getChatId());
 
         MarkupBuilder markup = new MarkupBuilder();
         List<MarkupBuilder.Button> buttons = languages.stream()
@@ -60,7 +62,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
 
     private MarkupBuilder.Button buildButton(ReaderDto r, LanguageDto l) {
         boolean langPicked = r.getLanguages().contains(l);
-        String textKey = langPicked ? TemplateUtils.REMOVE : TemplateUtils.PICK;
+        String textKey = langPicked ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = langPicked ?
             commandBuilder.remove(trigger(), l.getLang()) :
             commandBuilder.pick(trigger(), l.getLang());
@@ -72,7 +74,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
 
     @Override
     public String trigger() {
-        return EntityType.LANGUAGE.lower();
+        return entityType().low();
     }
 
     private String buildText(LanguageDto l, String textKey) {
@@ -81,5 +83,15 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
             LangUtils.DEFAULT,
             TemplateUtils.name(l.getLocalized())
         ));
+    }
+
+    @Override
+    public CommandType commandType() {
+        return CommandType.LIST;
+    }
+
+    @Override
+    public EntityType entityType() {
+        return EntityType.LANGUAGE;
     }
 }

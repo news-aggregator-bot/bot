@@ -1,9 +1,9 @@
 package bepicky.bot.client.message.handler.util;
 
-import bepicky.bot.client.message.button.CommandBuilder;
+import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.MarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlow;
-import bepicky.bot.client.message.handler.context.ChatFlowContext;
+import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
@@ -20,7 +20,7 @@ public class EnableReaderMessageHandler implements UtilMessageHandler {
     private IReaderService readerService;
 
     @Autowired
-    private ChatFlowContext flowContext;
+    private ChatFlowManager flowContext;
 
     @Autowired
     private MessageTemplateContext templateContext;
@@ -38,6 +38,6 @@ public class EnableReaderMessageHandler implements UtilMessageHandler {
 
     @Override
     public String trigger() {
-        return CommandBuilder.ENABLE_READER;
+        return CommandType.ENABLE_READER.name();
     }
 }

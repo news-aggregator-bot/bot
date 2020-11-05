@@ -38,6 +38,38 @@ public interface NaServiceClient {
         @RequestParam("size") int size
     );
 
+    @GetMapping("/category/list/picked")
+    CategoryListResponse listPickedCategories(
+        @RequestParam("chat_id") long chatId,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size,
+        @RequestParam("type") String type
+    );
+
+    @GetMapping("/category/list/picked")
+    CategoryListResponse sublistPickedCategories(
+        @RequestParam("chat_id") long chatId,
+        @RequestParam("parent_id") long parentId,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size
+    );
+
+    @GetMapping("/category/list/notpicked")
+    CategoryListResponse listNotPickedCategories(
+        @RequestParam("chat_id") long chatId,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size,
+        @RequestParam("type") String type
+    );
+
+    @GetMapping("/category/list/notpicked")
+    CategoryListResponse sublistNotPickedCategories(
+        @RequestParam("chat_id") long chatId,
+        @RequestParam("parent_id") long parentId,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size
+    );
+
     @GetMapping("/language/list")
     LanguageListResponse listLanguages(
         @RequestParam("chat_id") long chatId,

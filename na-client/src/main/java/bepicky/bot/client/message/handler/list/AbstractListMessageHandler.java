@@ -3,6 +3,7 @@ package bepicky.bot.client.message.handler.list;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.common.domain.dto.CategoryDto;
@@ -13,13 +14,13 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bepicky.bot.client.message.template.TemplateUtils.DIR_BACK;
-import static bepicky.bot.client.message.template.TemplateUtils.DIR_DONE;
-import static bepicky.bot.client.message.template.TemplateUtils.DIR_NEXT;
-import static bepicky.bot.client.message.template.TemplateUtils.DIR_PREV;
+import static bepicky.bot.client.message.template.ButtonNames.DIR_BACK;
+import static bepicky.bot.client.message.template.ButtonNames.DIR_DONE;
+import static bepicky.bot.client.message.template.ButtonNames.DIR_NEXT;
+import static bepicky.bot.client.message.template.ButtonNames.DIR_PREV;
+import static bepicky.bot.client.message.template.ButtonNames.PICK;
+import static bepicky.bot.client.message.template.ButtonNames.REMOVE;
 import static bepicky.bot.client.message.template.TemplateUtils.LIST_SUBCATEGORY;
-import static bepicky.bot.client.message.template.TemplateUtils.PICK;
-import static bepicky.bot.client.message.template.TemplateUtils.REMOVE;
 import static bepicky.bot.client.message.template.TemplateUtils.name;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
@@ -31,6 +32,9 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
 
     @Autowired
     protected MessageTemplateContext templateContext;
+
+    @Autowired
+    protected ChatFlowManager flowContext;
 
     protected HandleResult error(String msg) {
         String errorMessage = templateContext.errorTemplate(
