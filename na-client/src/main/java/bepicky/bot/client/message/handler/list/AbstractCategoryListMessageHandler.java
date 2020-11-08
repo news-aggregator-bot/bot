@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static bepicky.bot.client.message.button.CommandType.LIST;
+import static bepicky.bot.client.message.button.CommandType.LIST_NOT_PICKED;
+import static bepicky.bot.client.message.button.CommandType.LIST_PICKED;
+import static bepicky.bot.client.message.button.CommandType.SUBLIST;
+import static bepicky.bot.client.message.button.CommandType.SUBLIST_NOT_PICKED;
+import static bepicky.bot.client.message.button.CommandType.SUBLIST_PICKED;
 import static bepicky.bot.client.message.template.TemplateUtils.page;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
@@ -26,7 +32,9 @@ public abstract class AbstractCategoryListMessageHandler extends AbstractListMes
     protected ICategoryService categoryService;
 
     private final Map<CommandType, CommandType> sublistMapping = ImmutableMap.<CommandType, CommandType>builder()
-        .put(CommandType.LIST, CommandType.SUBLIST)
+        .put(LIST, SUBLIST)
+        .put(LIST_PICKED, SUBLIST_PICKED)
+        .put(LIST_NOT_PICKED, SUBLIST_NOT_PICKED)
         .build();
 
     @Override
