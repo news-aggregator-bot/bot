@@ -67,12 +67,9 @@ public class NewsControllerTest {
 
         SendMessage value = sendMsgAc.getValue();
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("title\n" +
-            "\n" +
-            "url\n" +
-            "\n" +
-            "Region: USA, USSR\n" +
-            "Category: Politics, Finance\n" +
+        assertEquals("[title](url)\n\n" +
+            "Region: *USA, USSR*\n" +
+            "Category: *Politics, Finance*\n" +
             "Author: author", value.getText());
     }
 
@@ -96,11 +93,8 @@ public class NewsControllerTest {
 
         SendMessage value = sendMsgAc.getValue();
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("title\n" +
-            "\n" +
-            "url\n" +
-            "\n" +
-            "Category: Politics, Finance\n" +
+        assertEquals("[title](url)\n\n" +
+            "Category: *Politics, Finance*\n" +
             "Author: author", value.getText());
     }
 
@@ -124,11 +118,8 @@ public class NewsControllerTest {
 
         SendMessage value = sendMsgAc.getValue();
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("title\n" +
-            "\n" +
-            "url\n" +
-            "\n" +
-            "Category: Politics, Finance", value.getText());
+        assertEquals("[title](url)\n\n" +
+            "Category: *Politics, Finance*", value.getText());
     }
 
     @Test
@@ -149,11 +140,8 @@ public class NewsControllerTest {
 
         SendMessage value = sendMsgAc.getValue();
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("title\n" +
-            "\n" +
-            "url\n" +
-            "\n" +
-            "Category: Finance", value.getText());
+        assertEquals("[title](url)\n\n" +
+            "Category: *Finance*", value.getText());
     }
 
     @Test(expected = NullPointerException.class)
