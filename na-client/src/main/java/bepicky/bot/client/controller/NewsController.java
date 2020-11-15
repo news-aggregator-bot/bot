@@ -50,6 +50,7 @@ public class NewsController {
         }
         try {
             bot.execute(new SendMessage()
+                .enableMarkdownV2(true)
                 .setChatId(request.getChatId())
                 .setText(String.join("\n", newsNotes)));
         } catch (TelegramApiException e) {
