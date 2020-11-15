@@ -1,1 +1,1 @@
-Done :white_check_mark:
+:white_check_mark: Done

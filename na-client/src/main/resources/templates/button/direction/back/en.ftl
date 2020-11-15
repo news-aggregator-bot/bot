@@ -1,1 +1,1 @@
-Back :arrow_up:
+:leftwards_arrow_with_hook: Back

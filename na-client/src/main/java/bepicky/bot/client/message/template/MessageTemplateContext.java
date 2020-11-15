@@ -42,6 +42,9 @@ public class MessageTemplateContext {
             template.process(params, stringWriter);
             return stringWriter.toString();
         } catch (IOException | TemplateException e) {
+            if (!LangUtils.ALL.equals(lang)) {
+                return processTemplate(dir, LangUtils.ALL, params);
+            }
             log.error("Template processing failed {}", e.getMessage());
             return processTemplate(ERROR, language, Collections.emptyMap());
         }

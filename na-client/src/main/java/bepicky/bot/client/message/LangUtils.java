@@ -3,9 +3,12 @@ package bepicky.bot.client.message;
 import com.google.common.collect.ImmutableList;
 
 public class LangUtils {
-    private LangUtils(){}
+
+    private LangUtils() {}
 
     public static final String DEFAULT = "en";
+
+    public static final String ALL = "all";
 
     private static final ImmutableList<String> SUPPORTED = ImmutableList.of(DEFAULT, "ru", "ua");
 

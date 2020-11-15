@@ -1,1 +1,1 @@
-Stop
+:stop_sign: Stop

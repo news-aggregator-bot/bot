@@ -1,1 +1,1 @@
-Remove :x:
+:x: Remove
