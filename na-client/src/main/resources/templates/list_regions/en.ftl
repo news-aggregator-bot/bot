@@ -1,7 +1,7 @@
-Select regions on our lovely Planet from which you would like to read news.
+Select regions from which you would like to read news.
 
-Note: You can always update your regions in settings after finishing setup.
+*Note: You can always update your regions in settings after finishing setup.*
 Page ${page}.
 :white_check_mark: – pick region
 :x: - unpick region
-:arrow_down: – list countries.
+:arrow_down: – list subregions.

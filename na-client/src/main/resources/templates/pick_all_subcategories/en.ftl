@@ -1,1 +1,1 @@
-All of ${category} :white_check_mark:
+:white_check_mark: All of ${category}

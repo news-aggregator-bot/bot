@@ -36,7 +36,7 @@ public class OptionsCommonMessageHandler implements CommonMessageHandler {
             : Tuples.of(ButtonNames.ENABLE_READER, CommandType.ENABLE_READER);
 
         MarkupBuilder.Button activationButton = builder.button(
-            templateContext.processTemplate(activationKeys.getT1(), reader.getLang()),
+            templateContext.processEmojiTemplate(activationKeys.getT1(), reader.getLang()),
             activationKeys.getT2().name()
         );
         builder.addButton(builder.button(settingsText, CommandType.SETTINGS.name()))

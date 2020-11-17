@@ -1,1 +1,1 @@
-Shit happens! {error}
+Shit happens!

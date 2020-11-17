@@ -1,1 +1,1 @@
-Now you read ${name}'s news.
+You've just subscribed on ${name} source.

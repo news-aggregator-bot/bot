@@ -1,1 +1,1 @@
-You've just unsubscribed from news on ${name} language.
+You've just removed ${name} language.

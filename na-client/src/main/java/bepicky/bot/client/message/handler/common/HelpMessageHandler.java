@@ -25,7 +25,7 @@ public class HelpMessageHandler implements CommonMessageHandler {
     public BotApiMethod<Message> handle(Message message) {
         ReaderDto reader = readerService.find(message.getChatId());
         String text = templateContext.processTemplate(TemplateUtils.HELP, reader.getLang());
-        return new SendMessage().setChatId(message.getChatId()).setText(text);
+        return new SendMessage().enableMarkdownV2(true).setChatId(message.getChatId()).setText(text);
     }
 
     @Override

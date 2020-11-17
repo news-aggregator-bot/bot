@@ -55,6 +55,7 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
         markup.addButtons(Arrays.asList(categoriesButton));
 
         return new SendMessage()
+            .enableMarkdownV2(true)
             .setChatId(message.getChatId())
             .setReplyMarkup(markup.build())
             .setText(text);

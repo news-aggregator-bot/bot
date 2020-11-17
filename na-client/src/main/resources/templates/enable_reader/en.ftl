@@ -1,2 +1,2 @@
-You are great!
-Now I will notify with news you like!
+Your profile is activated successfully!
+Once I will find something for you I will let you know.
