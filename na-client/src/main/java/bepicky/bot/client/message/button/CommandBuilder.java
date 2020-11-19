@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import static bepicky.bot.client.message.button.CommandType.LIST;
 import static bepicky.bot.client.message.button.CommandType.PICK;
+import static bepicky.bot.client.message.button.CommandType.PICK_ALL;
 import static bepicky.bot.client.message.button.CommandType.REMOVE;
 
 @Component
@@ -14,6 +15,7 @@ public class CommandBuilder {
     private static final String COMMON_PATTERN = "%s:%s:%d";
     private static final String SUBLIST_PATTERN = "%s:%s:%d:%d";
     private static final String PICK_PATTERN = PICK.name() + ":%s:%s";
+    private static final String PICK_ALL_PATTERN = PICK_ALL.name() + ":%s:%s";
     private static final String REMOVE_PATTERN = REMOVE.name() + ":%s:%s";
     private static final String LIST_PATTERN = LIST.name() + ":%s:%d";
     private static final String LIST_ENTITY_PATTERN = LIST.name() + ":%s:%s:%d";
@@ -25,6 +27,10 @@ public class CommandBuilder {
 
     public String pick(String entity, long id) {
         return String.format(PICK_PATTERN, entity, id);
+    }
+
+    public String pickAll(String entity, long id) {
+        return String.format(PICK_ALL_PATTERN, entity, id);
     }
 
     public String remove(String entity, String name) {

@@ -9,6 +9,7 @@ public enum CommandType {
     SUBLIST_NOT_PICKED,
     UPDATE,
     PICK,
+    PICK_ALL,
     REMOVE,
     ENABLE_READER,
     DISABLE_READER,

@@ -24,7 +24,7 @@ public class PickedRegionSubCategoryListMessageHandler extends AbstractSubCatego
 
     @Override
     protected CategoryListResponse getSubCategories(long chatId, long parentId, int page) {
-        return categoryService.sublistPicked(chatId, parentId, page, PAGE_SIZE);
+        return categoryService.sublistPicked(chatId, parentId, page, FOUR_PAGE_SIZE);
     }
 
     @Override

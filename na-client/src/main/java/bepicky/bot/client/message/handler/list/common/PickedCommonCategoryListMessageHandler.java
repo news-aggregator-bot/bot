@@ -13,7 +13,7 @@ public class PickedCommonCategoryListMessageHandler extends AbstractCategoryList
 
     @Override
     protected CategoryListResponse getCategories(long chatId, int page) {
-        return categoryService.listPicked(chatId, "COMMON", page, PAGE_SIZE);
+        return categoryService.listPicked(chatId, "COMMON", page, FOUR_PAGE_SIZE);
     }
 
     @Override

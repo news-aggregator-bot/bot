@@ -28,6 +28,8 @@ import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 @Component
 public abstract class AbstractCategoryListMessageHandler extends AbstractListMessageHandler {
 
+    public static final int FOUR_PAGE_SIZE = 4;
+
     @Autowired
     protected ICategoryService categoryService;
 
@@ -59,7 +61,7 @@ public abstract class AbstractCategoryListMessageHandler extends AbstractListMes
             .collect(Collectors.toList());
 
         List<MarkupBuilder.Button> navigation = navigation(page, trigger(), response, markup);
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
+        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 

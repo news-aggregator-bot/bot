@@ -13,7 +13,7 @@ public class NotPickedCommonCategoryListMessageHandler extends AbstractCategoryL
 
     @Override
     protected CategoryListResponse getCategories(long chatId, int page) {
-        return categoryService.listNotPicked(chatId, "COMMON", page, PAGE_SIZE);
+        return categoryService.listNotPicked(chatId, "COMMON", page, FOUR_PAGE_SIZE);
     }
 
     @Override

@@ -77,6 +77,9 @@ public interface NaServiceClient {
         @RequestParam("size") int size
     );
 
+    @PostMapping("/category/pick/all")
+    CategoryResponse pickAll(@RequestBody CategoryRequest request);
+
     @PostMapping("/category/pick")
     CategoryResponse pick(@RequestBody CategoryRequest request);
 

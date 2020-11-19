@@ -13,7 +13,7 @@ public class PickedRegionCategoryListMessageHandler extends AbstractCategoryList
 
     @Override
     protected CategoryListResponse getCategories(long chatId, int page) {
-        return categoryService.listPicked(chatId, "REGION", page, PAGE_SIZE);
+        return categoryService.listPicked(chatId, "REGION", page, FOUR_PAGE_SIZE);
     }
 
     @Override

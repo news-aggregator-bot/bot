@@ -34,7 +34,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
     public HandleResult handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
-        SourceListResponse response = sourceService.list(message.getChatId(), page, PAGE_SIZE);
+        SourceListResponse response = sourceService.list(message.getChatId(), page, FOUR_PAGE_SIZE);
         if (response.isError()) {
             return error(response.getError().getEntity());
         }
@@ -46,7 +46,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
             .collect(Collectors.toList());
 
         List<MarkupBuilder.Button> navigation = navigation(page, trigger(), response, markup);
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
+        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 

@@ -24,7 +24,7 @@ public class NotPickedRegionSubCategoryListMessageHandler extends AbstractSubCat
 
     @Override
     protected CategoryListResponse getSubCategories(long chatId, long parentId, int page) {
-        return categoryService.sublistNotPicked(chatId, parentId, page, PAGE_SIZE);
+        return categoryService.sublistNotPicked(chatId, parentId, page, FOUR_PAGE_SIZE);
     }
 
     @Override

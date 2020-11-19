@@ -35,7 +35,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
     public HandleResult handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
-        LanguageListResponse response = languageService.list(message.getChatId(), page, PAGE_SIZE);
+        LanguageListResponse response = languageService.list(message.getChatId(), page, SIX_PAGE_SIZE);
         if (response.isError()) {
             return error(response.getError().getEntity());
         }

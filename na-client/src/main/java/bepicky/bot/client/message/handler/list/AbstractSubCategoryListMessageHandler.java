@@ -76,7 +76,7 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
             navigation.add(markup.button(nextText, commandBuilder.list(trigger(), parentId, page + 1)));
         }
 
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(subcategoryButtons, 3);
+        List<List<MarkupBuilder.Button>> partition = Lists.partition(subcategoryButtons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 

@@ -6,7 +6,9 @@ import bepicky.bot.client.message.handler.CallbackMessageHandler;
 
 public interface ListMessageHandler extends CallbackMessageHandler {
 
-    int PAGE_SIZE = 6;
+    int FOUR_PAGE_SIZE = 4;
+
+    int SIX_PAGE_SIZE = 6;
 
     CommandType commandType();
 
