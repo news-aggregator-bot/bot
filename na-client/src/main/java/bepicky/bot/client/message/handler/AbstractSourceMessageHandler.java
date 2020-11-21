@@ -57,7 +57,7 @@ public abstract class AbstractSourceMessageHandler implements CallbackMessageHan
     }
 
     private MarkupBuilder.Button buildContinueButton(String lang, MarkupBuilder markup) {
-        String buttonText = templateContext.processTemplate(ButtonNames.DIR_CONTINUE, lang);
+        String buttonText = templateContext.processEmojiTemplate(ButtonNames.DIR_CONTINUE, lang);
         return markup.button(buttonText, commandBuilder.list(trigger(), 1));
     }
 
