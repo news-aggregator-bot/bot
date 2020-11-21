@@ -45,7 +45,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
             .map(this::buildButton)
             .collect(Collectors.toList());
 
-        List<MarkupBuilder.Button> navigation = navigation(page, trigger(), response, markup);
+        List<MarkupBuilder.Button> navigation = navigation(page, response, markup);
         List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);

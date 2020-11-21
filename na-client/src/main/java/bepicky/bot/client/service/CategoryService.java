@@ -24,33 +24,23 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryListResponse listPicked(long chatId, String type, int page, int pageSize) {
-        return categoryClient.listPickedCategories(chatId, page, pageSize, type);
-    }
-
-    @Override
-    public CategoryListResponse sublistPicked(long chatId, long parentId, int page, int pageSize) {
-        return categoryClient.sublistPickedCategories(chatId, parentId, page, pageSize);
-    }
-
-    @Override
-    public CategoryListResponse listNotPicked(long chatId, String type, int page, int pageSize) {
-        return categoryClient.listNotPickedCategories(chatId, page, pageSize, type);
-    }
-
-    @Override
-    public CategoryListResponse sublistNotPicked(long chatId, long parentId, int page, int pageSize) {
-        return categoryClient.sublistNotPickedCategories(chatId, parentId, page, pageSize);
-    }
-
-    @Override
     public CategoryResponse pick(long chatId, long id) {
         return categoryClient.pick(req(chatId, id));
     }
 
     @Override
+    public CategoryResponse pickAll(long chatId, long id) {
+        return categoryClient.pickAll(req(chatId, id));
+    }
+
+    @Override
     public CategoryResponse remove(long chatId, long id) {
         return categoryClient.remove(req(chatId, id));
+    }
+
+    @Override
+    public CategoryResponse removeAll(long chatId, long id) {
+        return categoryClient.removeAll(req(chatId, id));
     }
 
     private CategoryRequest req(long chatId, long id) {

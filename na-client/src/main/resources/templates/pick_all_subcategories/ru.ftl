@@ -1,1 +1,1 @@
-:white_check_mark: Всё из ${category}
+:white_check_mark: Всё из ${name}

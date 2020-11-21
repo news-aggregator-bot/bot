@@ -22,7 +22,6 @@ import static bepicky.bot.client.message.template.ButtonNames.SETTINGS_CATEGORY;
 import static bepicky.bot.client.message.template.ButtonNames.SETTINGS_LANGUAGE;
 import static bepicky.bot.client.message.template.ButtonNames.SETTINGS_REGION;
 import static bepicky.bot.client.message.template.ButtonNames.SETTINGS_SOURCE;
-import static bepicky.bot.client.message.template.TemplateUtils.ENABLE_READER;
 
 @Component
 public class SettingsMessageHandler implements UtilMessageHandler {
@@ -48,10 +47,10 @@ public class SettingsMessageHandler implements UtilMessageHandler {
         MarkupBuilder markup = new MarkupBuilder();
 
         String lang = reader.getLang();
-        MarkupBuilder.Button regionButton = buildButton(commandBuilder.update(REGION),
+        MarkupBuilder.Button regionButton = buildButton(commandBuilder.list(REGION.low()),
             SETTINGS_REGION, lang
         );
-        MarkupBuilder.Button categoryButton = buildButton(commandBuilder.update(CATEGORY),
+        MarkupBuilder.Button categoryButton = buildButton(commandBuilder.list(CATEGORY.low()),
             SETTINGS_CATEGORY, lang
         );
         MarkupBuilder.Button languageButton = buildButton(commandBuilder.list(LANGUAGE.low()),
@@ -60,7 +59,7 @@ public class SettingsMessageHandler implements UtilMessageHandler {
         MarkupBuilder.Button sourceButton = buildButton(commandBuilder.list(SOURCE.low()),
             SETTINGS_SOURCE, lang
         );
-        MarkupBuilder.Button closeButton = buildButton(ENABLE_READER, CLOSE, lang);
+        MarkupBuilder.Button closeButton = buildButton(CommandType.ENABLE_READER.name(), CLOSE, lang);
 
         String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, lang);
 

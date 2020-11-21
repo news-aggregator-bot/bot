@@ -55,7 +55,7 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
         String text = templateContext.processTemplate(
             textKey(),
             readerLang,
-            TemplateUtils.params("name", category.getName())
+            TemplateUtils.name(category.getName())
         );
         return new HandleResult(text, markup.build());
     }
@@ -66,7 +66,7 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
         String lang,
         MarkupBuilder markup
     ) {
-        String buttonText = templateContext.processTemplate(ButtonNames.DIR_CONTINUE, lang);
+        String buttonText = templateContext.processEmojiTemplate(ButtonNames.DIR_CONTINUE, lang);
         if (category.getParent() == null) {
             return markup.button(buttonText, commandBuilder.list(flow.getCommandType(), trigger()));
         }

@@ -1,1 +1,1 @@
-:x: All of ${category}
+:x: All of ${name}

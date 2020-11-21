@@ -47,7 +47,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
             .map(l -> buildButton(response.getReader(), l))
             .collect(Collectors.toList());
 
-        List<MarkupBuilder.Button> navigation = navigation(page, trigger(), response, markup);
+        List<MarkupBuilder.Button> navigation = navigation(page, response, markup);
         List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);

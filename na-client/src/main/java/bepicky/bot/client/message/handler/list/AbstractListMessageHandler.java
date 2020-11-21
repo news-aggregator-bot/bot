@@ -46,20 +46,19 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
 
     protected List<MarkupBuilder.Button> navigation(
         int page,
-        String entityKey,
         AbstractListResponse response,
         MarkupBuilder markup
     ) {
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (!response.isFirst()) {
             String prevText = prevButtonText(LangUtils.DEFAULT);
-            navigation.add(markup.button(prevText, commandBuilder.list(entityKey, page - 1)));
+            navigation.add(markup.button(prevText, commandBuilder.list(commandType(), trigger(), page - 1)));
         }
         navigation.add(markup.done(doneButtonText(response.getReader().getLang())));
 
         if (!response.isLast()) {
             String nextText = nextButtonText(LangUtils.DEFAULT);
-            navigation.add(markup.button(nextText, commandBuilder.list(entityKey, page + 1)));
+            navigation.add(markup.button(nextText, commandBuilder.list(commandType(), trigger(), page + 1)));
         }
         return navigation;
     }

@@ -3,6 +3,7 @@ package bepicky.bot.client.message.handler.list;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.common.domain.dto.CategoryDto;
@@ -31,8 +32,6 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
     private final Map<CommandType, CommandType> parentCommandMapping =
         ImmutableMap.<CommandType, CommandType>builder()
             .put(CommandType.SUBLIST, CommandType.LIST)
-            .put(CommandType.SUBLIST_PICKED, CommandType.LIST_PICKED)
-            .put(CommandType.SUBLIST_NOT_PICKED, CommandType.LIST_NOT_PICKED)
             .build();
 
     @Override
@@ -47,6 +46,7 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         }
         List<CategoryDto> categories = response.getList();
         CategoryDto parent = categories.get(0).getParent();
+        boolean allCategoriesPicked = categories.stream().allMatch(CategoryDto::isPicked);
 
         MarkupBuilder markup = new MarkupBuilder();
         String readerLang = response.getReader().getLang();
@@ -60,20 +60,28 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         MarkupBuilder.Button allSubCategoriesBtn = buildAllSubCategoryButton(
             parentId,
             parent,
+            allCategoriesPicked,
             markup,
             readerLang
         );
-        markup.addButtons(Arrays.asList(allSubCategoriesBtn));
+        MarkupBuilder.Button onlyParentBtn = buildOnlyParentCategoryButton(parentId, parent, markup, readerLang);
+        markup.addButtons(Arrays.asList(allSubCategoriesBtn, onlyParentBtn));
 
         List<MarkupBuilder.Button> navigation = new ArrayList<>();
         if (!response.isFirst()) {
             String prevText = prevButtonText(readerLang);
-            navigation.add(markup.button(prevText, commandBuilder.list(trigger(), parentId, page - 1)));
+            navigation.add(markup.button(
+                prevText,
+                commandBuilder.sublist(commandType(), trigger(), parentId, page - 1)
+            ));
         }
         navigation.add(markup.button(backButtonText(readerLang), buildBackCommand(parent)));
         if (!response.isLast()) {
             String nextText = nextButtonText(readerLang);
-            navigation.add(markup.button(nextText, commandBuilder.list(trigger(), parentId, page + 1)));
+            navigation.add(markup.button(
+                nextText,
+                commandBuilder.sublist(commandType(), trigger(), parentId, page + 1)
+            ));
         }
 
         List<List<MarkupBuilder.Button>> partition = Lists.partition(subcategoryButtons, 2);
@@ -96,13 +104,33 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
     private MarkupBuilder.Button buildAllSubCategoryButton(
         long parentId,
         CategoryDto parent,
+        boolean allChildrenPicked,
+        MarkupBuilder markup,
+        String readerLang
+    ) {
+        boolean picked = parent.isPicked() && allChildrenPicked;
+        String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
+            picked ? REMOVE_ALL_SUBCATEGORIES : PICK_ALL_SUBCATEGORIES,
+            readerLang,
+            TemplateUtils.name(parent.getName())
+        ));
+
+        String parentCommand = picked ?
+            commandBuilder.removeAll(trigger(), parentId) :
+            commandBuilder.pickAll(trigger(), parentId);
+        return markup.button(allSubcategoriesText, parentCommand);
+    }
+
+    private MarkupBuilder.Button buildOnlyParentCategoryButton(
+        long parentId,
+        CategoryDto parent,
         MarkupBuilder markup,
         String readerLang
     ) {
         String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
-            parent.isPicked() ? REMOVE_ALL_SUBCATEGORIES : PICK_ALL_SUBCATEGORIES,
+            parent.isPicked() ? ButtonNames.REMOVE : ButtonNames.PICK,
             readerLang,
-            TemplateUtils.params("category", parent.getName())
+            TemplateUtils.name(parent.getName())
         ));
 
         String parentCommand = parent.isPicked() ?

@@ -7,16 +7,17 @@ import static bepicky.bot.client.message.button.CommandType.LIST;
 import static bepicky.bot.client.message.button.CommandType.PICK;
 import static bepicky.bot.client.message.button.CommandType.PICK_ALL;
 import static bepicky.bot.client.message.button.CommandType.REMOVE;
+import static bepicky.bot.client.message.button.CommandType.REMOVE_ALL;
 
 @Component
 public class CommandBuilder {
 
-    private static final String UPDATE_PATTERN = "%s:%s";
     private static final String COMMON_PATTERN = "%s:%s:%d";
     private static final String SUBLIST_PATTERN = "%s:%s:%d:%d";
     private static final String PICK_PATTERN = PICK.name() + ":%s:%s";
     private static final String PICK_ALL_PATTERN = PICK_ALL.name() + ":%s:%s";
     private static final String REMOVE_PATTERN = REMOVE.name() + ":%s:%s";
+    private static final String REMOVE_ALL_PATTERN = REMOVE_ALL.name() + ":%s:%s";
     private static final String LIST_PATTERN = LIST.name() + ":%s:%d";
     private static final String LIST_ENTITY_PATTERN = LIST.name() + ":%s:%s:%d";
 
@@ -41,8 +42,8 @@ public class CommandBuilder {
         return String.format(REMOVE_PATTERN, entity, id);
     }
 
-    public String update(EntityType entityType) {
-        return String.format(UPDATE_PATTERN, CommandType.UPDATE, entityType.low());
+    public String removeAll(String entity, long id) {
+        return String.format(REMOVE_ALL_PATTERN, entity, id);
     }
 
     public String list(String entity) {

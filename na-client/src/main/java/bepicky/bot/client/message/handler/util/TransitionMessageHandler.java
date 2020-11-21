@@ -13,8 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.Arrays;
 
-import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
-
 @Component
 public class TransitionMessageHandler implements UtilMessageHandler {
 
@@ -33,7 +31,7 @@ public class TransitionMessageHandler implements UtilMessageHandler {
         MarkupBuilder markup = new MarkupBuilder();
         ChatFlow next = flowContext.goNext(message.getChatId());
         String nextText = templateContext.processTemplate(next.getMsgKey(), readerDto.getLang());
-        String buttonText = parseToUnicode(templateContext.processTemplate(next.getButtonKey(), readerDto.getLang()));
+        String buttonText = templateContext.processEmojiTemplate(next.getButtonKey(), readerDto.getLang());
         MarkupBuilder.Button button = markup.button(buttonText, next.getCommand());
         markup.addButtons(Arrays.asList(button));
 
