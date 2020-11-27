@@ -34,7 +34,7 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
     public HandleResult handle(Message message, String data) {
         String[] split = MessageUtils.parse(data);
         int page = Integer.parseInt(split[2]);
-        SourceListResponse response = sourceService.list(message.getChatId(), page, FOUR_PAGE_SIZE);
+        SourceListResponse response = sourceService.list(message.getChatId(), page, SIX_PAGE_SIZE);
         if (response.isError()) {
             return error(response.getError().getEntity());
         }

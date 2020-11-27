@@ -3,7 +3,7 @@ package bepicky.bot.client.message.handler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 public interface CallbackMessageHandler extends MessageHandler {
 
@@ -14,6 +14,6 @@ public interface CallbackMessageHandler extends MessageHandler {
     class HandleResult {
 
         private final String text;
-        private final InlineKeyboardMarkup markup;
+        private final ReplyKeyboard markup;
     }
 }

@@ -24,8 +24,6 @@ import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 @Component
 public abstract class AbstractCategoryListMessageHandler extends AbstractListMessageHandler {
 
-    public static final int FOUR_PAGE_SIZE = 4;
-
     @Autowired
     protected ICategoryService categoryService;
 

@@ -18,7 +18,7 @@ public class RegionCategoryListMessageHandler extends AbstractCategoryListMessag
 
     @Override
     protected CategoryListResponse getCategories(long chatId, int page) {
-        return categoryService.list(chatId, "REGION", page, FOUR_PAGE_SIZE);
+        return categoryService.list(chatId, "REGION", page, SIX_PAGE_SIZE);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class CommonCategoryListMessageHandler extends AbstractCategoryListMessag
 
     @Override
     protected CategoryListResponse getCategories(long chatId, int page) {
-        return categoryService.list(chatId, "COMMON", page, FOUR_PAGE_SIZE);
+        return categoryService.list(chatId, "COMMON", page, SIX_PAGE_SIZE);
     }
 
     @Override
