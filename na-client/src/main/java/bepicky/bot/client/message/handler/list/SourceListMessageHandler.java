@@ -4,7 +4,7 @@ import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
@@ -40,13 +40,13 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
         }
         List<SourceDto> sources = response.getList();
 
-        MarkupBuilder markup = new MarkupBuilder();
-        List<MarkupBuilder.Button> buttons = sources.stream()
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
+        List<InlineMarkupBuilder.InlineButton> buttons = sources.stream()
             .map(this::buildButton)
             .collect(Collectors.toList());
 
-        List<MarkupBuilder.Button> navigation = navigation(page, response, markup);
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 2);
+        List<InlineMarkupBuilder.InlineButton> navigation = navigation(page, response, markup);
+        List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
@@ -58,12 +58,12 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
         return new HandleResult(listSourcesText, markup.build());
     }
 
-    private MarkupBuilder.Button buildButton(SourceDto s) {
+    private InlineMarkupBuilder.InlineButton buildButton(SourceDto s) {
         String textKey = s.isPicked() ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = s.isPicked() ?
             commandBuilder.remove(trigger(), s.getId()) :
             commandBuilder.pick(trigger(), s.getId());
-        return MarkupBuilder.Button.builder()
+        return InlineMarkupBuilder.InlineButton.builder()
             .text(buildText(s, textKey))
             .command(command)
             .build();

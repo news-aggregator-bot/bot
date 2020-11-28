@@ -1,7 +1,7 @@
 package bepicky.bot.client.message.handler.common;
 
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
@@ -28,14 +28,14 @@ public class OptionsCommonMessageHandler implements CommonMessageHandler {
     public BotApiMethod<Message> handle(Message message) {
         ReaderDto reader = readerService.find(message.getChatId());
 
-        MarkupBuilder builder = new MarkupBuilder();
+        InlineMarkupBuilder builder = new InlineMarkupBuilder();
         String settingsText = templateContext.processTemplate(ButtonNames.SETTINGS, reader.getLang());
 
         Tuple2<String, CommandType> activationKeys = reader.isEnabled() ?
             Tuples.of(ButtonNames.DISABLE_READER, CommandType.DISABLE_READER)
             : Tuples.of(ButtonNames.ENABLE_READER, CommandType.ENABLE_READER);
 
-        MarkupBuilder.Button activationButton = builder.button(
+        InlineMarkupBuilder.InlineButton activationButton = builder.button(
             templateContext.processEmojiTemplate(activationKeys.getT1(), reader.getLang()),
             activationKeys.getT2().name()
         );

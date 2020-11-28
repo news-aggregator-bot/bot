@@ -3,6 +3,7 @@ package bepicky.bot.client.message;
 import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.handler.CallbackMessageHandler;
 import bepicky.bot.client.message.handler.MessageHandler;
+import bepicky.bot.client.message.handler.MessageToCommandContainer;
 import bepicky.bot.client.message.handler.common.CommonMessageHandler;
 import bepicky.bot.client.message.handler.common.HelpMessageHandler;
 import bepicky.bot.client.message.handler.list.ListMessageHandler;
@@ -51,6 +52,8 @@ public class MessageHandlerManager {
 
     private final Map<String, UtilMessageHandler> utilHandlers;
 
+    private final MessageToCommandContainer msg2CmdContainer;
+
     @Autowired
     public MessageHandlerManager(
         List<CommonMessageHandler> commonMessageHandlers,
@@ -59,7 +62,8 @@ public class MessageHandlerManager {
         List<PickAllMessageHandler> pickAllMessageHandlers,
         List<RemoveMessageHandler> removeMessageHandlers,
         List<RemoveAllMessageHandler> removeAllMessageHandlers,
-        List<UtilMessageHandler> utilMessageHandler
+        List<UtilMessageHandler> utilMessageHandler,
+        MessageToCommandContainer msg2CommandContainer
     ) {
         this.commonMessageHandlers = convert(commonMessageHandlers);
         this.pickMessageHandlers = convert(pickMessageHandlers);
@@ -83,14 +87,20 @@ public class MessageHandlerManager {
 
         this.utilHandlers = utilMessageHandler.stream()
             .collect(Collectors.toMap(UtilMessageHandler::trigger, Function.identity()));
+        this.msg2CmdContainer = msg2CommandContainer;
     }
 
     public BotApiMethod<Message> manage(Message message) {
-        CommonMessageHandler commonMessageHandler = commonMessageHandlers.getOrDefault(
-            message.getText(),
-            commonMessageHandlers.get(HelpMessageHandler.HELP)
-        );
-        return commonMessageHandler.handle(message);
+        return getCommonHandler(message.getText()).handle(message);
+    }
+
+    private CommonMessageHandler getCommonHandler(String text) {
+        CommonMessageHandler commonMessageHandler = commonMessageHandlers.get(text);
+        if (commonMessageHandler != null) {
+            return commonMessageHandler;
+        }
+        String cmd = msg2CmdContainer.getCommand(text);
+        return cmd != null ? commonMessageHandlers.get(cmd) : commonMessageHandlers.get(HelpMessageHandler.HELP);
     }
 
     public BotApiMethod<Serializable> manageCallback(Message message, String data) {
@@ -99,7 +109,7 @@ public class MessageHandlerManager {
             .setChatId(message.getChatId())
             .setMessageId(message.getMessageId())
             .setText(handleResult.getText())
-            .setReplyMarkup(handleResult.getMarkup());
+            .setReplyMarkup(handleResult.getInline());
     }
 
     private CallbackMessageHandler.HandleResult handleCallback(Message message, String data) {

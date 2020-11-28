@@ -1,7 +1,7 @@
 package bepicky.bot.client.message.handler.util;
 
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
@@ -28,7 +28,7 @@ public class DisableReaderMessageHandler implements UtilMessageHandler {
         ReaderDto disabled = readerService.disable(message.getChatId());
         log.debug("reader:{}:disable:success", message.getChatId());
         String currentText = templateContext.processTemplate(DISABLE_READER, disabled.getLang());
-        return new HandleResult(currentText, new MarkupBuilder().build());
+        return new HandleResult(currentText, new InlineMarkupBuilder().build());
     }
 
     @Override

@@ -3,7 +3,7 @@ package bepicky.bot.client.message.handler;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlow;
 import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.ButtonNames;
@@ -44,11 +44,11 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
         }
 
         CategoryDto category = response.getCategory();
-        MarkupBuilder markup = new MarkupBuilder();
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
         String readerLang = response.getReader().getLang();
         ChatFlow current = flowContext.current(message.getChatId());
 
-        List<MarkupBuilder.Button> navigation = new ArrayList<>();
+        List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
         navigation.add(buildContinueButton(category, current, readerLang, markup));
         markup.addButtons(navigation);
 
@@ -60,11 +60,11 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
         return new HandleResult(text, markup.build());
     }
 
-    protected MarkupBuilder.Button buildContinueButton(
+    protected InlineMarkupBuilder.InlineButton buildContinueButton(
         CategoryDto category,
         ChatFlow flow,
         String lang,
-        MarkupBuilder markup
+        InlineMarkupBuilder markup
     ) {
         String buttonText = templateContext.processEmojiTemplate(ButtonNames.DIR_CONTINUE, lang);
         if (category.getParent() == null) {

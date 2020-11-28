@@ -1,7 +1,7 @@
 package bepicky.bot.client.message.handler.util;
 
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlow;
 import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
@@ -33,7 +33,7 @@ public class EnableReaderMessageHandler implements UtilMessageHandler {
         log.info("reader:{}:enable:success", message.getChatId());
         String currentText = templateContext.processTemplate(current.getMsgKey(), enabled.getLang());
         flowContext.clean(message.getChatId());
-        return new HandleResult(currentText, new MarkupBuilder().build());
+        return new HandleResult(currentText, new InlineMarkupBuilder().build());
     }
 
     @Override

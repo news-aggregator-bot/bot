@@ -4,7 +4,7 @@ import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
@@ -42,13 +42,13 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
         List<LanguageDto> languages = response.getList();
         flowContext.languageUpdateFlow(response.getReader().getChatId());
 
-        MarkupBuilder markup = new MarkupBuilder();
-        List<MarkupBuilder.Button> buttons = languages.stream()
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
+        List<InlineMarkupBuilder.InlineButton> buttons = languages.stream()
             .map(l -> buildButton(response.getReader(), l))
             .collect(Collectors.toList());
 
-        List<MarkupBuilder.Button> navigation = navigation(page, response, markup);
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 3);
+        List<InlineMarkupBuilder.InlineButton> navigation = navigation(page, response, markup);
+        List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(buttons, 3);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
@@ -60,13 +60,13 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
         return new HandleResult(listSubcategoryText, markup.build());
     }
 
-    private MarkupBuilder.Button buildButton(ReaderDto r, LanguageDto l) {
+    private InlineMarkupBuilder.InlineButton buildButton(ReaderDto r, LanguageDto l) {
         boolean langPicked = r.getLanguages().contains(l);
         String textKey = langPicked ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = langPicked ?
             commandBuilder.remove(trigger(), l.getLang()) :
             commandBuilder.pick(trigger(), l.getLang());
-        return MarkupBuilder.Button.builder()
+        return InlineMarkupBuilder.InlineButton.builder()
             .text(buildText(l, textKey))
             .command(command)
             .build();

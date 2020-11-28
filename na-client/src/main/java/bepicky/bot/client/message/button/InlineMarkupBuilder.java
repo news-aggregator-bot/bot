@@ -11,28 +11,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MarkupBuilder {
+public class InlineMarkupBuilder {
 
     private final List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
-    public MarkupBuilder addButtons(List<Button> buttons) {
+    public InlineMarkupBuilder addButtons(List<InlineButton> buttons) {
         rowsInline.add(buttons.stream()
             .map(b -> new InlineKeyboardButton().setText(b.text).setCallbackData(b.command))
             .collect(Collectors.toList()));
         return this;
     }
 
-    public MarkupBuilder addButton(Button button) {
+    public InlineMarkupBuilder addButton(InlineButton button) {
         addButtons(Arrays.asList(button));
         return this;
     }
 
-    public Button button(String text, String command) {
-        return Button.builder().text(text).command(command).build();
+    public InlineButton button(String text, String command) {
+        return InlineButton.builder().text(text).command(command).build();
     }
 
-    public Button done(String text) {
-        return Button.builder().text(text).command(CommandType.TRANSITION.name()).build();
+    public InlineButton done(String text) {
+        return InlineButton.builder().text(text).command(CommandType.TRANSITION.name()).build();
     }
 
     public InlineKeyboardMarkup build() {
@@ -43,7 +43,8 @@ public class MarkupBuilder {
 
     @Builder
     @Getter
-    public static class Button {
+    public static class InlineButton {
+
         private final String text;
         private final String command;
     }

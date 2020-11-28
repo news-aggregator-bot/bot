@@ -3,7 +3,7 @@ package bepicky.bot.client.message.handler;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
@@ -41,10 +41,10 @@ public abstract class AbstractSourceMessageHandler implements CallbackMessageHan
         }
 
         SourceDto src = response.getSource();
-        MarkupBuilder markup = new MarkupBuilder();
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
         String readerLang = response.getReader().getLang();
 
-        List<MarkupBuilder.Button> navigation = new ArrayList<>();
+        List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
         navigation.add(buildContinueButton(readerLang, markup));
         markup.addButtons(navigation);
 
@@ -56,7 +56,7 @@ public abstract class AbstractSourceMessageHandler implements CallbackMessageHan
         return new HandleResult(text, markup.build());
     }
 
-    private MarkupBuilder.Button buildContinueButton(String lang, MarkupBuilder markup) {
+    private InlineMarkupBuilder.InlineButton buildContinueButton(String lang, InlineMarkupBuilder markup) {
         String buttonText = templateContext.processEmojiTemplate(ButtonNames.DIR_CONTINUE, lang);
         return markup.button(buttonText, commandBuilder.list(trigger(), 1));
     }

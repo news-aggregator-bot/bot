@@ -57,4 +57,12 @@ public class MessageTemplateContext {
     public String errorTemplate(String lang) {
         return processTemplate(ERROR, lang, Collections.emptyMap());
     }
+
+    public String help(String lang) {
+        return processTemplate(TemplateUtils.HELP, lang);
+    }
+
+    public String helpButton(String lang) {
+        return processTemplate(ButtonNames.HELP, lang);
+    }
 }

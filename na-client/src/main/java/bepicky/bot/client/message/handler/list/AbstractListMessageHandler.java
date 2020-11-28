@@ -2,7 +2,7 @@ package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatFlowManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
@@ -44,12 +44,12 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
         return new HandleResult(errorMessage, null);
     }
 
-    protected List<MarkupBuilder.Button> navigation(
+    protected List<InlineMarkupBuilder.InlineButton> navigation(
         int page,
         AbstractListResponse response,
-        MarkupBuilder markup
+        InlineMarkupBuilder markup
     ) {
-        List<MarkupBuilder.Button> navigation = new ArrayList<>();
+        List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
         if (!response.isFirst()) {
             String prevText = prevButtonText(LangUtils.DEFAULT);
             navigation.add(markup.button(prevText, commandBuilder.list(commandType(), trigger(), page - 1)));

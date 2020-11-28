@@ -10,7 +10,7 @@ public class LangUtils {
 
     public static final String ALL = "all";
 
-    private static final ImmutableList<String> SUPPORTED = ImmutableList.of(DEFAULT, "ru", "ua");
+    public static final ImmutableList<String> SUPPORTED = ImmutableList.of(DEFAULT, "ru", "ukr");
 
     public static String getLang(String userLang) {
         return SUPPORTED.contains(userLang) ? userLang : DEFAULT;

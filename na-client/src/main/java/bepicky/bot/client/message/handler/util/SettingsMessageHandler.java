@@ -2,7 +2,7 @@ package bepicky.bot.client.message.handler.util;
 
 import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.IReaderService;
@@ -44,22 +44,22 @@ public class SettingsMessageHandler implements UtilMessageHandler {
     public HandleResult handle(Message message, String data) {
         ReaderDto reader = readerService.disable(message.getChatId());
 
-        MarkupBuilder markup = new MarkupBuilder();
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
 
         String lang = reader.getLang();
-        MarkupBuilder.Button regionButton = buildButton(commandBuilder.list(REGION.low()),
+        InlineMarkupBuilder.InlineButton regionButton = buildButton(commandBuilder.list(REGION.low()),
             SETTINGS_REGION, lang
         );
-        MarkupBuilder.Button categoryButton = buildButton(commandBuilder.list(CATEGORY.low()),
+        InlineMarkupBuilder.InlineButton categoryButton = buildButton(commandBuilder.list(CATEGORY.low()),
             SETTINGS_CATEGORY, lang
         );
-        MarkupBuilder.Button languageButton = buildButton(commandBuilder.list(LANGUAGE.low()),
+        InlineMarkupBuilder.InlineButton languageButton = buildButton(commandBuilder.list(LANGUAGE.low()),
             SETTINGS_LANGUAGE, lang
         );
-        MarkupBuilder.Button sourceButton = buildButton(commandBuilder.list(SOURCE.low()),
+        InlineMarkupBuilder.InlineButton sourceButton = buildButton(commandBuilder.list(SOURCE.low()),
             SETTINGS_SOURCE, lang
         );
-        MarkupBuilder.Button closeButton = buildButton(CommandType.ENABLE_READER.name(), CLOSE, lang);
+        InlineMarkupBuilder.InlineButton closeButton = buildButton(CommandType.ENABLE_READER.name(), CLOSE, lang);
 
         String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, lang);
 
@@ -68,9 +68,9 @@ public class SettingsMessageHandler implements UtilMessageHandler {
         return new HandleResult(settingsText, markup.build());
     }
 
-    private MarkupBuilder.Button buildButton(String languageCommand, String textKey, String lang) {
+    private InlineMarkupBuilder.InlineButton buildButton(String languageCommand, String textKey, String lang) {
         String text = templateContext.processTemplate(textKey, lang);
-        return MarkupBuilder.Button.builder()
+        return InlineMarkupBuilder.InlineButton.builder()
             .text(text)
             .command(languageCommand)
             .build();

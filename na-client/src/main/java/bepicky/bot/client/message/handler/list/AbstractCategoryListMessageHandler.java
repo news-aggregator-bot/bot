@@ -2,7 +2,7 @@ package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
@@ -44,16 +44,16 @@ public abstract class AbstractCategoryListMessageHandler extends AbstractListMes
         String readerLang = response.getReader().getLang();
         List<CategoryDto> categories = response.getList();
 
-        MarkupBuilder markup = new MarkupBuilder();
-        List<MarkupBuilder.Button> buttons = categories.stream()
-            .map(c -> MarkupBuilder.Button.builder()
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
+        List<InlineMarkupBuilder.InlineButton> buttons = categories.stream()
+            .map(c -> InlineMarkupBuilder.InlineButton.builder()
                 .text(buildText(c, readerLang))
                 .command(buildCommand(c))
                 .build())
             .collect(Collectors.toList());
 
-        List<MarkupBuilder.Button> navigation = navigation(page, response, markup);
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(buttons, 2);
+        List<InlineMarkupBuilder.InlineButton> navigation = navigation(page, response, markup);
+        List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 

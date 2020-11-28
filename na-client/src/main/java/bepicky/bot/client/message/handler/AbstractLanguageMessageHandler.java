@@ -4,7 +4,7 @@ import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandBuilder;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
@@ -40,10 +40,10 @@ public abstract class AbstractLanguageMessageHandler implements CallbackMessageH
         }
 
         LanguageDto language = response.getLanguage();
-        MarkupBuilder markup = new MarkupBuilder();
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
         String readerLang = response.getReader().getLang();
 
-        List<MarkupBuilder.Button> navigation = new ArrayList<>();
+        List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
         navigation.add(buildContinueButton(readerLang, markup));
         markup.addButtons(navigation);
 
@@ -55,7 +55,7 @@ public abstract class AbstractLanguageMessageHandler implements CallbackMessageH
         return new HandleResult(langRemoveText, markup.build());
     }
 
-    private MarkupBuilder.Button buildContinueButton(String lang, MarkupBuilder markup) {
+    private InlineMarkupBuilder.InlineButton buildContinueButton(String lang, InlineMarkupBuilder markup) {
         String buttonText = templateContext.processTemplate(ButtonNames.DIR_CONTINUE, lang);
         return markup.button(buttonText, commandBuilder.list(trigger(), 1));
     }

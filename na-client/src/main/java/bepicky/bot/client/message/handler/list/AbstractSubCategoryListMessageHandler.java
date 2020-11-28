@@ -2,7 +2,7 @@ package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.message.MessageUtils;
 import bepicky.bot.client.message.button.CommandType;
-import bepicky.bot.client.message.button.MarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ICategoryService;
@@ -48,26 +48,31 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         CategoryDto parent = categories.get(0).getParent();
         boolean allCategoriesPicked = categories.stream().allMatch(CategoryDto::isPicked);
 
-        MarkupBuilder markup = new MarkupBuilder();
+        InlineMarkupBuilder markup = new InlineMarkupBuilder();
         String readerLang = response.getReader().getLang();
-        List<MarkupBuilder.Button> subcategoryButtons = categories.stream()
-            .map(c -> MarkupBuilder.Button.builder()
+        List<InlineMarkupBuilder.InlineButton> subcategoryButtons = categories.stream()
+            .map(c -> InlineMarkupBuilder.InlineButton.builder()
                 .text(buildText(c, readerLang))
                 .command(buildCommand(c))
                 .build())
             .collect(Collectors.toList());
 
-        MarkupBuilder.Button allSubCategoriesBtn = buildAllSubCategoryButton(
+        InlineMarkupBuilder.InlineButton allSubCategoriesBtn = buildAllSubCategoryButton(
             parentId,
             parent,
             allCategoriesPicked,
             markup,
             readerLang
         );
-        MarkupBuilder.Button onlyParentBtn = buildOnlyParentCategoryButton(parentId, parent, markup, readerLang);
+        InlineMarkupBuilder.InlineButton onlyParentBtn = buildOnlyParentCategoryButton(
+            parentId,
+            parent,
+            markup,
+            readerLang
+        );
         markup.addButtons(Arrays.asList(allSubCategoriesBtn, onlyParentBtn));
 
-        List<MarkupBuilder.Button> navigation = new ArrayList<>();
+        List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
         if (!response.isFirst()) {
             String prevText = prevButtonText(readerLang);
             navigation.add(markup.button(
@@ -84,7 +89,7 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
             ));
         }
 
-        List<List<MarkupBuilder.Button>> partition = Lists.partition(subcategoryButtons, 2);
+        List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(subcategoryButtons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
 
@@ -101,11 +106,11 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         return new HandleResult(listSubcategoryText, markup.build());
     }
 
-    private MarkupBuilder.Button buildAllSubCategoryButton(
+    private InlineMarkupBuilder.InlineButton buildAllSubCategoryButton(
         long parentId,
         CategoryDto parent,
         boolean allChildrenPicked,
-        MarkupBuilder markup,
+        InlineMarkupBuilder markup,
         String readerLang
     ) {
         boolean picked = parent.isPicked() && allChildrenPicked;
@@ -121,10 +126,10 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         return markup.button(allSubcategoriesText, parentCommand);
     }
 
-    private MarkupBuilder.Button buildOnlyParentCategoryButton(
+    private InlineMarkupBuilder.InlineButton buildOnlyParentCategoryButton(
         long parentId,
         CategoryDto parent,
-        MarkupBuilder markup,
+        InlineMarkupBuilder markup,
         String readerLang
     ) {
         String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
