@@ -117,7 +117,7 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
             picked ? REMOVE_ALL_SUBCATEGORIES : PICK_ALL_SUBCATEGORIES,
             readerLang,
-            TemplateUtils.name(parent.getName())
+            TemplateUtils.name(parent.getLocalised())
         ));
 
         String parentCommand = picked ?
@@ -135,7 +135,7 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         String allSubcategoriesText = parseToUnicode(templateContext.processTemplate(
             parent.isPicked() ? ButtonNames.REMOVE : ButtonNames.PICK,
             readerLang,
-            TemplateUtils.name(parent.getName())
+            TemplateUtils.name(parent.getLocalised())
         ));
 
         String parentCommand = parent.isPicked() ?
