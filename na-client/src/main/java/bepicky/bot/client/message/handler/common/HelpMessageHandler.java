@@ -1,5 +1,6 @@
 package bepicky.bot.client.message.handler.common;
 
+import bepicky.bot.client.message.button.ReplyMarkupBuilder;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.IReaderService;
@@ -25,7 +26,15 @@ public class HelpMessageHandler implements CommonMessageHandler {
     public BotApiMethod<Message> handle(Message message) {
         ReaderDto reader = readerService.find(message.getChatId());
         String text = templateContext.processTemplate(TemplateUtils.HELP, reader.getLang());
-        return new SendMessage().enableMarkdownV2(true).setChatId(message.getChatId()).setText(text);
+
+        ReplyMarkupBuilder replyMarkup = new ReplyMarkupBuilder();
+        String optionsText = templateContext.helpButton(reader.getLang());
+        replyMarkup.addButton(optionsText);
+
+        return new SendMessage()
+            .setChatId(message.getChatId())
+            .setReplyMarkup(replyMarkup.build())
+            .setText(text);
     }
 
     @Override

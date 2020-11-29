@@ -27,6 +27,9 @@ public class ReplyMarkupBuilder {
     public ReplyKeyboardMarkup build() {
         ReplyKeyboardMarkup markupInline = new ReplyKeyboardMarkup();
         markupInline.setKeyboard(keyboardRows);
+        markupInline.setOneTimeKeyboard(false);
+        markupInline.setResizeKeyboard(true);
+        markupInline.setSelective(true);
         return markupInline;
     }
 
