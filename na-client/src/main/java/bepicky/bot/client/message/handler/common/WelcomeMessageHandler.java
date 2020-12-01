@@ -40,12 +40,11 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
     @Override
     public BotApiMethod<Message> handle(Message message) {
         ReaderRequest readerRequest = buildReaderRequest(message);
-        log.info("reader:register:{}", readerRequest.toString());
         ReaderDto reader = readerService.register(readerRequest);
         String text = templateContext.processTemplate(
             WELCOME,
             reader.getPrimaryLanguage().getLang(),
-            TemplateUtils.params("reader_name", reader.getFirstName())
+            TemplateUtils.params("reader_name", reader.getName())
         );
         ChatFlow welcome = flowContext.welcomeFlow(reader.getChatId());
         InlineMarkupBuilder inlineMarkup = new InlineMarkupBuilder();
