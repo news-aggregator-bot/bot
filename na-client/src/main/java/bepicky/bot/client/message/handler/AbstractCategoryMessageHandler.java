@@ -67,13 +67,9 @@ public abstract class AbstractCategoryMessageHandler implements CallbackMessageH
         InlineMarkupBuilder markup
     ) {
         String buttonText = templateContext.processEmojiTemplate(ButtonNames.DIR_CONTINUE, lang);
-        if (category.getParent() == null) {
-            return markup.button(buttonText, commandBuilder.list(flow.getCommandType(), trigger()));
-        }
-        return markup.button(
-            buttonText,
-            commandBuilder.sublist(flow.getCommandType(), trigger(), category.getParent().getId())
-        );
+        String command = category.getParent() == null ? commandBuilder.list(trigger())
+            : commandBuilder.sublist(flow.getCommandType(), trigger(), category.getParent().getId());
+        return markup.button(buttonText, command);
     }
 
     protected abstract String textKey();

@@ -81,6 +81,7 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
             ));
         }
         navigation.add(markup.button(backButtonText(readerLang), buildBackCommand(parent)));
+        navigation.add(markup.done(doneButtonText(response.getReader().getLang())));
         if (!response.isLast()) {
             String nextText = nextButtonText(readerLang);
             navigation.add(markup.button(
