@@ -1,10 +1,10 @@
 [${title}](${url})
 
 <#if region?has_content>
-Регіон: *${region}*
+Регіон: <b>${region}</b>
 </#if>
 <#if category?has_content>
-Категорія: *${category}*
+Категорія: <b>${category}</b>
 </#if>
 <#if author?has_content>
 Автор: ${author}

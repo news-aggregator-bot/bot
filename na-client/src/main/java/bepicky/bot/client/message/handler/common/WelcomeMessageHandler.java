@@ -60,6 +60,7 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
             .enableMarkdownV2(true)
             .setChatId(message.getChatId())
             .setReplyMarkup(inlineMarkup.build())
+            .setParseMode("html")
             .setText(text);
     }
 

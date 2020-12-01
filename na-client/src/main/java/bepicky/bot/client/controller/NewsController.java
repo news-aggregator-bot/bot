@@ -52,6 +52,8 @@ public class NewsController {
             bot.execute(new SendMessage()
                 .enableMarkdownV2(true)
                 .setChatId(request.getChatId())
+                .disableNotification()
+                .setParseMode("html")
                 .setText(String.join("\n", newsNotes)));
         } catch (TelegramApiException e) {
             throw new IllegalStateException(e.getMessage(), e);

@@ -1,10 +1,10 @@
-[${title}](${url})
+<a href="${url}">${title}</a>
 
 <#if region?has_content>
-Region: *${region}*
+Region: <b>${region}</b>
 </#if>
 <#if category?has_content>
-Category: *${category}*
+Category: <b>${category}</b>
 </#if>
 <#if author?has_content>
 Author: ${author}
