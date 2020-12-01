@@ -40,7 +40,7 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
     @Override
     public BotApiMethod<Message> handle(Message message) {
         ReaderRequest readerRequest = buildReaderRequest(message);
-        log.debug("reader:register:{}", readerRequest.toString());
+        log.info("reader:register:{}", readerRequest.toString());
         ReaderDto reader = readerService.register(readerRequest);
         String text = templateContext.processTemplate(
             WELCOME,
