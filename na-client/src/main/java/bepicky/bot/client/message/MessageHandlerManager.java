@@ -109,6 +109,7 @@ public class MessageHandlerManager {
             .setChatId(message.getChatId())
             .setMessageId(message.getMessageId())
             .setText(handleResult.getText())
+            .enableHtml(true)
             .setReplyMarkup(handleResult.getInline());
     }
 
