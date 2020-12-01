@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -66,10 +67,11 @@ public class NewsControllerTest {
         verify(bot).execute(sendMsgAc.capture());
 
         SendMessage value = sendMsgAc.getValue();
+        assertTrue(value.getDisableNotification());
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("[title](url)\n\n" +
-            "Region: *USA, USSR*\n" +
-            "Category: *Politics, Finance*\n" +
+        assertEquals("<a href=\"url\">title</a>\n\n" +
+            "Region: <b>USA, USSR</b>\n" +
+            "Category: <b>Politics, Finance</b>\n" +
             "Author: author", value.getText());
     }
 
@@ -92,9 +94,10 @@ public class NewsControllerTest {
         verify(bot).execute(sendMsgAc.capture());
 
         SendMessage value = sendMsgAc.getValue();
+        assertTrue(value.getDisableNotification());
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("[title](url)\n\n" +
-            "Category: *Politics, Finance*\n" +
+        assertEquals("<a href=\"url\">title</a>\n\n" +
+            "Category: <b>Politics, Finance</b>\n" +
             "Author: author", value.getText());
     }
 
@@ -118,8 +121,8 @@ public class NewsControllerTest {
 
         SendMessage value = sendMsgAc.getValue();
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("[title](url)\n\n" +
-            "Category: *Politics, Finance*", value.getText());
+        assertEquals("<a href=\"url\">title</a>\n\n" +
+            "Category: <b>Politics, Finance</b>", value.getText());
     }
 
     @Test
@@ -139,9 +142,10 @@ public class NewsControllerTest {
         verify(bot).execute(sendMsgAc.capture());
 
         SendMessage value = sendMsgAc.getValue();
+        assertTrue(value.getDisableNotification());
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
-        assertEquals("[title](url)\n\n" +
-            "Category: *Finance*", value.getText());
+        assertEquals("<a href=\"url\">title</a>\n\n" +
+            "Category: <b>Finance</b>", value.getText());
     }
 
     @Test(expected = NullPointerException.class)
