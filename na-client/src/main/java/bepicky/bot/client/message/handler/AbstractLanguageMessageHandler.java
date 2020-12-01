@@ -56,7 +56,7 @@ public abstract class AbstractLanguageMessageHandler implements CallbackMessageH
     }
 
     private InlineMarkupBuilder.InlineButton buildContinueButton(String lang, InlineMarkupBuilder markup) {
-        String buttonText = templateContext.processTemplate(ButtonNames.DIR_CONTINUE, lang);
+        String buttonText = templateContext.processEmojiTemplate(ButtonNames.DIR_CONTINUE, lang);
         return markup.button(buttonText, commandBuilder.list(trigger(), 1));
     }
 
