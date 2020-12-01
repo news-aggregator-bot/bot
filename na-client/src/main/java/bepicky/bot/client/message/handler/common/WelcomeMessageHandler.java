@@ -9,6 +9,7 @@ import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.request.ReaderRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -19,6 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import java.util.Arrays;
 
 @Component
+@Slf4j
 public class WelcomeMessageHandler implements CommonMessageHandler {
 
     public static final String WELCOME = "welcome";
@@ -37,8 +39,9 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
 
     @Override
     public BotApiMethod<Message> handle(Message message) {
-        User from = message.getFrom();
-        ReaderDto reader = readerService.register(buildReaderRequest(message.getChatId(), from));
+        ReaderRequest readerRequest = buildReaderRequest(message);
+        log.debug("reader:register:{}", readerRequest.toString());
+        ReaderDto reader = readerService.register(readerRequest);
         String text = templateContext.processTemplate(
             WELCOME,
             reader.getPrimaryLanguage().getLang(),
@@ -69,9 +72,10 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
         return "/start";
     }
 
-    private ReaderRequest buildReaderRequest(long chatId, User from) {
+    private ReaderRequest buildReaderRequest(Message msg) {
+        User from = msg.getFrom();
         ReaderRequest rr = new ReaderRequest();
-        rr.setChatId(chatId);
+        rr.setChatId(msg.getChatId());
         rr.setUsername(from.getUserName());
         rr.setFirstName(from.getFirstName());
         rr.setLastName(from.getLastName());
