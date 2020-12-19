@@ -1,6 +1,7 @@
 package bepicky.bot.client.message.handler.util;
 
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
+import bepicky.bot.client.message.button.InlineMarkupBuilder.InlineButton;
 import bepicky.bot.client.message.command.ChatCommand;
 import bepicky.bot.client.message.command.CommandManager;
 import bepicky.bot.client.message.command.CommandType;
@@ -39,36 +40,25 @@ public class SettingsMessageHandler implements UtilMessageHandler {
     public HandleResult handle(ChatCommand cc) {
         ReaderDto reader = readerService.disable(cc.getChatId());
 
-        InlineMarkupBuilder markup = new InlineMarkupBuilder();
+        InlineMarkupBuilder m = new InlineMarkupBuilder();
 
         String lang = reader.getLang();
-        InlineMarkupBuilder.InlineButton regionButton = buildButton(
-            cmdMngr.list(REGION),
-            SETTINGS_REGION, lang
-        );
-        InlineMarkupBuilder.InlineButton categoryButton = buildButton(
-            cmdMngr.list(CATEGORY),
-            SETTINGS_CATEGORY, lang
-        );
-        InlineMarkupBuilder.InlineButton languageButton = buildButton(
-            cmdMngr.list(LANGUAGE),
-            SETTINGS_LANGUAGE, lang
-        );
-        InlineMarkupBuilder.InlineButton sourceButton = buildButton(
-            cmdMngr.list(SOURCE),
-            SETTINGS_SOURCE, lang
-        );
-        InlineMarkupBuilder.InlineButton closeButton = buildButton(
-            cmdMngr.util(CommandType.ENABLE_READER),
-            CLOSE,
-            lang
-        );
+        String rBtnTxt = templateContext.processTemplate(SETTINGS_REGION, lang);
+        String cBtnTxt = templateContext.processTemplate(SETTINGS_CATEGORY, lang);
+        String lBtnTxt = templateContext.processTemplate(SETTINGS_LANGUAGE, lang);
+        String srcBtnTxt = templateContext.processTemplate(SETTINGS_SOURCE, lang);
+        String closeBtnTxt = templateContext.processTemplate(CLOSE, lang);
+
+        InlineButton regionButton = m.button(rBtnTxt, cmdMngr.update(REGION), cmdMngr.list(REGION));
+        InlineButton categoryButton = m.button(cBtnTxt, cmdMngr.update(CATEGORY), cmdMngr.list(CATEGORY));
+        InlineButton langButton = m.button(lBtnTxt, cmdMngr.update(LANGUAGE), cmdMngr.list(LANGUAGE));
+        InlineButton srcButton = m.button(srcBtnTxt, cmdMngr.update(SOURCE), cmdMngr.list(SOURCE));
+        InlineButton closeButton = m.button(closeBtnTxt, cmdMngr.util(CommandType.ENABLE_READER));
 
         String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, lang);
 
-        Arrays.asList(languageButton, regionButton, categoryButton, sourceButton, closeButton)
-            .forEach(markup::addButton);
-        return new HandleResult(settingsText, markup.build());
+        Arrays.asList(langButton, regionButton, categoryButton, srcButton, closeButton).forEach(m::addButton);
+        return new HandleResult(settingsText, m.build());
     }
 
     @Override
@@ -76,7 +66,4 @@ public class SettingsMessageHandler implements UtilMessageHandler {
         return CommandType.SETTINGS;
     }
 
-    private InlineMarkupBuilder.InlineButton buildButton(String cmd, String textKey, String lang) {
-        return new InlineMarkupBuilder.InlineButton(templateContext.processTemplate(textKey, lang), cmd);
-    }
 }

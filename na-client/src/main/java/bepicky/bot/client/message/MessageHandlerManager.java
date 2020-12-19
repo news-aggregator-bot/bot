@@ -1,7 +1,6 @@
 package bepicky.bot.client.message;
 
 import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandManager;
 import bepicky.bot.client.message.command.CommandType;
 import bepicky.bot.client.message.handler.CallbackMessageHandler;
 import bepicky.bot.client.message.handler.EntityCallbackMessageHandler;
@@ -56,9 +55,6 @@ public class MessageHandlerManager {
 
     private final MessageToCommandContainer msg2CmdContainer;
 
-    private final CommandManager commandManager;
-
-
     @Autowired
     public MessageHandlerManager(
         List<MessageHandler> commonMessageHandlers,
@@ -68,8 +64,7 @@ public class MessageHandlerManager {
         List<RemoveMessageHandler> removeMessageHandlers,
         List<RemoveAllMessageHandler> removeAllMessageHandlers,
         List<UtilMessageHandler> utilMessageHandler,
-        MessageToCommandContainer msg2CommandContainer,
-        CommandManager commandManager
+        MessageToCommandContainer msg2CommandContainer
     ) {
         this.commonMessageHandlers = commonMessageHandlers.stream()
             .collect(ImmutableMap.toImmutableMap(MessageHandler::trigger, Function.identity()));
@@ -99,7 +94,6 @@ public class MessageHandlerManager {
         this.utilHandlers = utilMessageHandler.stream()
             .collect(Collectors.toMap(UtilMessageHandler::commandType, Function.identity()));
         this.msg2CmdContainer = msg2CommandContainer;
-        this.commandManager = commandManager;
     }
 
     public BotApiMethod<Message> manage(Message message) {
@@ -131,10 +125,10 @@ public class MessageHandlerManager {
     private CallbackMessageHandler.HandleResult handleCallback(long chatId, String data) {
         ChatCommand cc = ChatCommand.fromText(data);
         cc.setChatId(chatId);
-        if (cc.getEntityType() != null) {
-            return functionContainer.get(cc.getCommandType()).apply(cc.getEntityType()).handle(cc);
+        if (CommandType.UTIL.contains(cc.getCommandType())) {
+            return utilHandlers.get(cc.getCommandType()).handle(cc);
         }
-        return utilHandlers.get(cc.getCommandType()).handle(cc);
+        return functionContainer.get(cc.getCommandType()).apply(cc.getEntityType()).handle(cc);
     }
 
     private <T extends EntityCallbackMessageHandler> Map<EntityType, T> convert(List<T> handlers) {

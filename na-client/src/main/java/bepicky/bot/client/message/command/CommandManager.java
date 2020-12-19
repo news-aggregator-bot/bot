@@ -64,6 +64,10 @@ public class CommandManager {
         return toCmd(ChatCommand.of(c));
     }
 
+    public String update(EntityType e) {
+        return toCmd(ChatCommand.of(CommandType.UPDATE, e, 1));
+    }
+
     public String goNext() {
         return toCmd(ChatCommand.of(GO_NEXT));
     }

@@ -45,6 +45,13 @@ public class ChatChainManager {
         return chatChain.current();
     }
 
+    public ChatChain updateChain(Long chatId, ChatChainLink updateLink) {
+        ChatChainLink settings = chainFactory.settings();
+        ChatChain cc = new ChatChain(settings, updateLink, chainFactory.getActivateReader());
+        chains.put(chatId, cc);
+        return cc;
+    }
+
     public void updatePage(Long chatId, int page) {
         ChatChain currentChain = getChain(chatId);
         currentChain.current().setPage(page);
