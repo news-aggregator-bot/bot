@@ -2,10 +2,10 @@ package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.MessageUtils;
-import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.handler.context.ChatFlowManager;
+import bepicky.bot.client.message.command.ChatCommand;
+import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ILanguageService;
@@ -15,8 +15,8 @@ import bepicky.common.domain.response.LanguageListResponse;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,27 +29,28 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
     private ILanguageService languageService;
 
     @Autowired
-    private ChatFlowManager flowContext;
+    private ChatChainManager chainManager;
 
     @Override
-    public HandleResult handle(Message message, String data) {
-        String[] split = MessageUtils.parse(data);
-        int page = Integer.parseInt(split[2]);
-        LanguageListResponse response = languageService.list(message.getChatId(), page, SIX_PAGE_SIZE);
+    public HandleResult handle(ChatCommand cc) {
+        int page = cc.getPage();
+        LanguageListResponse response = languageService.list(cc.getChatId(), page, SIX_PAGE_SIZE);
         if (response.isError()) {
             return error(response.getError().getEntity());
         }
         List<LanguageDto> languages = response.getList();
-        flowContext.languageUpdateFlow(response.getReader().getChatId());
+        chainManager.languageUpdateChain(response.getReader().getChatId());
 
         InlineMarkupBuilder markup = new InlineMarkupBuilder();
         List<InlineMarkupBuilder.InlineButton> buttons = languages.stream()
-            .map(l -> buildButton(response.getReader(), l))
+            .map(l -> buildButton(response.getReader(), l, page))
             .collect(Collectors.toList());
 
-        List<InlineMarkupBuilder.InlineButton> navigation = navigation(page, response, markup);
+        List<InlineMarkupBuilder.InlineButton> pagination = pagination(page, response, markup);
+        List<InlineMarkupBuilder.InlineButton> navigation = navigation(markup, response.getReader());
         List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(buttons, 3);
         partition.forEach(markup::addButtons);
+        markup.addButtons(pagination);
         markup.addButtons(navigation);
 
         String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
@@ -60,21 +61,14 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
         return new HandleResult(listSubcategoryText, markup.build());
     }
 
-    private InlineMarkupBuilder.InlineButton buildButton(ReaderDto r, LanguageDto l) {
+    private InlineMarkupBuilder.InlineButton buildButton(ReaderDto r, LanguageDto l, int page) {
         boolean langPicked = r.getLanguages().contains(l);
         String textKey = langPicked ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = langPicked ?
-            commandBuilder.remove(trigger(), l.getLang()) :
-            commandBuilder.pick(trigger(), l.getLang());
-        return InlineMarkupBuilder.InlineButton.builder()
-            .text(buildText(l, textKey))
-            .command(command)
-            .build();
-    }
-
-    @Override
-    public String trigger() {
-        return entityType().low();
+            cmdMngr.remove(entityType(), l.getLang()) :
+            cmdMngr.pick(entityType(), l.getLang());
+        String list = cmdMngr.list(entityType(), page);
+        return new InlineMarkupBuilder.InlineButton(buildText(l, textKey), Arrays.asList(command, list));
     }
 
     private String buildText(LanguageDto l, String textKey) {

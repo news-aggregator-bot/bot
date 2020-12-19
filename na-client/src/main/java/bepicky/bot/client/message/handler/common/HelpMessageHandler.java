@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Component
-public class HelpMessageHandler implements CommonMessageHandler {
+public class HelpMessageHandler implements MessageHandler {
 
     public static final String HELP = "/help";
 

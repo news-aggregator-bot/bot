@@ -1,0 +1,19 @@
+package bepicky.bot.client.message.handler.util;
+
+import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.client.message.handler.context.ChatChainLink;
+import org.springframework.stereotype.Component;
+
+@Component
+public class NextMessageHandler extends NavigationMessageHandler {
+
+    @Override
+    protected ChatChainLink getDirection(long chatId) {
+        return chainManager.getChain(chatId).goNext();
+    }
+
+    @Override
+    public CommandType commandType() {
+        return CommandType.GO_NEXT;
+    }
+}

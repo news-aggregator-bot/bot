@@ -1,16 +1,18 @@
 package bepicky.bot.client.message.handler.context;
 
 import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.button.CommandType;
+import bepicky.bot.client.message.command.CommandType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Builder
+@Setter
 @Getter
-public class ChatFlow {
+public class ChatChainLink {
 
     @NotBlank
     private final String buttonKey;
@@ -27,5 +29,5 @@ public class ChatFlow {
     @NotNull
     private final EntityType entityType;
 
-    private final ChatFlow next;
+    private int page;
 }

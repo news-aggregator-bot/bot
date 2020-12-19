@@ -1,12 +1,15 @@
 package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.handler.context.ChatFlowManager;
+import bepicky.bot.client.message.command.CommandManager;
+import bepicky.bot.client.message.handler.context.ChatChain;
+import bepicky.bot.client.message.handler.context.ChatChainLink;
+import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.common.domain.dto.CategoryDto;
+import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.response.AbstractListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,13 +31,13 @@ import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 public abstract class AbstractListMessageHandler implements ListMessageHandler {
 
     @Autowired
-    protected CommandBuilder commandBuilder;
+    protected CommandManager cmdMngr;
 
     @Autowired
     protected MessageTemplateContext templateContext;
 
     @Autowired
-    protected ChatFlowManager flowContext;
+    protected ChatChainManager chainManager;
 
     protected HandleResult error(String msg) {
         String errorMessage = templateContext.errorTemplate(
@@ -44,31 +47,45 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
         return new HandleResult(errorMessage, null);
     }
 
-    protected List<InlineMarkupBuilder.InlineButton> navigation(
+    protected List<InlineMarkupBuilder.InlineButton> pagination(
         int page,
         AbstractListResponse response,
         InlineMarkupBuilder markup
     ) {
-        List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
+        List<InlineMarkupBuilder.InlineButton> pagination = new ArrayList<>();
         if (!response.isFirst()) {
-            String prevText = prevButtonText(LangUtils.DEFAULT);
-            navigation.add(markup.button(prevText, commandBuilder.list(commandType(), trigger(), page - 1)));
+            String prevText = prevButtonText();
+            pagination.add(markup.button(prevText, cmdMngr.list(entityType(), page - 1)));
         }
-        navigation.add(markup.done(doneButtonText(response.getReader().getLang())));
-
         if (!response.isLast()) {
-            String nextText = nextButtonText(LangUtils.DEFAULT);
-            navigation.add(markup.button(nextText, commandBuilder.list(commandType(), trigger(), page + 1)));
+            String nextText = nextButtonText();
+            pagination.add(markup.button(nextText, cmdMngr.list(entityType(), page + 1)));
         }
+        return pagination;
+    }
+
+    protected List<InlineMarkupBuilder.InlineButton> navigation(InlineMarkupBuilder markup, ReaderDto reader) {
+        List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
+        ChatChain currentChain = chainManager.getChain(reader.getChatId());
+        ChatChainLink previous = currentChain.previous();
+        if (previous != null) {
+            navigation.add(markup.button(
+                backButtonText(reader.getLang()),
+                cmdMngr.goPrevious(),
+                previous.getCommand()
+            ));
+        }
+        ChatChainLink next = chainManager.next(reader.getChatId());
+        navigation.add(markup.button(doneButtonText(reader.getLang()), cmdMngr.goNext(), next.getCommand()));
         return navigation;
     }
 
-    protected String prevButtonText(String language) {
-        return parseToUnicode(templateContext.processTemplate(DIR_PREV, language));
+    protected String prevButtonText() {
+        return templateContext.processEmojiTemplate(DIR_PREV, LangUtils.ALL);
     }
 
-    protected String nextButtonText(String language) {
-        return parseToUnicode(templateContext.processTemplate(DIR_NEXT, language));
+    protected String nextButtonText() {
+        return templateContext.processEmojiTemplate(DIR_NEXT, LangUtils.ALL);
     }
 
     protected String buildText(CategoryDto c, String language) {
@@ -80,11 +97,11 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
     }
 
     protected String backButtonText(String language) {
-        return parseToUnicode(templateContext.processTemplate(DIR_BACK, language));
+        return templateContext.processEmojiTemplate(DIR_BACK, language);
     }
 
     protected String doneButtonText(String language) {
-        return parseToUnicode(templateContext.processTemplate(DIR_DONE, language));
+        return templateContext.processEmojiTemplate(DIR_DONE, language);
     }
 
 }

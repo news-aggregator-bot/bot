@@ -26,13 +26,9 @@ public class TemplateUtils {
 
     public static final String WELCOME_LIST_REGION = "welcome_list_regions";
     public static final String WELCOME_LIST_CATEGORY = "welcome_list_categories";
-    public static final String WELCOME_LIST_LANGUAGES = "welcome_list_languages";
+    public static final String WELCOME_LIST_LANGUAGES = "welcome_list_language";
 
     public static final String LIST_CATEGORY = "list_categories";
-    public static final String LIST_PICKED_CATEGORIES = "list_picked_categories";
-    public static final String LIST_PICKED_REGIONS = "list_picked_regions";
-    public static final String LIST_NOT_PICKED_CATEGORIES = "list_notpicked_categories";
-    public static final String LIST_NOT_PICKED_REGIONS = "list_notpicked_regions";
     public static final String LIST_REGIONS = "list_regions";
     public static final String LIST_SUBCATEGORIES = "list_subcategories";
     public static final String LIST_SUBREGIONS = "list_subregions";

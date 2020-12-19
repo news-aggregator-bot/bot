@@ -1,11 +1,13 @@
 package bepicky.bot.client.message;
 
-import bepicky.bot.client.message.button.CommandType;
+import bepicky.bot.client.message.command.ChatCommand;
+import bepicky.bot.client.message.command.CommandManager;
+import bepicky.bot.client.message.command.CommandType;
 import bepicky.bot.client.message.handler.CallbackMessageHandler;
-import bepicky.bot.client.message.handler.MessageHandler;
+import bepicky.bot.client.message.handler.EntityCallbackMessageHandler;
 import bepicky.bot.client.message.handler.MessageToCommandContainer;
-import bepicky.bot.client.message.handler.common.CommonMessageHandler;
 import bepicky.bot.client.message.handler.common.HelpMessageHandler;
+import bepicky.bot.client.message.handler.common.MessageHandler;
 import bepicky.bot.client.message.handler.list.ListMessageHandler;
 import bepicky.bot.client.message.handler.pick.PickAllMessageHandler;
 import bepicky.bot.client.message.handler.pick.PickMessageHandler;
@@ -26,76 +28,86 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static bepicky.bot.client.message.button.CommandType.PICK;
-import static bepicky.bot.client.message.button.CommandType.PICK_ALL;
-import static bepicky.bot.client.message.button.CommandType.REMOVE;
-import static bepicky.bot.client.message.button.CommandType.REMOVE_ALL;
+import static bepicky.bot.client.message.command.CommandType.PICK;
+import static bepicky.bot.client.message.command.CommandType.PICK_ALL;
+import static bepicky.bot.client.message.command.CommandType.REMOVE;
+import static bepicky.bot.client.message.command.CommandType.REMOVE_ALL;
 
 
 @Slf4j
 @Component
 public class MessageHandlerManager {
 
-    private final Map<String, CommonMessageHandler> commonMessageHandlers;
+    private final Map<String, MessageHandler> commonMessageHandlers;
 
-    private final Map<CommandType, Map<String, ListMessageHandler>> listMessageHandlers;
+    private final Map<CommandType, Map<EntityType, ListMessageHandler>> listMessageHandlers;
 
-    private final Map<String, PickMessageHandler> pickMessageHandlers;
+    private final Map<EntityType, PickMessageHandler> pickMessageHandlers;
 
-    private final Map<String, PickAllMessageHandler> pickAllMessageHandlers;
+    private final Map<EntityType, PickAllMessageHandler> pickAllMessageHandlers;
 
-    private final Map<String, RemoveMessageHandler> removeMessageHandlers;
+    private final Map<EntityType, RemoveMessageHandler> removeMessageHandlers;
 
-    private final Map<String, RemoveAllMessageHandler> removeAllMessageHandlers;
+    private final Map<EntityType, RemoveAllMessageHandler> removeAllMessageHandlers;
 
-    private final Map<String, Function<String, CallbackMessageHandler>> functionContainer;
+    private final Map<CommandType, Function<EntityType, CallbackMessageHandler>> functionContainer;
 
-    private final Map<String, UtilMessageHandler> utilHandlers;
+    private final Map<CommandType, UtilMessageHandler> utilHandlers;
 
     private final MessageToCommandContainer msg2CmdContainer;
 
+    private final CommandManager commandManager;
+
+
     @Autowired
     public MessageHandlerManager(
-        List<CommonMessageHandler> commonMessageHandlers,
+        List<MessageHandler> commonMessageHandlers,
         List<ListMessageHandler> listMessageHandlers,
         List<PickMessageHandler> pickMessageHandlers,
         List<PickAllMessageHandler> pickAllMessageHandlers,
         List<RemoveMessageHandler> removeMessageHandlers,
         List<RemoveAllMessageHandler> removeAllMessageHandlers,
         List<UtilMessageHandler> utilMessageHandler,
-        MessageToCommandContainer msg2CommandContainer
+        MessageToCommandContainer msg2CommandContainer,
+        CommandManager commandManager
     ) {
-        this.commonMessageHandlers = convert(commonMessageHandlers);
+        this.commonMessageHandlers = commonMessageHandlers.stream()
+            .collect(ImmutableMap.toImmutableMap(MessageHandler::trigger, Function.identity()));
+
         this.pickMessageHandlers = convert(pickMessageHandlers);
         this.pickAllMessageHandlers = convert(pickAllMessageHandlers);
         this.removeMessageHandlers = convert(removeMessageHandlers);
         this.removeAllMessageHandlers = convert(removeAllMessageHandlers);
+
         this.listMessageHandlers = listMessageHandlers.stream()
             .collect(Collectors.groupingBy(
                 ListMessageHandler::commandType,
-                Collectors.toMap(MessageHandler::trigger, Function.identity())
+                Collectors.toMap(ListMessageHandler::entityType, Function.identity())
             ));
-        ImmutableMap.Builder<String, Function<String, CallbackMessageHandler>> functionBuilder =
+
+        ImmutableMap.Builder<CommandType, Function<EntityType, CallbackMessageHandler>> functionBuilder =
             ImmutableMap.builder();
-        this.listMessageHandlers.forEach((type, handler) -> functionBuilder.put(type.name(), handler::get));
+
+        this.listMessageHandlers.forEach((type, handler) -> functionBuilder.put(type, handler::get));
         this.functionContainer = functionBuilder
-            .put(PICK.name(), this.pickMessageHandlers::get)
-            .put(PICK_ALL.name(), this.pickAllMessageHandlers::get)
-            .put(REMOVE.name(), this.removeMessageHandlers::get)
-            .put(REMOVE_ALL.name(), this.removeAllMessageHandlers::get)
+            .put(PICK, this.pickMessageHandlers::get)
+            .put(PICK_ALL, this.pickAllMessageHandlers::get)
+            .put(REMOVE, this.removeMessageHandlers::get)
+            .put(REMOVE_ALL, this.removeAllMessageHandlers::get)
             .build();
 
         this.utilHandlers = utilMessageHandler.stream()
-            .collect(Collectors.toMap(UtilMessageHandler::trigger, Function.identity()));
+            .collect(Collectors.toMap(UtilMessageHandler::commandType, Function.identity()));
         this.msg2CmdContainer = msg2CommandContainer;
+        this.commandManager = commandManager;
     }
 
     public BotApiMethod<Message> manage(Message message) {
         return getCommonHandler(message.getText()).handle(message);
     }
 
-    private CommonMessageHandler getCommonHandler(String text) {
-        CommonMessageHandler commonMessageHandler = commonMessageHandlers.get(text);
+    private MessageHandler getCommonHandler(String text) {
+        MessageHandler commonMessageHandler = commonMessageHandlers.get(text);
         if (commonMessageHandler != null) {
             return commonMessageHandler;
         }
@@ -104,7 +116,10 @@ public class MessageHandlerManager {
     }
 
     public BotApiMethod<Serializable> manageCallback(Message message, String data) {
-        CallbackMessageHandler.HandleResult handleResult = handleCallback(message, data);
+        CallbackMessageHandler.HandleResult handleResult = null;
+        for (String cc : data.split(";")) {
+            handleResult = handleCallback(message.getChatId(), cc);
+        }
         return new EditMessageText()
             .setChatId(message.getChatId())
             .setMessageId(message.getMessageId())
@@ -113,16 +128,17 @@ public class MessageHandlerManager {
             .setReplyMarkup(handleResult.getInline());
     }
 
-    private CallbackMessageHandler.HandleResult handleCallback(Message message, String data) {
-        String[] split = MessageUtils.parse(data);
-        String command = split[0];
-        if (split.length > 1) {
-            return functionContainer.get(command).apply(split[1]).handle(message, data);
+    private CallbackMessageHandler.HandleResult handleCallback(long chatId, String data) {
+        ChatCommand cc = ChatCommand.fromText(data);
+        cc.setChatId(chatId);
+        if (cc.getEntityType() != null) {
+            return functionContainer.get(cc.getCommandType()).apply(cc.getEntityType()).handle(cc);
         }
-        return utilHandlers.get(command).handle(message, data);
+        return utilHandlers.get(cc.getCommandType()).handle(cc);
     }
 
-    private <T extends MessageHandler> Map<String, T> convert(List<T> handlers) {
-        return handlers.stream().collect(ImmutableMap.toImmutableMap(MessageHandler::trigger, Function.identity()));
+    private <T extends EntityCallbackMessageHandler> Map<EntityType, T> convert(List<T> handlers) {
+        return handlers.stream()
+            .collect(ImmutableMap.toImmutableMap(EntityCallbackMessageHandler::entityType, Function.identity()));
     }
 }

@@ -1,23 +1,18 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.MessageUtils;
-import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
+import bepicky.bot.client.message.command.ChatCommand;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import static bepicky.bot.client.message.button.CommandType.LIST;
-import static bepicky.bot.client.message.button.CommandType.SUBLIST;
 import static bepicky.bot.client.message.template.TemplateUtils.page;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
@@ -27,15 +22,10 @@ public abstract class AbstractCategoryListMessageHandler extends AbstractListMes
     @Autowired
     protected ICategoryService categoryService;
 
-    private final Map<CommandType, CommandType> sublistMapping = ImmutableMap.<CommandType, CommandType>builder()
-        .put(LIST, SUBLIST)
-        .build();
-
     @Override
-    public HandleResult handle(Message message, String data) {
-        String[] split = MessageUtils.parse(data);
-        int page = Integer.parseInt(split[2]);
-        CategoryListResponse response = getCategories(message.getChatId(), page);
+    public HandleResult handle(ChatCommand cc) {
+        int page = cc.getPage();
+        CategoryListResponse response = getCategories(cc.getChatId(), page);
 
         if (response.isError()) {
             return error(response.getError().getEntity());
@@ -46,15 +36,14 @@ public abstract class AbstractCategoryListMessageHandler extends AbstractListMes
 
         InlineMarkupBuilder markup = new InlineMarkupBuilder();
         List<InlineMarkupBuilder.InlineButton> buttons = categories.stream()
-            .map(c -> InlineMarkupBuilder.InlineButton.builder()
-                .text(buildText(c, readerLang))
-                .command(buildCommand(c))
-                .build())
+            .map(c -> new InlineMarkupBuilder.InlineButton(buildText(c, readerLang), buildCommand(c, page)))
             .collect(Collectors.toList());
 
-        List<InlineMarkupBuilder.InlineButton> navigation = navigation(page, response, markup);
+        List<InlineMarkupBuilder.InlineButton> pagination = pagination(page, response, markup);
+        List<InlineMarkupBuilder.InlineButton> navigation = navigation(markup, response.getReader());
         List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
+        markup.addButtons(pagination);
         markup.addButtons(navigation);
 
         String listCategoryText = parseToUnicode(templateContext.processTemplate(
@@ -62,22 +51,19 @@ public abstract class AbstractCategoryListMessageHandler extends AbstractListMes
             readerLang,
             page(page)
         ));
-        flowContext.updateFlow(
-            response.getReader().getChatId(),
-            msgTextKey(), entityType(), commandType()
-        );
+        chainManager.updatePage(cc.getChatId(), page);
         return new HandleResult(listCategoryText, markup.build());
     }
 
-    private String buildCommand(CategoryDto c) {
+    private List<String> buildCommand(CategoryDto c, int page) {
         if (c.getChildren() == null || c.getChildren().isEmpty()) {
-            return c.isPicked() ?
-                commandBuilder.remove(trigger(), c.getId()) :
-                commandBuilder.pick(trigger(), c.getId());
+            String categoryCmd = c.isPicked() ?
+                cmdMngr.remove(entityType(), c.getId()) :
+                cmdMngr.pick(entityType(), c.getId());
+            return Arrays.asList(categoryCmd, cmdMngr.list(entityType(), page));
         }
 
-        CommandType sublistCommand = sublistMapping.getOrDefault(commandType(), commandType());
-        return commandBuilder.sublist(sublistCommand, trigger(), c.getId(), 1);
+        return Arrays.asList(cmdMngr.sublist(entityType(), c.getId(), 1));
     }
 
     protected abstract CategoryListResponse getCategories(long chatId, int page);

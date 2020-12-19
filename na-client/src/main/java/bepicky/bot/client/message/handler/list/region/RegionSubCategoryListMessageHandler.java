@@ -1,7 +1,7 @@
 package bepicky.bot.client.message.handler.list.region;
 
 import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.button.CommandType;
+import bepicky.bot.client.message.command.CommandType;
 import bepicky.bot.client.message.handler.list.AbstractSubCategoryListMessageHandler;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.common.domain.dto.CategoryDto;
@@ -16,11 +16,6 @@ import static bepicky.bot.client.message.template.TemplateUtils.LIST_SUBREGIONS;
 
 @Component
 public class RegionSubCategoryListMessageHandler extends AbstractSubCategoryListMessageHandler {
-
-    @Override
-    public String trigger() {
-        return entityType().low();
-    }
 
     @Override
     protected CategoryListResponse getSubCategories(long chatId, long parentId, int page) {

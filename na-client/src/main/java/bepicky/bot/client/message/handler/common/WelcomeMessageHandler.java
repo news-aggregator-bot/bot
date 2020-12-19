@@ -1,9 +1,9 @@
 package bepicky.bot.client.message.handler.common;
 
-import bepicky.bot.client.message.button.CommandBuilder;
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.handler.context.ChatFlow;
-import bepicky.bot.client.message.handler.context.ChatFlowManager;
+import bepicky.bot.client.message.command.CommandManager;
+import bepicky.bot.client.message.handler.context.ChatChainLink;
+import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.IReaderService;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 @Component
 @Slf4j
-public class WelcomeMessageHandler implements CommonMessageHandler {
+public class WelcomeMessageHandler implements MessageHandler {
 
     public static final String WELCOME = "welcome";
 
@@ -29,13 +29,13 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
     private MessageTemplateContext templateContext;
 
     @Autowired
-    protected CommandBuilder commandBuilder;
+    protected CommandManager cmdMngr;
 
     @Autowired
     private IReaderService readerService;
 
     @Autowired
-    private ChatFlowManager flowContext;
+    private ChatChainManager chainManager;
 
     @Override
     public BotApiMethod<Message> handle(Message message) {
@@ -46,16 +46,16 @@ public class WelcomeMessageHandler implements CommonMessageHandler {
             reader.getPrimaryLanguage().getLang(),
             TemplateUtils.params("reader_name", reader.getName())
         );
-        ChatFlow welcome = flowContext.welcomeFlow(reader.getChatId());
+        ChatChainLink welcomeChainLink = chainManager.welcomeChain(reader.getChatId()).current();
         InlineMarkupBuilder inlineMarkup = new InlineMarkupBuilder();
         String msgText = templateContext.processEmojiTemplate(
-            welcome.getButtonKey(),
+            welcomeChainLink.getButtonKey(),
             reader.getPrimaryLanguage().getLang()
         );
-        InlineMarkupBuilder.InlineButton categoriesButton = InlineMarkupBuilder.InlineButton.builder()
-            .text(msgText)
-            .command(welcome.getCommand())
-            .build();
+        InlineMarkupBuilder.InlineButton categoriesButton = new InlineMarkupBuilder.InlineButton(
+            msgText,
+            welcomeChainLink.getCommand()
+        );
         inlineMarkup.addButtons(Arrays.asList(categoriesButton));
 
         return new SendMessage()

@@ -1,6 +1,6 @@
 package bepicky.bot.client.message.handler.rm;
 
-import bepicky.bot.client.message.handler.CallbackMessageHandler;
+import bepicky.bot.client.message.handler.EntityCallbackMessageHandler;
 
-public interface RemoveAllMessageHandler extends CallbackMessageHandler {
+public interface RemoveAllMessageHandler extends EntityCallbackMessageHandler {
 }

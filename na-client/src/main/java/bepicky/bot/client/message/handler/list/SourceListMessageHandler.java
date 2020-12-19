@@ -2,10 +2,10 @@ package bepicky.bot.client.message.handler.list;
 
 import bepicky.bot.client.message.EntityType;
 import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.MessageUtils;
-import bepicky.bot.client.message.button.CommandType;
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.handler.context.ChatFlowManager;
+import bepicky.bot.client.message.command.ChatCommand;
+import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ISourceService;
@@ -14,8 +14,8 @@ import bepicky.common.domain.response.SourceListResponse;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +28,12 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
     private ISourceService sourceService;
 
     @Autowired
-    private ChatFlowManager flowContext;
+    private ChatChainManager chainManager;
 
     @Override
-    public HandleResult handle(Message message, String data) {
-        String[] split = MessageUtils.parse(data);
-        int page = Integer.parseInt(split[2]);
-        SourceListResponse response = sourceService.list(message.getChatId(), page, SIX_PAGE_SIZE);
+    public HandleResult handle(ChatCommand cc) {
+        int page = cc.getPage();
+        SourceListResponse response = sourceService.list(cc.getChatId(), page, SIX_PAGE_SIZE);
         if (response.isError()) {
             return error(response.getError().getEntity());
         }
@@ -42,10 +41,10 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
 
         InlineMarkupBuilder markup = new InlineMarkupBuilder();
         List<InlineMarkupBuilder.InlineButton> buttons = sources.stream()
-            .map(this::buildButton)
+            .map(s -> buildButton(s, page))
             .collect(Collectors.toList());
 
-        List<InlineMarkupBuilder.InlineButton> navigation = navigation(page, response, markup);
+        List<InlineMarkupBuilder.InlineButton> navigation = pagination(page, response, markup);
         List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
         markup.addButtons(navigation);
@@ -58,20 +57,13 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
         return new HandleResult(listSourcesText, markup.build());
     }
 
-    private InlineMarkupBuilder.InlineButton buildButton(SourceDto s) {
+    private InlineMarkupBuilder.InlineButton buildButton(SourceDto s, int page) {
         String textKey = s.isPicked() ? ButtonNames.REMOVE : ButtonNames.PICK;
         String command = s.isPicked() ?
-            commandBuilder.remove(trigger(), s.getId()) :
-            commandBuilder.pick(trigger(), s.getId());
-        return InlineMarkupBuilder.InlineButton.builder()
-            .text(buildText(s, textKey))
-            .command(command)
-            .build();
-    }
-
-    @Override
-    public String trigger() {
-        return entityType().low();
+            cmdMngr.remove(entityType(), s.getId()) :
+            cmdMngr.pick(entityType(), s.getId());
+        String list = cmdMngr.list(entityType(), page);
+        return new InlineMarkupBuilder.InlineButton(buildText(s, textKey), Arrays.asList(command, list));
     }
 
     private String buildText(SourceDto s, String textKey) {

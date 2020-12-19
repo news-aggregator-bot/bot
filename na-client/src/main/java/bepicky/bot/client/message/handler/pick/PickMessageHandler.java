@@ -1,6 +1,6 @@
 package bepicky.bot.client.message.handler.pick;
 
-import bepicky.bot.client.message.handler.CallbackMessageHandler;
+import bepicky.bot.client.message.handler.EntityCallbackMessageHandler;
 
-public interface PickMessageHandler extends CallbackMessageHandler {
+public interface PickMessageHandler extends EntityCallbackMessageHandler {
 }

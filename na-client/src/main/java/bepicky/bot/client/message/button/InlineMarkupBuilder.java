@@ -1,7 +1,8 @@
 package bepicky.bot.client.message.button;
 
 
-import lombok.Builder;
+import bepicky.bot.client.message.command.CommandType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -17,7 +18,7 @@ public class InlineMarkupBuilder {
 
     public InlineMarkupBuilder addButtons(List<InlineButton> buttons) {
         rowsInline.add(buttons.stream()
-            .map(b -> new InlineKeyboardButton().setText(b.text).setCallbackData(b.command))
+            .map(b -> new InlineKeyboardButton().setText(b.text).setCallbackData(String.join(";", b.commands)))
             .collect(Collectors.toList()));
         return this;
     }
@@ -27,12 +28,12 @@ public class InlineMarkupBuilder {
         return this;
     }
 
-    public InlineButton button(String text, String command) {
-        return InlineButton.builder().text(text).command(command).build();
+    public InlineButton button(String text, String... commands) {
+        return new InlineButton(text, Arrays.asList(commands));
     }
 
     public InlineButton done(String text) {
-        return InlineButton.builder().text(text).command(CommandType.TRANSITION.name()).build();
+        return new InlineButton(text, Arrays.asList(CommandType.GO_NEXT.name()));
     }
 
     public InlineKeyboardMarkup build() {
@@ -41,11 +42,17 @@ public class InlineMarkupBuilder {
         return markupInline;
     }
 
-    @Builder
     @Getter
+    @AllArgsConstructor
     public static class InlineButton {
 
         private final String text;
-        private final String command;
+        private final List<String> commands;
+
+
+        public InlineButton(String text, String command) {
+            this.text = text;
+            this.commands = Arrays.asList(command);
+        }
     }
 }
