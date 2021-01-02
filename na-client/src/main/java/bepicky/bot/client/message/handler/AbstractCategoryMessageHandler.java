@@ -5,6 +5,7 @@ import bepicky.bot.client.message.command.ChatCommand;
 import bepicky.bot.client.message.command.CommandManager;
 import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.common.domain.response.CategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,12 @@ public abstract class AbstractCategoryMessageHandler implements EntityCallbackMe
             String errorText = templateContext.errorTemplate(LangUtils.DEFAULT);
             return new HandleResult(errorText, null);
         }
-        return new HandleResult();
+        String msg = templateContext.processTemplate(
+            TemplateUtils.getTemplate(commandType(), entityType()),
+            response.getReader().getLang(),
+            TemplateUtils.name(response.getCategory().getLocalised())
+        );
+        return new HandleResult(msg, null);
     }
 
     protected abstract CategoryResponse handle(Long chatId, Long categoryId);

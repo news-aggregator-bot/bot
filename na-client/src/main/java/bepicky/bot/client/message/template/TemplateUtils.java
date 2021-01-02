@@ -1,8 +1,13 @@
 package bepicky.bot.client.message.template;
 
+import bepicky.bot.client.message.EntityType;
+import bepicky.bot.client.message.command.CommandType;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Map;
+
 public class TemplateUtils {
+
 
     private TemplateUtils() {}
 
@@ -41,6 +46,39 @@ public class TemplateUtils {
     public static final String ENABLE = "enable";
     public static final String ENABLE_READER = "enable_reader";
     public static final String DISABLE_READER = "disable_reader";
+
+
+    public static final Map<EntityType, String> RM_ENTITY_CONTAINER = Map.of(
+        EntityType.REGION,
+        REMOVE_REGION_SUCCESS,
+        EntityType.CATEGORY,
+        REMOVE_CATEGORY_SUCCESS,
+        EntityType.LANGUAGE,
+        REMOVE_LANGUAGE_SUCCESS,
+        EntityType.SOURCE,
+        REMOVE_SOURCE_SUCCESS
+    );
+    public static final Map<EntityType, String> PICK_ENTITY_CONTAINER = Map.of(
+        EntityType.REGION,
+        PICK_REGION_SUCCESS,
+        EntityType.CATEGORY,
+        PICK_CATEGORY_SUCCESS,
+        EntityType.LANGUAGE,
+        PICK_LANGUAGE_SUCCESS,
+        EntityType.SOURCE,
+        PICK_SOURCE_SUCCESS
+    );
+    private static final Map<CommandType, Map<EntityType, String>> UPDATE_MSG_CONTAINER =
+        ImmutableMap.<CommandType, Map<EntityType, String>>builder()
+            .put(CommandType.PICK, PICK_ENTITY_CONTAINER)
+            .put(CommandType.PICK_ALL, PICK_ENTITY_CONTAINER)
+            .put(CommandType.REMOVE, RM_ENTITY_CONTAINER)
+            .put(CommandType.REMOVE_ALL, RM_ENTITY_CONTAINER)
+            .build();
+
+    public static String getTemplate(CommandType c, EntityType e) {
+        return UPDATE_MSG_CONTAINER.get(c).get(e);
+    }
 
 
     public static ImmutableMap<String, Object> name(String name) {

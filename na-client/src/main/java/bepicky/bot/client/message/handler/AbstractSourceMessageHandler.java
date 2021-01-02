@@ -5,6 +5,7 @@ import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.command.ChatCommand;
 import bepicky.bot.client.message.command.CommandManager;
 import bepicky.bot.client.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.ISourceService;
 import bepicky.common.domain.response.SourceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,12 @@ public abstract class AbstractSourceMessageHandler implements EntityCallbackMess
             // handling
             return new HandleResult(errorText, null);
         }
-        return new HandleResult();
+        String msg = templateContext.processTemplate(
+            TemplateUtils.getTemplate(commandType(), entityType()),
+            response.getReader().getLang(),
+            TemplateUtils.name(response.getSource().getName())
+        );
+        return new HandleResult(msg, null);
     }
 
     @Override

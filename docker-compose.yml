@@ -6,12 +6,20 @@ services:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
       - TG_CLIENT_TOKEN=${TG_CLIENT_TOKEN}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 60s
       timeout: 5s
       retries: 3
     ports:
       - 8079:8080
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+        reservations:
+          cpus: 0.1
+          memory: 128M
 #  na-admin-bot:
 #    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-bot-admin
 #    environment:

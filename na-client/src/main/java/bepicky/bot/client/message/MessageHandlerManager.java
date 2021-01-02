@@ -110,14 +110,18 @@ public class MessageHandlerManager {
     }
 
     public BotApiMethod<Serializable> manageCallback(Message message, String data) {
+        StringBuilder txt = new StringBuilder();
         CallbackMessageHandler.HandleResult handleResult = null;
         for (String cc : data.split(";")) {
             handleResult = handleCallback(message.getChatId(), cc);
+            if (handleResult != null && handleResult.getText() != null) {
+                txt.append("\n").append(handleResult.getText());
+            }
         }
         return new EditMessageText()
             .setChatId(message.getChatId())
             .setMessageId(message.getMessageId())
-            .setText(handleResult.getText())
+            .setText(txt.toString())
             .enableHtml(true)
             .setReplyMarkup(handleResult.getInline());
     }

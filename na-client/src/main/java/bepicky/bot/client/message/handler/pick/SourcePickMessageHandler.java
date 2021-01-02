@@ -1,6 +1,5 @@
 package bepicky.bot.client.message.handler.pick;
 
-import bepicky.bot.client.message.command.ChatCommand;
 import bepicky.bot.client.message.command.CommandType;
 import bepicky.bot.client.message.handler.AbstractSourceMessageHandler;
 import bepicky.common.domain.response.SourceResponse;
@@ -12,11 +11,6 @@ public class SourcePickMessageHandler extends AbstractSourceMessageHandler imple
     @Override
     protected SourceResponse handle(Long chatId, Long srcId) {
         return sourceService.pick(chatId, srcId);
-    }
-
-    @Override
-    public HandleResult handle(ChatCommand command) {
-        return null;
     }
 
     @Override
