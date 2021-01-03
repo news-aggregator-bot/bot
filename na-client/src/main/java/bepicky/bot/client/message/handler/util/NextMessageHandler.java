@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class NextMessageHandler extends NavigationMessageHandler {
 
     @Override
-    protected ChatChainLink getDirection(long chatId) {
+    protected ChatChainLink goDirection(long chatId) {
         return chainManager.getChain(chatId).goNext();
     }
 

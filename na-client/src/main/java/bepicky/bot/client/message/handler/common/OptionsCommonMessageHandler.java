@@ -1,6 +1,7 @@
 package bepicky.bot.client.message.handler.common;
 
 import bepicky.bot.client.message.button.InlineMarkupBuilder;
+import bepicky.bot.client.message.command.CommandManager;
 import bepicky.bot.client.message.command.CommandType;
 import bepicky.bot.client.message.template.ButtonNames;
 import bepicky.bot.client.message.template.MessageTemplateContext;
@@ -22,6 +23,9 @@ public class OptionsCommonMessageHandler implements MessageHandler {
     private MessageTemplateContext templateContext;
 
     @Autowired
+    private CommandManager cmdMngr;
+
+    @Autowired
     private IReaderService readerService;
 
     @Override
@@ -39,7 +43,7 @@ public class OptionsCommonMessageHandler implements MessageHandler {
             templateContext.processEmojiTemplate(activationKeys.getT1(), reader.getLang()),
             activationKeys.getT2().getKey()
         );
-        builder.addButton(builder.button(settingsText, CommandType.SETTINGS.getKey()))
+        builder.addButton(builder.button(settingsText, cmdMngr.status(), CommandType.SETTINGS.getKey()))
             .addButton(activationButton);
 
         return new SendMessage()

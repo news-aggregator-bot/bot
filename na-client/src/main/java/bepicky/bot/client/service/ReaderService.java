@@ -2,6 +2,7 @@ package bepicky.bot.client.service;
 
 import bepicky.bot.client.feign.NaServiceClient;
 import bepicky.common.domain.dto.ReaderDto;
+import bepicky.common.domain.dto.StatusReaderDto;
 import bepicky.common.domain.request.ReaderRequest;
 import bepicky.common.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,11 @@ public class ReaderService implements IReaderService {
     @Override
     public ReaderDto disable(Long chatId) {
         return checkReader(chatId, naServiceClient.disableReader(chatId));
+    }
+
+    @Override
+    public StatusReaderDto getStatus(Long chatId) {
+        return naServiceClient.getStatus(chatId);
     }
 
     private ReaderDto checkReader(Long chatId, ReaderDto readerDto) {

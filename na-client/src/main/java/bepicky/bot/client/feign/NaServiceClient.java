@@ -1,6 +1,7 @@
 package bepicky.bot.client.feign;
 
 import bepicky.common.domain.dto.ReaderDto;
+import bepicky.common.domain.dto.StatusReaderDto;
 import bepicky.common.domain.request.CategoryRequest;
 import bepicky.common.domain.request.LanguageRequest;
 import bepicky.common.domain.request.ReaderRequest;
@@ -87,4 +88,7 @@ public interface NaServiceClient {
 
     @PutMapping("/reader/disable/{chatId}")
     ReaderDto disableReader(@PathVariable("chatId") long id);
+
+    @GetMapping("/reader/status/{chatId}")
+    StatusReaderDto getStatus(@PathVariable("chatId") long id);
 }

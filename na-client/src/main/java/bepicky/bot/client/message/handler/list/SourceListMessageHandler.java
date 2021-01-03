@@ -44,9 +44,11 @@ public class SourceListMessageHandler extends AbstractListMessageHandler {
             .map(s -> buildButton(s, page))
             .collect(Collectors.toList());
 
-        List<InlineMarkupBuilder.InlineButton> navigation = pagination(page, response, markup);
+        List<InlineMarkupBuilder.InlineButton> pagination = pagination(page, response, markup);
+        List<InlineMarkupBuilder.InlineButton> navigation = navigation(markup, response.getReader());
         List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(buttons, 2);
         partition.forEach(markup::addButtons);
+        markup.addButtons(pagination);
         markup.addButtons(navigation);
 
         String listSourcesText = parseToUnicode(templateContext.processTemplate(

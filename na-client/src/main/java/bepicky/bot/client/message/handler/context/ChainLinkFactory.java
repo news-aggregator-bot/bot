@@ -19,14 +19,6 @@ import static bepicky.bot.client.message.template.TemplateUtils.ENABLE_READER;
 @Component
 public class ChainLinkFactory {
 
-    private final ChatChainLink activateReader = link(
-        ENABLE,
-        ENABLE_READER,
-        CommandType.ENABLE_READER.getKey(),
-        TRANSITION,
-        CommandType.ENABLE_READER
-    );
-
     @Autowired
     private CommandManager cmdMngr;
 
@@ -47,11 +39,23 @@ public class ChainLinkFactory {
     }
 
     public ChatChainLink settings() {
-        return link(DIR_NEXT, TemplateUtils.SETTINGS, CommandType.SETTINGS.getKey(), TRANSITION, CommandType.SETTINGS);
+        return link(
+            DIR_NEXT,
+            TemplateUtils.SETTINGS,
+            cmdMngr.status() + ";" + CommandType.SETTINGS.getKey(),
+            TRANSITION,
+            CommandType.SETTINGS
+        );
     }
 
     public ChatChainLink getActivateReader() {
-        return activateReader;
+        return link(
+            ENABLE,
+            ENABLE_READER,
+            cmdMngr.status() + ";" + CommandType.ENABLE_READER.getKey(),
+            TRANSITION,
+            CommandType.ENABLE_READER
+        );
     }
 
     private ChatChainLink link(String b, String m, String c, EntityType e, CommandType t) {

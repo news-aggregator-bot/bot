@@ -68,6 +68,10 @@ public class CommandManager {
         return toCmd(ChatCommand.of(CommandType.UPDATE, e, 1));
     }
 
+    public String status() {
+        return toCmd(ChatCommand.of(CommandType.STATUS_READER));
+    }
+
     public String goNext() {
         return toCmd(ChatCommand.of(GO_NEXT));
     }

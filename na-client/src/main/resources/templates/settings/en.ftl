@@ -1,2 +1,2 @@
 You are in your personal setting.
-Here you can update your languages and categories.
+Here you can update your languages, categories and sources.
