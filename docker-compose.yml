@@ -15,11 +15,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 0.5
-          memory: 512M
+          cpus: "0.5"
+          memory: "512M"
         reservations:
-          cpus: 0.1
-          memory: 128M
+          cpus: "0.1"
+          memory: "128M"
 #  na-admin-bot:
 #    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-bot-admin
 #    environment:
