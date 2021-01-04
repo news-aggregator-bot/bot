@@ -4,6 +4,7 @@ import bepicky.bot.client.config.TemplateConfig;
 import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.router.PickyNewsBot;
+import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.request.NewsNoteRequest;
 import bepicky.common.domain.request.NotifyNewsRequest;
@@ -44,6 +45,9 @@ public class NewsControllerTest {
 
     @Autowired
     private MessageTemplateContext templateContext;
+
+    @MockBean
+    private IReaderService readerService;
 
     @Test
     public void notifyNews_NoteContainsRegionsCommonsAuthor_ShouldNotifyWithCorrectMessage()
