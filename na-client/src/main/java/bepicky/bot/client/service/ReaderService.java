@@ -1,6 +1,6 @@
 package bepicky.bot.client.service;
 
-import bepicky.bot.client.feign.NaServiceClient;
+import bepicky.bot.client.feign.ReaderServiceClient;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.dto.StatusReaderDto;
 import bepicky.common.domain.request.ReaderRequest;
@@ -14,31 +14,31 @@ import java.util.Optional;
 public class ReaderService implements IReaderService {
 
     @Autowired
-    private NaServiceClient naServiceClient;
+    private ReaderServiceClient readerClient;
 
     @Override
     public ReaderDto register(ReaderRequest readerRequest) {
-        return naServiceClient.register(readerRequest);
+        return readerClient.register(readerRequest);
     }
 
     @Override
     public ReaderDto find(Long chatId) {
-        return checkReader(chatId, naServiceClient.find(chatId));
+        return checkReader(chatId, readerClient.find(chatId));
     }
 
     @Override
     public ReaderDto enable(Long chatId) {
-        return checkReader(chatId, naServiceClient.enableReader(chatId));
+        return checkReader(chatId, readerClient.enableReader(chatId));
     }
 
     @Override
     public ReaderDto disable(Long chatId) {
-        return checkReader(chatId, naServiceClient.disableReader(chatId));
+        return checkReader(chatId, readerClient.disableReader(chatId));
     }
 
     @Override
     public StatusReaderDto getStatus(Long chatId) {
-        return naServiceClient.getStatus(chatId);
+        return readerClient.getStatus(chatId);
     }
 
     private ReaderDto checkReader(Long chatId, ReaderDto readerDto) {

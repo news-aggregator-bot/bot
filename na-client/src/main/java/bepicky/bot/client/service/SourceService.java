@@ -1,6 +1,6 @@
 package bepicky.bot.client.service;
 
-import bepicky.bot.client.feign.NaServiceClient;
+import bepicky.bot.client.feign.SourceServiceClient;
 import bepicky.common.domain.request.SourceRequest;
 import bepicky.common.domain.response.SourceListResponse;
 import bepicky.common.domain.response.SourceResponse;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class SourceService implements ISourceService {
 
     @Autowired
-    private NaServiceClient naServiceClient;
+    private SourceServiceClient sourceServiceClient;
 
     @Override
     public SourceListResponse list(long chatId, int page, int size) {
-        return naServiceClient.listSources(chatId, page, size);
+        return sourceServiceClient.list(chatId, page, size);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class SourceService implements ISourceService {
         SourceRequest request = new SourceRequest();
         request.setChatId(chatId);
         request.setSourceId(id);
-        return naServiceClient.pick(request);
+        return sourceServiceClient.pick(request);
     }
 
     @Override
@@ -31,6 +31,6 @@ public class SourceService implements ISourceService {
         SourceRequest request = new SourceRequest();
         request.setChatId(chatId);
         request.setSourceId(id);
-        return naServiceClient.remove(request);
+        return sourceServiceClient.remove(request);
     }
 }

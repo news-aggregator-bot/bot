@@ -1,6 +1,6 @@
 package bepicky.bot.client.service;
 
-import bepicky.bot.client.feign.NaServiceClient;
+import bepicky.bot.client.feign.LanguageServiceClient;
 import bepicky.common.domain.request.LanguageRequest;
 import bepicky.common.domain.response.LanguageListResponse;
 import bepicky.common.domain.response.LanguageResponse;
@@ -11,21 +11,21 @@ import org.springframework.stereotype.Service;
 public class LanguageService implements ILanguageService {
 
     @Autowired
-    private NaServiceClient naServiceClient;
+    private LanguageServiceClient langClient;
 
     @Override
     public LanguageListResponse list(long chatId, int page, int size) {
-        return naServiceClient.listLanguages(chatId, page, size);
+        return langClient.list(chatId, page, size);
     }
 
     @Override
     public LanguageResponse pick(long chatId, String lang) {
-        return naServiceClient.pick(req(chatId, lang));
+        return langClient.pick(req(chatId, lang));
     }
 
     @Override
     public LanguageResponse remove(long chatId, String lang) {
-        return naServiceClient.remove(req(chatId, lang));
+        return langClient.remove(req(chatId, lang));
     }
 
     private LanguageRequest req(long chatId, String lang) {

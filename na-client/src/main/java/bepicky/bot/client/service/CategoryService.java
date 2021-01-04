@@ -1,6 +1,6 @@
 package bepicky.bot.client.service;
 
-import bepicky.bot.client.feign.NaServiceClient;
+import bepicky.bot.client.feign.CategoryServiceClient;
 import bepicky.common.domain.request.CategoryRequest;
 import bepicky.common.domain.response.CategoryListResponse;
 import bepicky.common.domain.response.CategoryResponse;
@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 public class CategoryService implements ICategoryService {
 
     @Autowired
-    private NaServiceClient categoryClient;
+    private CategoryServiceClient categoryClient;
 
     @Override
     public CategoryListResponse list(long chatId, String type, int page, int pageSize) {
-        return categoryClient.listCategories(chatId, page, pageSize, type);
+        return categoryClient.list(chatId, page, pageSize, type);
     }
 
     @Override
     public CategoryListResponse list(long chatId, long parentId, int page, int pageSize) {
-        return categoryClient.listSubcategories(chatId, parentId, page, pageSize);
+        return categoryClient.sublist(chatId, parentId, page, pageSize);
     }
 
     @Override
