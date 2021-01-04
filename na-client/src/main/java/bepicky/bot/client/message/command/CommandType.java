@@ -19,6 +19,8 @@ public enum CommandType {
     REMOVE_ALL("ra"),
     ENABLE_READER("er"),
     DISABLE_READER("dr"),
+    PAUSE_READER("pr"),
+    SETTINGS_READER("stg"),
     STATUS_READER("sr"),
     SETTINGS("s"),
     GO_NEXT("gn"),

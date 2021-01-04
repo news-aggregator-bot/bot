@@ -14,5 +14,9 @@ public interface IReaderService {
 
     ReaderDto disable(Long chatId);
 
+    ReaderDto pause(Long chatId);
+
+    ReaderDto settings(Long chatId);
+
     StatusReaderDto getStatus(Long chatId);
 }

@@ -3,6 +3,7 @@ package bepicky.bot.client.controller;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.router.PickyNewsBot;
+import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.request.NewsNoteRequest;
 import bepicky.common.domain.request.NotifyNewsRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,9 @@ public class NewsController {
 
     @Autowired
     private MessageTemplateContext templateContext;
+
+    @Autowired
+    private IReaderService readerService;
 
     @PutMapping("/notify/news")
     public void notifyNews(@RequestBody NotifyNewsRequest request) {
@@ -56,7 +61,15 @@ public class NewsController {
                 .enableHtml(true)
                 .setText(String.join("\n", newsNotes)));
         } catch (TelegramApiException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            if (e instanceof TelegramApiRequestException) {
+                TelegramApiRequestException requestException = (TelegramApiRequestException) e;
+                if (requestException.getErrorCode() == 403) {
+                    log.info("reader:disabled:{}", request.getChatId());
+                    readerService.disable(request.getChatId());
+                }
+            } else {
+                log.warn("reader:notify:failed:{}", e.getMessage());
+            }
         }
     }
 

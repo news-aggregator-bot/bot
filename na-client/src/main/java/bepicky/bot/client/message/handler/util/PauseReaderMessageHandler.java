@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static bepicky.bot.client.message.template.TemplateUtils.DISABLE_READER;
+import static bepicky.bot.client.message.template.TemplateUtils.PAUSE_READER;
 
 @Component
 @Slf4j
-public class DisableReaderMessageHandler implements UtilMessageHandler {
+public class PauseReaderMessageHandler implements UtilMessageHandler {
 
     @Autowired
     private IReaderService readerService;
@@ -24,10 +24,10 @@ public class DisableReaderMessageHandler implements UtilMessageHandler {
 
     @Override
     public HandleResult handle(ChatCommand cc) {
-        log.debug("reader:{}:disable:start", cc.getChatId());
-        ReaderDto disabled = readerService.disable(cc.getChatId());
-        log.debug("reader:{}:disable:success", cc.getChatId());
-        String currentText = templateContext.processTemplate(DISABLE_READER, disabled.getLang());
+        log.debug("reader:{}:pause:start", cc.getChatId());
+        ReaderDto disabled = readerService.pause(cc.getChatId());
+        log.debug("reader:{}:pause:success", cc.getChatId());
+        String currentText = templateContext.processTemplate(PAUSE_READER, disabled.getLang());
         return new HandleResult(currentText, new InlineMarkupBuilder().build());
     }
 

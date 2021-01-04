@@ -36,7 +36,7 @@ public class OptionsCommonMessageHandler implements MessageHandler {
         String settingsText = templateContext.processTemplate(ButtonNames.SETTINGS, reader.getLang());
 
         Tuple2<String, CommandType> activationKeys = reader.isEnabled() ?
-            Tuples.of(ButtonNames.DISABLE_READER, CommandType.DISABLE_READER)
+            Tuples.of(ButtonNames.DISABLE_READER, CommandType.PAUSE_READER)
             : Tuples.of(ButtonNames.ENABLE_READER, CommandType.ENABLE_READER);
 
         InlineMarkupBuilder.InlineButton activationButton = builder.button(

@@ -28,12 +28,22 @@ public class ReaderService implements IReaderService {
 
     @Override
     public ReaderDto enable(Long chatId) {
-        return checkReader(chatId, readerClient.enableReader(chatId));
+        return checkReader(chatId, readerClient.enable(chatId));
     }
 
     @Override
     public ReaderDto disable(Long chatId) {
-        return checkReader(chatId, readerClient.disableReader(chatId));
+        return checkReader(chatId, readerClient.disable(chatId));
+    }
+
+    @Override
+    public ReaderDto pause(Long chatId) {
+        return checkReader(chatId, readerClient.pause(chatId));
+    }
+
+    @Override
+    public ReaderDto settings(Long chatId) {
+        return checkReader(chatId, readerClient.settings(chatId));
     }
 
     @Override

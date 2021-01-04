@@ -19,10 +19,16 @@ public interface ReaderServiceClient {
     ReaderDto find(@PathVariable("chatId") Long chatId);
 
     @PutMapping("/reader/enable/{chatId}")
-    ReaderDto enableReader(@PathVariable("chatId") long id);
+    ReaderDto enable(@PathVariable("chatId") long id);
 
     @PutMapping("/reader/disable/{chatId}")
-    ReaderDto disableReader(@PathVariable("chatId") long id);
+    ReaderDto disable(@PathVariable("chatId") long id);
+
+    @PutMapping("/reader/settings/{chatId}")
+    ReaderDto settings(@PathVariable("chatId") long id);
+
+    @PutMapping("/reader/pause/{chatId}")
+    ReaderDto pause(@PathVariable("chatId") long id);
 
     @GetMapping("/reader/status/{chatId}")
     StatusReaderDto getStatus(@PathVariable("chatId") long id);

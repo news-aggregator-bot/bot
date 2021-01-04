@@ -38,7 +38,7 @@ public class SettingsMessageHandler implements UtilMessageHandler {
 
     @Override
     public HandleResult handle(ChatCommand cc) {
-        ReaderDto reader = readerService.disable(cc.getChatId());
+        ReaderDto reader = readerService.settings(cc.getChatId());
 
         InlineMarkupBuilder m = new InlineMarkupBuilder();
 

@@ -45,7 +45,7 @@ public class TemplateUtils {
 
     public static final String ENABLE = "enable";
     public static final String ENABLE_READER = "enable_reader";
-    public static final String DISABLE_READER = "disable_reader";
+    public static final String PAUSE_READER = "pause_reader";
     public static final String STATUS_READER = "status_reader";
 
 
