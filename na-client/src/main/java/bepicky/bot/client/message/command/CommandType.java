@@ -30,6 +30,8 @@ public enum CommandType {
     public static final Set<CommandType> UTIL = ImmutableSet.of(
         ENABLE_READER,
         DISABLE_READER,
+        PAUSE_READER,
+        SETTINGS_READER,
         STATUS_READER,
         SETTINGS,
         GO_NEXT,

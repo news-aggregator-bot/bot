@@ -33,7 +33,7 @@ public class PauseReaderMessageHandler implements UtilMessageHandler {
 
     @Override
     public CommandType commandType() {
-        return CommandType.DISABLE_READER;
+        return CommandType.PAUSE_READER;
     }
 
 }
