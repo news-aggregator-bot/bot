@@ -5,12 +5,14 @@ import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.dto.StatusReaderDto;
 import bepicky.common.domain.request.ReaderRequest;
 import bepicky.common.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ReaderService implements IReaderService {
 
     @Autowired
@@ -18,6 +20,7 @@ public class ReaderService implements IReaderService {
 
     @Override
     public ReaderDto register(ReaderRequest readerRequest) {
+        log.info("reader:registration:{}", readerRequest.toString());
         return readerClient.register(readerRequest);
     }
 
