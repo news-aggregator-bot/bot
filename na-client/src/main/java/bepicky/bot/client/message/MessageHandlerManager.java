@@ -97,7 +97,8 @@ public class MessageHandlerManager {
     }
 
     public BotApiMethod<Message> manage(Message message) {
-        return getCommonHandler(message.getText()).handle(message);
+        String cmd = message.getText().split(" ")[0];
+        return getCommonHandler(cmd).handle(message);
     }
 
     private MessageHandler getCommonHandler(String text) {
@@ -118,12 +119,16 @@ public class MessageHandlerManager {
                 txt.append("\n").append(handleResult.getText());
             }
         }
-        return new EditMessageText()
+        EditMessageText msg = new EditMessageText()
             .setChatId(message.getChatId())
             .setMessageId(message.getMessageId())
             .setText(txt.toString())
             .enableHtml(true)
             .setReplyMarkup(handleResult.getInline());
+        if (!handleResult.isPreviewPage()) {
+            msg.disableWebPagePreview();
+        }
+        return msg;
     }
 
     private CallbackMessageHandler.HandleResult handleCallback(long chatId, String data) {

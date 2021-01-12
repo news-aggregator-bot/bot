@@ -6,9 +6,9 @@ import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.router.PickyNewsBot;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.CategoryDto;
-import bepicky.common.domain.request.NewsNoteRequest;
+import bepicky.common.domain.dto.NewsNoteDto;
+import bepicky.common.domain.dto.SourcePageDto;
 import bepicky.common.domain.request.NotifyNewsRequest;
-import bepicky.common.domain.request.SourcePageRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -54,12 +54,12 @@ public class NewsControllerTest {
         throws TelegramApiException {
         ArgumentCaptor<SendMessage> sendMsgAc = ArgumentCaptor.forClass(SendMessage.class);
 
-        NewsNoteRequest noteRequest = newNoteReq("title", "url", "author");
+        NewsNoteDto noteRequest = newNoteReq("title", "url", "author");
         CategoryDto regionUSA = region("USA");
         CategoryDto regionUSSR = region("USSR");
         CategoryDto politics = common("Politics");
         CategoryDto finance = common("Finance");
-        SourcePageRequest pageRequest = new SourcePageRequest();
+        SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(regionUSA, regionUSSR, politics, finance));
         noteRequest.setSourcePage(pageRequest);
@@ -83,10 +83,10 @@ public class NewsControllerTest {
     public void notifyNews_NoteContainsCommonsAuthor_ShouldNotifyWithCorrectMessage() throws TelegramApiException {
         ArgumentCaptor<SendMessage> sendMsgAc = ArgumentCaptor.forClass(SendMessage.class);
 
-        NewsNoteRequest noteRequest = newNoteReq("title", "url", "author");
+        NewsNoteDto noteRequest = newNoteReq("title", "url", "author");
         CategoryDto politics = common("Politics");
         CategoryDto finance = common("Finance");
-        SourcePageRequest pageRequest = new SourcePageRequest();
+        SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(politics, finance));
         noteRequest.setSourcePage(pageRequest);
@@ -109,10 +109,10 @@ public class NewsControllerTest {
     public void notifyNews_NoteContainsCommons_ShouldNotifyWithCorrectMessage() throws TelegramApiException {
         ArgumentCaptor<SendMessage> sendMsgAc = ArgumentCaptor.forClass(SendMessage.class);
 
-        NewsNoteRequest noteRequest = newNoteReq("title", "url", null);
+        NewsNoteDto noteRequest = newNoteReq("title", "url", null);
         CategoryDto politics = common("Politics");
         CategoryDto finance = common("Finance");
-        SourcePageRequest pageRequest = new SourcePageRequest();
+        SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(politics, finance));
         noteRequest.setSourcePage(pageRequest);
@@ -133,8 +133,8 @@ public class NewsControllerTest {
     public void notifyNews_NoteContainsTitleUrlCommon_ShouldNotifyWithCorrectMessage() throws TelegramApiException {
         ArgumentCaptor<SendMessage> sendMsgAc = ArgumentCaptor.forClass(SendMessage.class);
 
-        NewsNoteRequest noteRequest = newNoteReq("title", "url", null);
-        SourcePageRequest pageRequest = new SourcePageRequest();
+        NewsNoteDto noteRequest = newNoteReq("title", "url", null);
+        SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(common("Finance")));
         noteRequest.setSourcePage(pageRequest);
@@ -154,8 +154,8 @@ public class NewsControllerTest {
 
     @Test(expected = NullPointerException.class)
     public void notifyNews_NoteNotContainsUrl_ShouldThrowAndException() {
-        NewsNoteRequest noteRequest = newNoteReq("title", null, null);
-        SourcePageRequest pageRequest = new SourcePageRequest();
+        NewsNoteDto noteRequest = newNoteReq("title", null, null);
+        SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Collections.emptyList());
         noteRequest.setSourcePage(pageRequest);
@@ -167,8 +167,8 @@ public class NewsControllerTest {
 
     @Test(expected = NullPointerException.class)
     public void notifyNews_NoteNotContainsTitle_ShouldThrowAndException() {
-        NewsNoteRequest noteRequest = newNoteReq(null, "url", null);
-        SourcePageRequest pageRequest = new SourcePageRequest();
+        NewsNoteDto noteRequest = newNoteReq(null, "url", null);
+        SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Collections.emptyList());
         noteRequest.setSourcePage(pageRequest);
@@ -178,7 +178,7 @@ public class NewsControllerTest {
         newsController.notifyNews(request);
     }
 
-    private NotifyNewsRequest notifyNewsReq(List<NewsNoteRequest> newsNotes) {
+    private NotifyNewsRequest notifyNewsReq(List<NewsNoteDto> newsNotes) {
         NotifyNewsRequest request = new NotifyNewsRequest();
         request.setChatId(CHAT_ID);
         request.setLang(LangUtils.DEFAULT);
@@ -186,8 +186,8 @@ public class NewsControllerTest {
         return request;
     }
 
-    private NewsNoteRequest newNoteReq(String title, String url, String author) {
-        NewsNoteRequest noteRequest = new NewsNoteRequest();
+    private NewsNoteDto newNoteReq(String title, String url, String author) {
+        NewsNoteDto noteRequest = new NewsNoteDto();
         noteRequest.setTitle(title);
         noteRequest.setUrl(url);
         noteRequest.setAuthor(author);

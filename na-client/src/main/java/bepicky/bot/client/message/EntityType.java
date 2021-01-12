@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public enum EntityType {
-    CATEGORY("c"), LANGUAGE("l"), REGION("r"), SOURCE("s"), TRANSITION("t");
+    CATEGORY("c"), LANGUAGE("l"), REGION("r"), SOURCE("s"), NEWS_NOTE("nn"), TRANSITION("t");
     private static final Map<String, EntityType> VALUES = Arrays.stream(values())
         .collect(Collectors.toMap(EntityType::getKey, Function.identity()));
 

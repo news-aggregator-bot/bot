@@ -62,14 +62,9 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
         );
         markup.addButtons(Arrays.asList(allSubCategoriesBtn, onlyParentBtn));
 
+        List<InlineMarkupBuilder.InlineButton> pagination = pagination(page, response, markup, parentId);
         List<InlineMarkupBuilder.InlineButton> navigation = new ArrayList<>();
-        if (!response.isFirst()) {
-            String prevText = prevButtonText();
-            navigation.add(markup.button(
-                prevText,
-                cmdMngr.sublist(entityType(), parentId, page - 1)
-            ));
-        }
+
         navigation.add(markup.button(backButtonText(readerLang), buildBackCommand(parent)));
         navigation.add(markup.button(
             doneButtonText(response.getReader().getLang()),
@@ -77,16 +72,9 @@ public abstract class AbstractSubCategoryListMessageHandler extends AbstractList
             chainManager.next(cc.getChatId()).getCommand()
         ));
 
-        if (!response.isLast()) {
-            String nextText = nextButtonText();
-            navigation.add(markup.button(
-                nextText,
-                cmdMngr.sublist(entityType(), parentId, page + 1)
-            ));
-        }
-
         List<List<InlineMarkupBuilder.InlineButton>> partition = Lists.partition(subcategoryButtons, 2);
         partition.forEach(markup::addButtons);
+        markup.addButtons(pagination);
         markup.addButtons(navigation);
 
         Tuple2<String, Map<String, Object>> textData = msgTextData(parent, page);

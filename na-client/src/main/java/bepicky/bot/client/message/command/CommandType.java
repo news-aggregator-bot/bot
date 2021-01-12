@@ -20,12 +20,13 @@ public enum CommandType {
     ENABLE_READER("er"),
     DISABLE_READER("dr"),
     PAUSE_READER("pr"),
-    SETTINGS_READER("stg"),
+    SETTINGS_READER("str"),
     STATUS_READER("sr"),
-    SETTINGS("s"),
+    SETTINGS("st"),
     GO_NEXT("gn"),
     GO_PREVIOUS("gp"),
-    UPDATE("upd");
+    UPDATE("upd"),
+    SEARCH("s");
 
     public static final Set<CommandType> UTIL = ImmutableSet.of(
         ENABLE_READER,

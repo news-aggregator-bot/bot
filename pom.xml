@@ -27,6 +27,7 @@
     <modules>
         <module>na-client</module>
         <module>na-admin</module>
+        <module>na-support</module>
     </modules>
 
     <dependencyManagement>
@@ -60,7 +61,7 @@
             <dependency>
                 <groupId>bepicky</groupId>
                 <artifactId>common-communication</artifactId>
-                <version>1.2-5-SNAPSHOT</version>
+                <version>1.2-7-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

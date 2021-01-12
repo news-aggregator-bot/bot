@@ -48,6 +48,9 @@ public class TemplateUtils {
     public static final String PAUSE_READER = "pause_reader";
     public static final String STATUS_READER = "status_reader";
 
+    private static final String SEARCH = "search";
+    public static final String SEARCH_NOTE = SEARCH + "/news_note";
+    public static final String SEARCH_INSTRUCTION = SEARCH + "/instruction";
 
     public static final Map<EntityType, String> RM_ENTITY_CONTAINER = Map.of(
         EntityType.REGION,

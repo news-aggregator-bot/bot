@@ -5,6 +5,7 @@ import bepicky.bot.client.message.command.CommandType;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.IReaderService;
+import bepicky.bot.client.service.IValueNormalisationService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.dto.LanguageDto;
 import bepicky.common.domain.dto.SourceDto;
@@ -24,10 +25,15 @@ public class StatusMessageHandler implements UtilMessageHandler {
     @Autowired
     private MessageTemplateContext templateContext;
 
+    @Autowired
+    private IValueNormalisationService normalisationService;
+
     @Override
     public HandleResult handle(ChatCommand command) {
         StatusReaderDto status = readerService.getStatus(command.getChatId());
-        String name = status.getFirstName() + " " + status.getLastName();
+        String name =
+            normalisationService.normalise(status.getFirstName()) + " " +
+                normalisationService.normalise(status.getLastName());
         String langs = status.getLanguages()
             .stream()
             .map(LanguageDto::getLocalized)

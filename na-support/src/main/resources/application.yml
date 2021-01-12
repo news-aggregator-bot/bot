@@ -1,0 +1,8 @@
+camel:
+  main:
+    banner-mode: "off"
+  springboot:
+    main-run-controller: true
+bot:
+  name: picky-news-support-bot
+  token: 1358112964:AAEm9HPYxxD0BTGj3s2rtaxHA4TSK1ecegI

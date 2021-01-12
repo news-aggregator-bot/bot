@@ -52,14 +52,23 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
         AbstractListResponse response,
         InlineMarkupBuilder markup
     ) {
+        return pagination(page, response, markup, null);
+    }
+
+    protected List<InlineMarkupBuilder.InlineButton> pagination(
+        int page,
+        AbstractListResponse response,
+        InlineMarkupBuilder markup,
+        Object id
+    ) {
         List<InlineMarkupBuilder.InlineButton> pagination = new ArrayList<>();
         if (!response.isFirst()) {
             String prevText = prevButtonText();
-            pagination.add(markup.button(prevText, cmdMngr.list(entityType(), page - 1)));
+            pagination.add(markup.button(prevText, cmdMngr.generic(commandType(), entityType(), page - 1, id)));
         }
         if (!response.isLast()) {
             String nextText = nextButtonText();
-            pagination.add(markup.button(nextText, cmdMngr.list(entityType(), page + 1)));
+            pagination.add(markup.button(nextText, cmdMngr.generic(commandType(), entityType(), page + 1, id)));
         }
         return pagination;
     }

@@ -60,6 +60,10 @@ public class CommandManager {
         return toCmd(ChatCommand.of(CommandType.SUBLIST, entity, page, parent));
     }
 
+    public String generic(CommandType c, EntityType e, int page, Object id) {
+        return toCmd(ChatCommand.of(c, e, page, id));
+    }
+
     public String util(CommandType c) {
         return toCmd(ChatCommand.of(c));
     }

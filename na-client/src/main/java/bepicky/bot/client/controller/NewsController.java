@@ -4,12 +4,12 @@ import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.router.PickyNewsBot;
 import bepicky.bot.client.service.IReaderService;
+import bepicky.bot.client.service.IValueNormalisationService;
 import bepicky.common.domain.dto.CategoryDto;
-import bepicky.common.domain.request.NewsNoteRequest;
+import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.request.NotifyNewsRequest;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,10 +36,13 @@ public class NewsController {
     @Autowired
     private IReaderService readerService;
 
+    @Autowired
+    private IValueNormalisationService normalisationService;
+
     @PutMapping("/notify/news")
     public void notifyNews(@RequestBody NotifyNewsRequest request) {
         List<String> newsNotes = new ArrayList<>(request.getNotes().size());
-        for (NewsNoteRequest note : request.getNotes()) {
+        for (NewsNoteDto note : request.getNotes()) {
             String regions = note.getSourcePage().getRegions().stream()
                 .map(CategoryDto::getLocalised).collect(Collectors.joining(", "));
             String categories = note.getSourcePage().getCommons().stream()
@@ -47,9 +50,9 @@ public class NewsController {
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", note.getTitle())
                 .put("url", note.getUrl())
-                .put("region", normaliseValue(regions))
-                .put("category", normaliseValue(categories))
-                .put("author", normaliseValue(note.getAuthor()))
+                .put("region", normalisationService.normalise(regions))
+                .put("category", normalisationService.normalise(categories))
+                .put("author", normalisationService.normalise(note.getAuthor()))
                 .build();
             newsNotes.add(templateContext.processTemplate(TemplateUtils.NEWS_NOTE, request.getLang(), params).trim());
         }
@@ -71,9 +74,5 @@ public class NewsController {
                 log.warn("reader:notify:failed:{}", e.getMessage());
             }
         }
-    }
-
-    private String normaliseValue(String value) {
-        return StringUtils.isBlank(value) ? "" : value;
     }
 }
