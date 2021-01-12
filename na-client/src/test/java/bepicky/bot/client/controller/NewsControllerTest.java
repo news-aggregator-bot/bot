@@ -5,6 +5,8 @@ import bepicky.bot.client.message.LangUtils;
 import bepicky.bot.client.message.template.MessageTemplateContext;
 import bepicky.bot.client.router.PickyNewsBot;
 import bepicky.bot.client.service.IReaderService;
+import bepicky.bot.client.service.IValueNormalisationService;
+import bepicky.bot.client.service.ValueNormalisationService;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.dto.SourcePageDto;
@@ -48,6 +50,9 @@ public class NewsControllerTest {
 
     @MockBean
     private IReaderService readerService;
+
+    @Autowired
+    private IValueNormalisationService normalisationService;
 
     @Test
     public void notifyNews_NoteContainsRegionsCommonsAuthor_ShouldNotifyWithCorrectMessage()
@@ -217,6 +222,11 @@ public class NewsControllerTest {
         @Bean
         public NewsController newsController() {
             return new NewsController();
+        }
+
+        @Bean
+        public IValueNormalisationService valueNormalisationService() {
+            return new ValueNormalisationService();
         }
     }
 }
