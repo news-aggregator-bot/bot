@@ -5,7 +5,6 @@ import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.router.PickyNewsBot;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.bot.client.service.IValueNormalisationService;
-import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.request.NotifyNewsRequest;
 import com.google.common.collect.ImmutableMap;
@@ -21,9 +20,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @RestController
@@ -45,10 +41,8 @@ public class NewsController {
     public void notifyNews(@RequestBody NotifyNewsRequest request) {
         List<String> newsNotes = new ArrayList<>(request.getNotes().size());
         for (NewsNoteDto note : request.getNotes()) {
-            String regions = note.getSourcePages().stream().flatMap(s -> s.getRegions().stream())
-                .map(CategoryDto::getLocalised).collect(collectingAndThen(toSet(), set -> String.join(", ", set)));
-            String categories = note.getSourcePages().stream().flatMap(s -> s.getCommons().stream())
-                .map(CategoryDto::getLocalised).collect(collectingAndThen(toSet(), set -> String.join(", ", set)));
+            String regions = note.getRegions();
+            String categories = note.getCommons();
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", note.getTitle())
                 .put("url", note.getUrl())

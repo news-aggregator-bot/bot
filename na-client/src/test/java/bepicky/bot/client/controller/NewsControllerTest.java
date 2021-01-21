@@ -67,7 +67,7 @@ public class NewsControllerTest {
         SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(regionUSA, regionUSSR, politics, finance));
-        noteRequest.setSourcePage(pageRequest);
+        noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
         NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
 
@@ -94,7 +94,7 @@ public class NewsControllerTest {
         SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(politics, finance));
-        noteRequest.setSourcePage(pageRequest);
+        noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
         NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
 
@@ -120,7 +120,7 @@ public class NewsControllerTest {
         SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(politics, finance));
-        noteRequest.setSourcePage(pageRequest);
+        noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
         NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
 
@@ -142,7 +142,7 @@ public class NewsControllerTest {
         SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Arrays.asList(common("Finance")));
-        noteRequest.setSourcePage(pageRequest);
+        noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
         NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
 
@@ -163,7 +163,7 @@ public class NewsControllerTest {
         SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Collections.emptyList());
-        noteRequest.setSourcePage(pageRequest);
+        noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
         NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
 
@@ -176,7 +176,7 @@ public class NewsControllerTest {
         SourcePageDto pageRequest = new SourcePageDto();
 
         pageRequest.setCategories(Collections.emptyList());
-        noteRequest.setSourcePage(pageRequest);
+        noteRequest.setSourcePages(Arrays.asList(pageRequest));
 
         NotifyNewsRequest request = notifyNewsReq(Arrays.asList(noteRequest));
 

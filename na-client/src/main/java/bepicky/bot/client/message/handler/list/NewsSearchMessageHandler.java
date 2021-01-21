@@ -6,7 +6,6 @@ import bepicky.bot.client.message.command.ChatCommand;
 import bepicky.bot.client.message.command.CommandType;
 import bepicky.bot.client.message.template.TemplateUtils;
 import bepicky.bot.client.service.INewsService;
-import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.response.NewsSearchResponse;
 import com.google.common.collect.ImmutableMap;
@@ -86,18 +85,10 @@ public class NewsSearchMessageHandler extends AbstractListMessageHandler {
         public TemplateNewsNote(NewsNoteDto dto) {
             this.title = dto.getTitle();
             this.url = dto.getUrl();
-            this.source = dto.getSourcePage().getSourceName();
+            this.source = dto.getSourcePages().get(0).getSourceName();
             this.date = dto.getDate();
-            this.region = dto.getSourcePage()
-                .getRegions()
-                .stream()
-                .map(CategoryDto::getLocalised)
-                .collect(Collectors.joining(","));
-            this.common = dto.getSourcePage()
-                .getCommons()
-                .stream()
-                .map(CategoryDto::getLocalised)
-                .collect(Collectors.joining(","));
+            this.region = dto.getRegions();
+            this.common = dto.getCommons();
         }
     }
 }
