@@ -80,7 +80,7 @@ public class NewsControllerTest {
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("<a href=\"url\">title</a>\n\n" +
             "Region: <b>USA, USSR</b>\n" +
-            "Category: <b>Politics, Finance</b>\n" +
+            "Category: <b>Finance, Politics</b>\n" +
             "Author: author", value.getText());
     }
 
@@ -106,7 +106,7 @@ public class NewsControllerTest {
         assertTrue(value.getDisableNotification());
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("<a href=\"url\">title</a>\n\n" +
-            "Category: <b>Politics, Finance</b>\n" +
+            "Category: <b>Finance, Politics</b>\n" +
             "Author: author", value.getText());
     }
 
@@ -131,7 +131,7 @@ public class NewsControllerTest {
         SendMessage value = sendMsgAc.getValue();
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("<a href=\"url\">title</a>\n\n" +
-            "Category: <b>Politics, Finance</b>", value.getText());
+            "Category: <b>Finance, Politics</b>", value.getText());
     }
 
     @Test
