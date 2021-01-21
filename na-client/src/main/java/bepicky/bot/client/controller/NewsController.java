@@ -21,7 +21,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @RestController
@@ -43,10 +45,10 @@ public class NewsController {
     public void notifyNews(@RequestBody NotifyNewsRequest request) {
         List<String> newsNotes = new ArrayList<>(request.getNotes().size());
         for (NewsNoteDto note : request.getNotes()) {
-            String regions = note.getSourcePage().getRegions().stream()
-                .map(CategoryDto::getLocalised).collect(Collectors.joining(", "));
-            String categories = note.getSourcePage().getCommons().stream()
-                .map(CategoryDto::getLocalised).collect(Collectors.joining(", "));
+            String regions = note.getSourcePages().stream().flatMap(s -> s.getRegions().stream())
+                .map(CategoryDto::getLocalised).collect(collectingAndThen(toSet(), set -> String.join(", ", set)));
+            String categories = note.getSourcePages().stream().flatMap(s -> s.getCommons().stream())
+                .map(CategoryDto::getLocalised).collect(collectingAndThen(toSet(), set -> String.join(", ", set)));
             Map<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("title", note.getTitle())
                 .put("url", note.getUrl())
