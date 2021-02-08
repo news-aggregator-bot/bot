@@ -39,7 +39,6 @@ public class NewsController {
 
     @PutMapping("/notify/news")
     public void notifyNews(@RequestBody NotifyNewsRequest request) {
-        List<String> newsNotes = new ArrayList<>(request.getNotes().size());
         for (NewsNoteDto note : request.getNotes()) {
             String regions = note.getRegions();
             String categories = note.getCommons();
@@ -50,24 +49,28 @@ public class NewsController {
                 .put("category", normalisationService.normalise(categories))
                 .put("author", normalisationService.normalise(note.getAuthor()))
                 .build();
-            newsNotes.add(templateContext.processTemplate(TemplateUtils.NEWS_NOTE, request.getLang(), params).trim());
-        }
-        try {
-            bot.execute(new SendMessage()
-                .enableMarkdownV2(true)
-                .setChatId(request.getChatId())
-                .disableNotification()
-                .enableHtml(true)
-                .setText(String.join("\n", newsNotes)));
-        } catch (TelegramApiException e) {
-            if (e instanceof TelegramApiRequestException) {
-                TelegramApiRequestException requestException = (TelegramApiRequestException) e;
-                if (requestException.getErrorCode() == 403) {
-                    log.info("reader:disabled:{}", request.getChatId());
-                    readerService.disable(request.getChatId());
+            String noteMsg = templateContext.processTemplate(
+                TemplateUtils.NEWS_NOTE,
+                request.getLang(),
+                params
+            ).trim();
+            try {
+                bot.execute(new SendMessage()
+                    .enableMarkdownV2(true)
+                    .setChatId(request.getChatId())
+                    .disableNotification()
+                    .enableHtml(true)
+                    .setText(noteMsg));
+            } catch (TelegramApiException e) {
+                if (e instanceof TelegramApiRequestException) {
+                    TelegramApiRequestException requestException = (TelegramApiRequestException) e;
+                    if (requestException.getErrorCode() == 403) {
+                        log.info("reader:disabled:{}", request.getChatId());
+                        readerService.disable(request.getChatId());
+                    }
+                } else {
+                    log.warn("reader:notify:failed:{}", e.getMessage());
                 }
-            } else {
-                log.warn("reader:notify:failed:{}", e.getMessage());
             }
         }
     }
