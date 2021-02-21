@@ -33,14 +33,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
-public class NewsControllerTest {
+public class NotificationControllerTest {
 
     private static final String COMMON_TYPE = "COMMON";
     private static final String REGION_TYPE = "REGION";
     private static final long CHAT_ID = 1L;
 
     @Autowired
-    private NewsController newsController;
+    private NotificationController newsController;
 
     @MockBean
     private PickyNewsBot bot;
@@ -79,8 +79,7 @@ public class NewsControllerTest {
         assertTrue(value.getDisableNotification());
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("<a href=\"url\">title</a>\n\n" +
-            "Region: <b>USA, USSR</b>\n" +
-            "Category: <b>Finance, Politics</b>\n" +
+            "USA, USSR / Finance, Politics\n" +
             "Author: author", value.getText());
     }
 
@@ -106,7 +105,7 @@ public class NewsControllerTest {
         assertTrue(value.getDisableNotification());
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("<a href=\"url\">title</a>\n\n" +
-            "Category: <b>Finance, Politics</b>\n" +
+            " / Finance, Politics\n" +
             "Author: author", value.getText());
     }
 
@@ -131,7 +130,7 @@ public class NewsControllerTest {
         SendMessage value = sendMsgAc.getValue();
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("<a href=\"url\">title</a>\n\n" +
-            "Category: <b>Finance, Politics</b>", value.getText());
+            " / Finance, Politics", value.getText());
     }
 
     @Test
@@ -154,7 +153,7 @@ public class NewsControllerTest {
         assertTrue(value.getDisableNotification());
         assertEquals(CHAT_ID, Long.parseLong(value.getChatId()));
         assertEquals("<a href=\"url\">title</a>\n\n" +
-            "Category: <b>Finance</b>", value.getText());
+            " / Finance", value.getText());
     }
 
     @Test(expected = NullPointerException.class)
@@ -217,11 +216,11 @@ public class NewsControllerTest {
     @TestConfiguration
     @EntityScan(basePackages = "bepicky.bot.client")
     @Import({TemplateConfig.class, MessageTemplateContext.class})
-    static class NewsControllerTestConfig {
+    static class NotificationControllerTestConfig {
 
         @Bean
-        public NewsController newsController() {
-            return new NewsController();
+        public NotificationController newsController() {
+            return new NotificationController();
         }
 
         @Bean

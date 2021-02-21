@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-public class NewsController {
+public class NotificationController {
 
     @Autowired
     private PickyNewsBot bot;
