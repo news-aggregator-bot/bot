@@ -26,6 +26,7 @@ public enum CommandType {
     GO_NEXT("gn"),
     GO_PREVIOUS("gp"),
     UPDATE("upd"),
+    CHOICE("ce"),
     SEARCH("s");
 
     public static final Set<CommandType> UTIL = ImmutableSet.of(

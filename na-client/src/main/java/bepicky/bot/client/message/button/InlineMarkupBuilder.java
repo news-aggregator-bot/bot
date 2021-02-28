@@ -1,7 +1,6 @@
 package bepicky.bot.client.message.button;
 
 
-import bepicky.bot.client.message.command.CommandType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -30,10 +29,6 @@ public class InlineMarkupBuilder {
 
     public InlineButton button(String text, String... commands) {
         return new InlineButton(text, Arrays.asList(commands));
-    }
-
-    public InlineButton done(String text) {
-        return new InlineButton(text, Arrays.asList(CommandType.GO_NEXT.name()));
     }
 
     public InlineKeyboardMarkup build() {

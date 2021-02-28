@@ -1,5 +1,6 @@
 package bepicky.bot.client.message.handler.context;
 
+import bepicky.bot.client.message.template.TemplateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static bepicky.bot.client.message.template.TemplateUtils.WELCOME_LIST_CATEGORY;
 import static bepicky.bot.client.message.template.TemplateUtils.WELCOME_LIST_LANGUAGES;
 import static bepicky.bot.client.message.template.TemplateUtils.WELCOME_LIST_REGION;
+import static bepicky.bot.client.message.template.TemplateUtils.WELCOME_LIST_SOURCES;
 
 @Component
 public class ChatChainManager {
@@ -22,10 +24,12 @@ public class ChatChainManager {
     private ChainLinkFactory chainFactory;
 
     public ChatChain welcomeChain(Long chatId) {
-        ChatChainLink listCategory = chainFactory.listCategories(WELCOME_LIST_CATEGORY);
-        ChatChainLink listRegion = chainFactory.listRegions(WELCOME_LIST_REGION);
+
+        ChatChainLink commons = chainFactory.choiceCommon(TemplateUtils.WELCOME_CHOICE_COMMONS);
+        ChatChainLink regions = chainFactory.choiceRegion(TemplateUtils.WELCOME_CHOICE_REGIONS);
+        ChatChainLink listSources = chainFactory.listSources(WELCOME_LIST_SOURCES);
         ChatChainLink listLanguage = chainFactory.listLanguages(WELCOME_LIST_LANGUAGES);
-        ChatChain chatChain = new ChatChain(listLanguage, listRegion, listCategory, chainFactory.getActivateReader());
+        ChatChain chatChain = new ChatChain(listLanguage, listSources, regions, commons, chainFactory.getActivateReader());
         chains.put(chatId, chatChain);
         return chatChain;
     }

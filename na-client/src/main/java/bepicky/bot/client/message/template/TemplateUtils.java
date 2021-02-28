@@ -29,9 +29,13 @@ public class TemplateUtils {
     public static final String REMOVE_SOURCE_SUCCESS = "rm_source_success";
     public static final String REMOVE_ALL_SUBCATEGORIES = "rm_all_subcategories";
 
-    public static final String WELCOME_LIST_REGION = "welcome_list_regions";
-    public static final String WELCOME_LIST_CATEGORY = "welcome_list_categories";
-    public static final String WELCOME_LIST_LANGUAGES = "welcome_list_language";
+    public static final String WELCOME = "welcome";
+    public static final String WELCOME_LIST_REGION = WELCOME + "/list_regions";
+    public static final String WELCOME_LIST_CATEGORY = WELCOME + "/list_categories";
+    public static final String WELCOME_LIST_SOURCES = WELCOME + "/list_sources";
+    public static final String WELCOME_LIST_LANGUAGES = WELCOME + "/list_language";
+    public static final String WELCOME_CHOICE_REGIONS = WELCOME + "/choice/region";
+    public static final String WELCOME_CHOICE_COMMONS = WELCOME + "/choice/common";
 
     public static final String LIST_CATEGORY = "list_categories";
     public static final String LIST_REGIONS = "list_regions";

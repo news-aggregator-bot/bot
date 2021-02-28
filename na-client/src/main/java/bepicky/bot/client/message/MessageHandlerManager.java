@@ -39,16 +39,6 @@ public class MessageHandlerManager {
 
     private final Map<String, MessageHandler> commonMessageHandlers;
 
-    private final Map<CommandType, Map<EntityType, ListMessageHandler>> listMessageHandlers;
-
-    private final Map<EntityType, PickMessageHandler> pickMessageHandlers;
-
-    private final Map<EntityType, PickAllMessageHandler> pickAllMessageHandlers;
-
-    private final Map<EntityType, RemoveMessageHandler> removeMessageHandlers;
-
-    private final Map<EntityType, RemoveAllMessageHandler> removeAllMessageHandlers;
-
     private final Map<CommandType, Function<EntityType, CallbackMessageHandler>> functionContainer;
 
     private final Map<CommandType, UtilMessageHandler> utilHandlers;
@@ -58,38 +48,21 @@ public class MessageHandlerManager {
     @Autowired
     public MessageHandlerManager(
         List<MessageHandler> commonMessageHandlers,
-        List<ListMessageHandler> listMessageHandlers,
-        List<PickMessageHandler> pickMessageHandlers,
-        List<PickAllMessageHandler> pickAllMessageHandlers,
-        List<RemoveMessageHandler> removeMessageHandlers,
-        List<RemoveAllMessageHandler> removeAllMessageHandlers,
+        List<EntityCallbackMessageHandler> entityMessageHandlers,
         List<UtilMessageHandler> utilMessageHandler,
         MessageToCommandContainer msg2CommandContainer
     ) {
         this.commonMessageHandlers = commonMessageHandlers.stream()
             .collect(ImmutableMap.toImmutableMap(MessageHandler::trigger, Function.identity()));
 
-        this.pickMessageHandlers = convert(pickMessageHandlers);
-        this.pickAllMessageHandlers = convert(pickAllMessageHandlers);
-        this.removeMessageHandlers = convert(removeMessageHandlers);
-        this.removeAllMessageHandlers = convert(removeAllMessageHandlers);
-
-        this.listMessageHandlers = listMessageHandlers.stream()
-            .collect(Collectors.groupingBy(
-                ListMessageHandler::commandType,
-                Collectors.toMap(ListMessageHandler::entityType, Function.identity())
-            ));
-
         ImmutableMap.Builder<CommandType, Function<EntityType, CallbackMessageHandler>> functionBuilder =
             ImmutableMap.builder();
-
-        this.listMessageHandlers.forEach((type, handler) -> functionBuilder.put(type, handler::get));
-        this.functionContainer = functionBuilder
-            .put(PICK, this.pickMessageHandlers::get)
-            .put(PICK_ALL, this.pickAllMessageHandlers::get)
-            .put(REMOVE, this.removeMessageHandlers::get)
-            .put(REMOVE_ALL, this.removeAllMessageHandlers::get)
-            .build();
+        entityMessageHandlers.stream()
+            .collect(Collectors.groupingBy(
+                EntityCallbackMessageHandler::commandType,
+                Collectors.toMap(EntityCallbackMessageHandler::entityType, Function.identity())
+            )).forEach((type, handler) -> functionBuilder.put(type, handler::get));
+        this.functionContainer = functionBuilder.build();
 
         this.utilHandlers = utilMessageHandler.stream()
             .collect(Collectors.toMap(UtilMessageHandler::commandType, Function.identity()));
@@ -140,8 +113,4 @@ public class MessageHandlerManager {
         return functionContainer.get(cc.getCommandType()).apply(cc.getEntityType()).handle(cc);
     }
 
-    private <T extends EntityCallbackMessageHandler> Map<EntityType, T> convert(List<T> handlers) {
-        return handlers.stream()
-            .collect(ImmutableMap.toImmutableMap(EntityCallbackMessageHandler::entityType, Function.identity()));
-    }
 }

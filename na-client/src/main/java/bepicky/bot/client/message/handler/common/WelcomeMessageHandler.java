@@ -50,7 +50,7 @@ public class WelcomeMessageHandler implements MessageHandler {
         InlineMarkupBuilder inlineMarkup = new InlineMarkupBuilder();
         String msgText = templateContext.processEmojiTemplate(
             welcomeChainLink.getButtonKey(),
-            reader.getPrimaryLanguage().getLang()
+            reader.getLang()
         );
         InlineMarkupBuilder.InlineButton categoriesButton = new InlineMarkupBuilder.InlineButton(
             msgText,

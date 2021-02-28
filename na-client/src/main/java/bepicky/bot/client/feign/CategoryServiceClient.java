@@ -5,12 +5,19 @@ import bepicky.common.domain.response.CategoryListResponse;
 import bepicky.common.domain.response.CategoryResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "bepicky-service", contextId = "category-client", configuration = FeignClientConfiguration.class)
 public interface CategoryServiceClient {
+
+    @GetMapping("/category/{type}/reader/{chatId}/list")
+    CategoryListResponse list(
+        @PathVariable("chatId") long chatId,
+        @PathVariable("type") String type
+    );
 
     @GetMapping("/category/list")
     CategoryListResponse list(

@@ -14,6 +14,11 @@ public class CategoryService implements ICategoryService {
     private CategoryServiceClient categoryClient;
 
     @Override
+    public CategoryListResponse list(long chatId, String type) {
+        return categoryClient.list(chatId, type);
+    }
+
+    @Override
     public CategoryListResponse list(long chatId, String type, int page, int pageSize) {
         return categoryClient.list(chatId, page, pageSize, type);
     }

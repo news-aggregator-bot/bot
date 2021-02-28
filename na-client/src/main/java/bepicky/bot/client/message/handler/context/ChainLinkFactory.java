@@ -38,6 +38,14 @@ public class ChainLinkFactory {
         return link(DIR_NEXT, msgKey, cmdMngr.list(SOURCE), SOURCE, CommandType.LIST);
     }
 
+    public ChatChainLink choiceRegion(String msgKey) {
+        return link(DIR_NEXT, msgKey, cmdMngr.choice(REGION), REGION, CommandType.CHOICE);
+    }
+
+    public ChatChainLink choiceCommon(String msgKey) {
+        return link(DIR_NEXT, msgKey, cmdMngr.choice(CATEGORY), CATEGORY, CommandType.CHOICE);
+    }
+
     public ChatChainLink settings() {
         return link(
             DIR_NEXT,

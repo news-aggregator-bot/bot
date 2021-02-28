@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static bepicky.bot.client.message.command.CommandType.CHOICE;
 import static bepicky.bot.client.message.command.CommandType.GO_NEXT;
 import static bepicky.bot.client.message.command.CommandType.GO_PREVIOUS;
 import static bepicky.bot.client.message.command.CommandType.LIST;
@@ -16,9 +17,10 @@ import static bepicky.bot.client.message.command.CommandType.REMOVE_ALL;
 @Component
 public class CommandManager {
 
-    @Autowired
-    private ObjectMapper om;
 
+    public String choice(EntityType entity) {
+        return toCmd(ChatCommand.of(CHOICE, entity, 0L));
+    }
 
     public String pick(EntityType entity, String name) {
         return toCmd(ChatCommand.of(PICK, entity, name));
