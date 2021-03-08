@@ -1,4 +1,4 @@
-package bepicky.bot.client.message.command;
+package bepicky.bot.core.cmd;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.Getter;

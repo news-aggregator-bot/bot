@@ -1,9 +1,10 @@
 package bepicky.bot.client.message.handler.util;
 
-import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandType;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.cmd.ChatCommand;
+import bepicky.bot.core.cmd.CommandType;
+import bepicky.bot.core.message.handler.UtilMessageHandler;
+import bepicky.bot.core.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.bot.client.service.IValueNormalisationService;
 import bepicky.common.domain.dto.CategoryDto;
@@ -50,7 +51,7 @@ public class StatusMessageHandler implements UtilMessageHandler {
         );
 
         String msg = templateContext.processTemplate(
-            TemplateUtils.STATUS_READER,
+            TemplateNames.STATUS_READER,
             status.getPrimaryLanguage().getLang(),
             params
         );

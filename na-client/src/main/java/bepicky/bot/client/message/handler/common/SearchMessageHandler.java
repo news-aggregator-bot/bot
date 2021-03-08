@@ -1,11 +1,12 @@
 package bepicky.bot.client.message.handler.common;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandType;
-import bepicky.bot.client.message.handler.CallbackMessageHandler;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.cmd.ChatCommand;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.handler.list.NewsSearchMessageHandler;
-import bepicky.bot.client.message.template.MessageTemplateContext;
+import bepicky.bot.core.message.handler.CallbackMessageHandler;
+import bepicky.bot.core.message.handler.MessageHandler;
+import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static bepicky.bot.client.message.template.TemplateUtils.SEARCH_INSTRUCTION;
+import static bepicky.bot.client.message.template.TemplateNames.SEARCH_INSTRUCTION;
 
 @Component
 public class SearchMessageHandler implements MessageHandler {

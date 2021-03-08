@@ -1,8 +1,8 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.command.ChatCommand;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.service.ICategoryService;
+import bepicky.bot.core.cmd.ChatCommand;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
 import com.google.common.collect.Lists;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static bepicky.bot.client.message.template.TemplateUtils.page;
+import static bepicky.bot.core.message.template.TemplateUtils.page;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
 @Component

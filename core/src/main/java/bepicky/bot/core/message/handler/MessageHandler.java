@@ -1,4 +1,4 @@
-package bepicky.bot.client.message.handler.common;
+package bepicky.bot.core.message.handler;
 
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;

@@ -28,6 +28,7 @@
         <module>na-client</module>
         <module>na-admin</module>
         <module>na-support</module>
+        <module>core</module>
     </modules>
 
     <dependencyManagement>

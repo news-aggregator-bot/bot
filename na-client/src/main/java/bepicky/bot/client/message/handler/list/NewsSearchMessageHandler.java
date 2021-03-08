@@ -1,10 +1,10 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandType;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
+import bepicky.bot.core.cmd.ChatCommand;
+import bepicky.bot.core.cmd.CommandType;
+import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.INewsService;
 import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.response.NewsSearchResponse;
@@ -41,7 +41,7 @@ public class NewsSearchMessageHandler extends AbstractListMessageHandler {
             .map(TemplateNewsNote::new)
             .collect(Collectors.toList());
         String text = templateContext.processTemplate(
-            TemplateUtils.SEARCH_NOTE, searchResponse.getReader().getLang(),
+            TemplateNames.SEARCH_NOTE, searchResponse.getReader().getLang(),
             ImmutableMap.<String, Object>builder()
                 .put("key", key)
                 .put("page", command.getPage())

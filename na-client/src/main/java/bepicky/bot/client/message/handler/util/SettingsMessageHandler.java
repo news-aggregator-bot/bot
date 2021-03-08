@@ -1,12 +1,13 @@
 package bepicky.bot.client.message.handler.util;
 
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.button.InlineMarkupBuilder.InlineButton;
-import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandManager;
-import bepicky.bot.client.message.command.CommandType;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
+import bepicky.bot.core.message.button.InlineMarkupBuilder.InlineButton;
+import bepicky.bot.core.cmd.ChatCommand;
+import bepicky.bot.core.cmd.CommandManager;
+import bepicky.bot.core.cmd.CommandType;
+import bepicky.bot.core.message.handler.UtilMessageHandler;
+import bepicky.bot.core.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-import static bepicky.bot.client.message.EntityType.CATEGORY;
-import static bepicky.bot.client.message.EntityType.LANGUAGE;
-import static bepicky.bot.client.message.EntityType.REGION;
-import static bepicky.bot.client.message.EntityType.SOURCE;
+import static bepicky.bot.core.message.EntityType.CATEGORY;
+import static bepicky.bot.core.message.EntityType.LANGUAGE;
+import static bepicky.bot.core.message.EntityType.REGION;
+import static bepicky.bot.core.message.EntityType.SOURCE;
 import static bepicky.bot.client.message.template.ButtonNames.CLOSE;
 import static bepicky.bot.client.message.template.ButtonNames.SETTINGS_CATEGORY;
 import static bepicky.bot.client.message.template.ButtonNames.SETTINGS_LANGUAGE;
@@ -55,7 +56,7 @@ public class SettingsMessageHandler implements UtilMessageHandler {
         InlineButton srcButton = m.button(srcBtnTxt, cmdMngr.update(SOURCE), cmdMngr.list(SOURCE));
         InlineButton closeButton = m.button(closeBtnTxt, cmdMngr.util(CommandType.ENABLE_READER));
 
-        String settingsText = templateContext.processTemplate(TemplateUtils.SETTINGS, lang);
+        String settingsText = templateContext.processTemplate(TemplateNames.SETTINGS, lang);
 
         Arrays.asList(langButton, regionButton, categoryButton, srcButton, closeButton).forEach(m::addButton);
         return new HandleResult(settingsText, m.build());

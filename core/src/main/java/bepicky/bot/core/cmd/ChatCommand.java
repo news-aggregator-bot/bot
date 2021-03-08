@@ -1,6 +1,6 @@
-package bepicky.bot.client.message.command;
+package bepicky.bot.core.cmd;
 
-import bepicky.bot.client.message.EntityType;
+import bepicky.bot.core.message.EntityType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 

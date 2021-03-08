@@ -1,12 +1,14 @@
 package bepicky.bot.client.message.handler.common;
 
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.command.CommandManager;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
+import bepicky.bot.core.cmd.CommandManager;
 import bepicky.bot.client.message.handler.context.ChatChainLink;
 import bepicky.bot.client.message.handler.context.ChatChainManager;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.message.handler.MessageHandler;
+import bepicky.bot.core.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.IReaderService;
+import bepicky.bot.core.message.template.TemplateUtils;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.request.ReaderRequest;
 import lombok.extern.slf4j.Slf4j;

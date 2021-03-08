@@ -1,6 +1,6 @@
 package bepicky.bot.client.message.handler.choice;
 
-import bepicky.bot.client.message.EntityType;
+import bepicky.bot.core.message.EntityType;
 import org.springframework.stereotype.Component;
 
 @Component

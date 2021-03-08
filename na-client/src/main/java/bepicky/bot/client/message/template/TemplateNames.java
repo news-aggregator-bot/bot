@@ -1,15 +1,15 @@
 package bepicky.bot.client.message.template;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.cmd.CommandType;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
-public class TemplateUtils {
+public class TemplateNames {
 
 
-    private TemplateUtils() {}
+    private TemplateNames() {}
 
     public static final String HELP = "help";
     public static final String OPTIONS = "options";
@@ -66,6 +66,7 @@ public class TemplateUtils {
         EntityType.SOURCE,
         REMOVE_SOURCE_SUCCESS
     );
+
     public static final Map<EntityType, String> PICK_ENTITY_CONTAINER = Map.of(
         EntityType.REGION,
         PICK_REGION_SUCCESS,
@@ -76,6 +77,7 @@ public class TemplateUtils {
         EntityType.SOURCE,
         PICK_SOURCE_SUCCESS
     );
+
     private static final Map<CommandType, Map<EntityType, String>> UPDATE_MSG_CONTAINER =
         ImmutableMap.<CommandType, Map<EntityType, String>>builder()
             .put(CommandType.PICK, PICK_ENTITY_CONTAINER)
@@ -88,25 +90,4 @@ public class TemplateUtils {
         return UPDATE_MSG_CONTAINER.get(c).get(e);
     }
 
-
-    public static ImmutableMap<String, Object> name(String name) {
-        return params("name", name);
-    }
-
-    public static ImmutableMap<String, Object> page(int page) {
-        return params("page", page);
-    }
-
-    public static ImmutableMap<String, Object> params(String key, Object value) {
-        return ImmutableMap.<String, Object>builder()
-            .put(key, value)
-            .build();
-    }
-
-    public static ImmutableMap<String, Object> params(String key1, Object value1, String key2, Object value2) {
-        return ImmutableMap.<String, Object>builder()
-            .put(key1, value1)
-            .put(key2, value2)
-            .build();
-    }
 }

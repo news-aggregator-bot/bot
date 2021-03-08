@@ -1,12 +1,12 @@
 package bepicky.bot.client.message.handler.pick;
 
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.handler.AbstractSourceMessageHandler;
 import bepicky.common.domain.response.SourceResponse;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SourcePickMessageHandler extends AbstractSourceMessageHandler implements PickMessageHandler {
+public class SourcePickMessageHandler extends AbstractSourceMessageHandler {
 
     @Override
     protected SourceResponse handle(Long chatId, Long srcId) {

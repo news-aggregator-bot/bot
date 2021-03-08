@@ -1,4 +1,4 @@
-package bepicky.bot.client.message.button;
+package bepicky.bot.core.message.button;
 
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;

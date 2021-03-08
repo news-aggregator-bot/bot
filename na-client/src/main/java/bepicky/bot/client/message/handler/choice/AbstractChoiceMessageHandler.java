@@ -1,17 +1,17 @@
 package bepicky.bot.client.message.handler.choice;
 
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandManager;
-import bepicky.bot.client.message.command.CommandType;
-import bepicky.bot.client.message.handler.EntityCallbackMessageHandler;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
+import bepicky.bot.core.cmd.ChatCommand;
+import bepicky.bot.core.cmd.CommandManager;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.handler.context.ChatChainLink;
 import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.ButtonNames;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.message.handler.EntityCallbackMessageHandler;
+import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.bot.client.service.ICategoryService;
 import bepicky.bot.client.service.IReaderService;
+import bepicky.bot.core.message.template.TemplateUtils;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.response.CategoryListResponse;
@@ -117,6 +117,4 @@ public abstract class AbstractChoiceMessageHandler implements EntityCallbackMess
     private String buildName(CategoryDto dto) {
         return dto.getParent() != null ? buildName(dto.getParent()) + "/" + dto.getLocalised() : dto.getLocalised();
     }
-
-
 }

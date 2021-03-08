@@ -1,13 +1,13 @@
 package bepicky.bot.client.message.handler.pick;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.handler.AbstractCategoryMessageHandler;
 import bepicky.common.domain.response.CategoryResponse;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RegionPickAllMessageHandler extends AbstractCategoryMessageHandler implements PickAllMessageHandler {
+public class RegionPickAllMessageHandler extends AbstractCategoryMessageHandler {
 
     @Override
     protected CategoryResponse handle(Long chatId, Long categoryId) {

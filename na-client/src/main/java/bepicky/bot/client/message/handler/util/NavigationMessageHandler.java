@@ -1,8 +1,9 @@
 package bepicky.bot.client.message.handler.util;
 
-import bepicky.bot.client.message.command.ChatCommand;
+import bepicky.bot.core.cmd.ChatCommand;
 import bepicky.bot.client.message.handler.context.ChatChainLink;
 import bepicky.bot.client.message.handler.context.ChatChainManager;
+import bepicky.bot.core.message.handler.UtilMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class NavigationMessageHandler implements UtilMessageHandler {

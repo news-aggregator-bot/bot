@@ -1,9 +1,9 @@
 package bepicky.bot.client.message.handler.list.region;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.handler.list.AbstractSubCategoryListMessageHandler;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.message.template.TemplateUtils;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.response.CategoryListResponse;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import reactor.util.function.Tuples;
 
 import java.util.Map;
 
-import static bepicky.bot.client.message.template.TemplateUtils.LIST_SUBREGIONS;
+import static bepicky.bot.client.message.template.TemplateNames.LIST_SUBREGIONS;
 
 @Component
 public class RegionSubCategoryListMessageHandler extends AbstractSubCategoryListMessageHandler {

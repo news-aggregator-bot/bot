@@ -1,7 +1,7 @@
-package bepicky.bot.client.message.handler;
+package bepicky.bot.core.message.handler;
 
-import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.cmd.ChatCommand;
+import bepicky.bot.core.cmd.CommandType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;

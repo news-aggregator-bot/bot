@@ -1,6 +1,6 @@
 package bepicky.bot.client.message.handler.util;
 
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.handler.context.ChatChainLink;
 import org.springframework.stereotype.Component;
 

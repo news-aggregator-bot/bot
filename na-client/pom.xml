@@ -76,6 +76,11 @@
             <groupId>bepicky</groupId>
             <artifactId>common-communication</artifactId>
         </dependency>
+        <dependency>
+            <groupId>bepicky</groupId>
+            <artifactId>core-bot</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>

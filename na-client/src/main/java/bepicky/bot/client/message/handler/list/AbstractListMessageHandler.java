@@ -1,13 +1,13 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.command.CommandManager;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatChain;
 import bepicky.bot.client.message.handler.context.ChatChainLink;
 import bepicky.bot.client.message.handler.context.ChatChainManager;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.cmd.CommandManager;
+import bepicky.bot.core.message.LangUtils;
+import bepicky.bot.core.message.handler.EntityCallbackMessageHandler;
+import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.response.AbstractListResponse;
@@ -23,12 +23,15 @@ import static bepicky.bot.client.message.template.ButtonNames.DIR_NEXT;
 import static bepicky.bot.client.message.template.ButtonNames.DIR_PREV;
 import static bepicky.bot.client.message.template.ButtonNames.PICK;
 import static bepicky.bot.client.message.template.ButtonNames.REMOVE;
-import static bepicky.bot.client.message.template.TemplateUtils.LIST_SUBCATEGORY;
-import static bepicky.bot.client.message.template.TemplateUtils.name;
+import static bepicky.bot.client.message.template.TemplateNames.LIST_SUBCATEGORY;
+import static bepicky.bot.core.message.template.TemplateUtils.name;
+import static bepicky.bot.core.message.template.TemplateUtils.params;
 import static com.vdurmont.emoji.EmojiParser.parseToUnicode;
 
 @Component
-public abstract class AbstractListMessageHandler implements ListMessageHandler {
+public abstract class AbstractListMessageHandler implements EntityCallbackMessageHandler {
+
+    protected static final int SIX_PAGE_SIZE = 6;
 
     @Autowired
     protected CommandManager cmdMngr;
@@ -42,7 +45,7 @@ public abstract class AbstractListMessageHandler implements ListMessageHandler {
     protected HandleResult error(String msg) {
         String errorMessage = templateContext.errorTemplate(
             LangUtils.DEFAULT,
-            TemplateUtils.params(MessageTemplateContext.ERROR, msg)
+            params(MessageTemplateContext.ERROR, msg)
         );
         return new HandleResult(errorMessage, null);
     }

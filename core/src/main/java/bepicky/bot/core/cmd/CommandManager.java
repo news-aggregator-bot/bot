@@ -1,18 +1,16 @@
-package bepicky.bot.client.message.command;
+package bepicky.bot.core.cmd;
 
-import bepicky.bot.client.message.EntityType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import bepicky.bot.core.message.EntityType;
 import org.springframework.stereotype.Component;
 
-import static bepicky.bot.client.message.command.CommandType.CHOICE;
-import static bepicky.bot.client.message.command.CommandType.GO_NEXT;
-import static bepicky.bot.client.message.command.CommandType.GO_PREVIOUS;
-import static bepicky.bot.client.message.command.CommandType.LIST;
-import static bepicky.bot.client.message.command.CommandType.PICK;
-import static bepicky.bot.client.message.command.CommandType.PICK_ALL;
-import static bepicky.bot.client.message.command.CommandType.REMOVE;
-import static bepicky.bot.client.message.command.CommandType.REMOVE_ALL;
+import static bepicky.bot.core.cmd.CommandType.CHOICE;
+import static bepicky.bot.core.cmd.CommandType.GO_NEXT;
+import static bepicky.bot.core.cmd.CommandType.GO_PREVIOUS;
+import static bepicky.bot.core.cmd.CommandType.LIST;
+import static bepicky.bot.core.cmd.CommandType.PICK;
+import static bepicky.bot.core.cmd.CommandType.PICK_ALL;
+import static bepicky.bot.core.cmd.CommandType.REMOVE;
+import static bepicky.bot.core.cmd.CommandType.REMOVE_ALL;
 
 @Component
 public class CommandManager {

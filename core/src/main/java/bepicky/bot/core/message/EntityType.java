@@ -1,4 +1,4 @@
-package bepicky.bot.client.message;
+package bepicky.bot.core.message;
 
 import lombok.Getter;
 

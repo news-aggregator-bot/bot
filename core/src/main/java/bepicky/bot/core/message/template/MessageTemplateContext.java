@@ -1,6 +1,6 @@
-package bepicky.bot.client.message.template;
+package bepicky.bot.core.message.template;
 
-import bepicky.bot.client.message.LangUtils;
+import bepicky.bot.core.message.LangUtils;
 import com.vdurmont.emoji.EmojiParser;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -58,11 +58,4 @@ public class MessageTemplateContext {
         return processTemplate(ERROR, lang, Collections.emptyMap());
     }
 
-    public String help(String lang) {
-        return processTemplate(TemplateUtils.HELP, lang);
-    }
-
-    public String helpButton(String lang) {
-        return processTemplate(ButtonNames.HELP, lang);
-    }
 }

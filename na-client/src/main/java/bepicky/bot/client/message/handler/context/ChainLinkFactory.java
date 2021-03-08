@@ -1,20 +1,20 @@
 package bepicky.bot.client.message.handler.context;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.command.CommandManager;
-import bepicky.bot.client.message.command.CommandType;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.cmd.CommandManager;
+import bepicky.bot.core.cmd.CommandType;
+import bepicky.bot.client.message.template.TemplateNames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static bepicky.bot.client.message.EntityType.CATEGORY;
-import static bepicky.bot.client.message.EntityType.LANGUAGE;
-import static bepicky.bot.client.message.EntityType.REGION;
-import static bepicky.bot.client.message.EntityType.SOURCE;
-import static bepicky.bot.client.message.EntityType.TRANSITION;
+import static bepicky.bot.core.message.EntityType.CATEGORY;
+import static bepicky.bot.core.message.EntityType.LANGUAGE;
+import static bepicky.bot.core.message.EntityType.REGION;
+import static bepicky.bot.core.message.EntityType.SOURCE;
+import static bepicky.bot.core.message.EntityType.TRANSITION;
 import static bepicky.bot.client.message.template.ButtonNames.DIR_NEXT;
-import static bepicky.bot.client.message.template.TemplateUtils.ENABLE;
-import static bepicky.bot.client.message.template.TemplateUtils.ENABLE_READER;
+import static bepicky.bot.client.message.template.TemplateNames.ENABLE;
+import static bepicky.bot.client.message.template.TemplateNames.ENABLE_READER;
 
 @Component
 public class ChainLinkFactory {
@@ -49,7 +49,7 @@ public class ChainLinkFactory {
     public ChatChainLink settings() {
         return link(
             DIR_NEXT,
-            TemplateUtils.SETTINGS,
+            TemplateNames.SETTINGS,
             cmdMngr.status() + ";" + CommandType.SETTINGS.getKey(),
             TRANSITION,
             CommandType.SETTINGS

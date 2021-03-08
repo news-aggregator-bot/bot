@@ -1,6 +1,7 @@
-package bepicky.bot.client.router;
+package bepicky.bot.core;
 
-import bepicky.bot.client.message.MessageHandlerManager;
+import bepicky.bot.core.message.CallbackMessageHandlerManager;
+import bepicky.bot.core.message.MessageHandlerManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
-public class PickyNewsBot extends TelegramLongPollingBot {
+public class BotRouter extends TelegramLongPollingBot {
 
     @Value("${bot.telegram.name}")
     private String name;
@@ -20,13 +21,16 @@ public class PickyNewsBot extends TelegramLongPollingBot {
     private String token;
 
     @Autowired
-    private MessageHandlerManager handlerManager;
+    private MessageHandlerManager msgManager;
+
+    @Autowired
+    private CallbackMessageHandlerManager callbackManager;
 
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             try {
-                execute(handlerManager.manage(update.getMessage()));
+                execute(msgManager.manage(update.getMessage()));
             } catch (TelegramApiException e) {
                 log.error(e.getMessage(), e);
                 //TODO: send to admin
@@ -42,7 +46,7 @@ public class PickyNewsBot extends TelegramLongPollingBot {
         } else if (update.hasCallbackQuery()){
             try {
                 CallbackQuery callbackQuery = update.getCallbackQuery();
-                execute(handlerManager.manageCallback(callbackQuery.getMessage(), callbackQuery.getData()));
+                execute(callbackManager.manageCallback(callbackQuery.getMessage(), callbackQuery.getData()));
             } catch (TelegramApiException e) {
                 log.error(e.getMessage(), e);
             }

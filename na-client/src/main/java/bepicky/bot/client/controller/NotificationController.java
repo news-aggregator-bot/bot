@@ -1,8 +1,8 @@
 package bepicky.bot.client.controller;
 
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
-import bepicky.bot.client.router.PickyNewsBot;
+import bepicky.bot.core.BotRouter;
+import bepicky.bot.core.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.bot.client.service.IValueNormalisationService;
 import bepicky.common.domain.dto.NewsNoteDto;
@@ -17,8 +17,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -26,7 +24,7 @@ import java.util.Map;
 public class NotificationController {
 
     @Autowired
-    private PickyNewsBot bot;
+    private BotRouter bot;
 
     @Autowired
     private MessageTemplateContext templateContext;
@@ -50,7 +48,7 @@ public class NotificationController {
                 .put("author", normalisationService.normalise(note.getAuthor()))
                 .build();
             String noteMsg = templateContext.processTemplate(
-                TemplateUtils.NEWS_NOTE,
+                TemplateNames.NEWS_NOTE,
                 request.getLang(),
                 params
             ).trim();

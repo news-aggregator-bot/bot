@@ -1,11 +1,12 @@
 package bepicky.bot.client.message.handler.common;
 
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.command.CommandManager;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
+import bepicky.bot.core.cmd.CommandManager;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.template.ButtonNames;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.core.message.handler.MessageHandler;
+import bepicky.bot.core.message.template.MessageTemplateContext;
+import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.common.domain.dto.ReaderDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class OptionsCommonMessageHandler implements MessageHandler {
             .addButton(activationButton);
 
         return new SendMessage()
-            .setText(templateContext.processTemplate(TemplateUtils.OPTIONS, reader.getLang()))
+            .setText(templateContext.processTemplate(TemplateNames.OPTIONS, reader.getLang()))
             .setChatId(message.getChatId()).setReplyMarkup(builder.build());
     }
 

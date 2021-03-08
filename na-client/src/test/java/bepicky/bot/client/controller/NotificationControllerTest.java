@@ -1,12 +1,12 @@
 package bepicky.bot.client.controller;
 
 import bepicky.bot.client.config.TemplateConfig;
-import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.template.MessageTemplateContext;
-import bepicky.bot.client.router.PickyNewsBot;
 import bepicky.bot.client.service.IReaderService;
 import bepicky.bot.client.service.IValueNormalisationService;
 import bepicky.bot.client.service.ValueNormalisationService;
+import bepicky.bot.core.BotRouter;
+import bepicky.bot.core.message.LangUtils;
+import bepicky.bot.core.message.template.MessageTemplateContext;
 import bepicky.common.domain.dto.CategoryDto;
 import bepicky.common.domain.dto.NewsNoteDto;
 import bepicky.common.domain.dto.SourcePageDto;
@@ -43,7 +43,7 @@ public class NotificationControllerTest {
     private NotificationController newsController;
 
     @MockBean
-    private PickyNewsBot bot;
+    private BotRouter bot;
 
     @Autowired
     private MessageTemplateContext templateContext;

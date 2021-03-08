@@ -1,14 +1,15 @@
 package bepicky.bot.client.message.handler.list;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.LangUtils;
-import bepicky.bot.client.message.button.InlineMarkupBuilder;
-import bepicky.bot.client.message.command.ChatCommand;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.message.button.InlineMarkupBuilder;
 import bepicky.bot.client.message.handler.context.ChatChainManager;
 import bepicky.bot.client.message.template.ButtonNames;
-import bepicky.bot.client.message.template.TemplateUtils;
+import bepicky.bot.client.message.template.TemplateNames;
 import bepicky.bot.client.service.ILanguageService;
+import bepicky.bot.core.cmd.ChatCommand;
+import bepicky.bot.core.cmd.CommandType;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.message.LangUtils;
+import bepicky.bot.core.message.template.TemplateUtils;
 import bepicky.common.domain.dto.LanguageDto;
 import bepicky.common.domain.dto.ReaderDto;
 import bepicky.common.domain.response.LanguageListResponse;
@@ -54,7 +55,7 @@ public class LanguageListMessageHandler extends AbstractListMessageHandler {
         markup.addButtons(navigation);
 
         String listSubcategoryText = parseToUnicode(templateContext.processTemplate(
-            TemplateUtils.LIST_LANGUAGES,
+            TemplateNames.LIST_LANGUAGES,
             response.getReader().getLang(),
             TemplateUtils.page(page)
         ));

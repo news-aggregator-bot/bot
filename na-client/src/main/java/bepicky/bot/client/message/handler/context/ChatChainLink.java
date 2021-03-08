@@ -1,7 +1,7 @@
 package bepicky.bot.client.message.handler.context;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.cmd.CommandType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,12 +1,12 @@
 package bepicky.bot.client.message.handler.list.common;
 
-import bepicky.bot.client.message.EntityType;
-import bepicky.bot.client.message.command.CommandType;
+import bepicky.bot.core.message.EntityType;
+import bepicky.bot.core.cmd.CommandType;
 import bepicky.bot.client.message.handler.list.AbstractCategoryListMessageHandler;
 import bepicky.common.domain.response.CategoryListResponse;
 import org.springframework.stereotype.Component;
 
-import static bepicky.bot.client.message.template.TemplateUtils.LIST_CATEGORY;
+import static bepicky.bot.client.message.template.TemplateNames.LIST_CATEGORY;
 
 @Component
 public class CommonCategoryListMessageHandler extends AbstractCategoryListMessageHandler {
